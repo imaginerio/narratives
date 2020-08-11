@@ -1,15 +1,15 @@
+/* eslint-disable no-use-before-define */
 const { Keystone } = require('@keystonejs/keystone');
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { Text, Checkbox, Password } = require('@keystonejs/fields');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { NextApp } = require('@keystonejs/app-next');
+const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');
 const initialiseData = require('./initial-data');
 
-const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');
 const PROJECT_NAME = 'imagineRio Narratives';
 const adapterConfig = { mongoUri: 'mongodb://localhost/imagine-rio-narratives' };
-
 
 const keystone = new Keystone({
   adapter: new Adapter(adapterConfig),
@@ -31,7 +31,7 @@ const userOwnsItem = ({ authentication: { item: user } }) => {
 const userIsAdminOrOwner = auth => {
   const isAdmin = access.userIsAdmin(auth);
   const isOwner = access.userOwnsItem(auth);
-  return isAdmin ? isAdmin : isOwner;
+  return isAdmin || isOwner;
 };
 
 const access = { userIsAdmin, userOwnsItem, userIsAdminOrOwner };
@@ -76,9 +76,8 @@ module.exports = {
     new GraphQLApp(),
     new AdminUIApp({
       name: PROJECT_NAME,
-      enableDefaultRoute: true,
-      authStrategy,
       enableDefaultRoute: false,
+      authStrategy,
     }),
     new NextApp({ dir: 'src' }),
   ],
