@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const crypto = require('crypto');
 
 const randomString = () => crypto.randomBytes(6).hexSlice();
