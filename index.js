@@ -6,6 +6,8 @@ const { NextApp } = require('@keystonejs/app-next');
 const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');
 const initialiseData = require('./initial-data');
 
+const { SessionAuth } = require('./routes/SessionAuth');
+
 const UserSchema = require('./lists/User');
 const ProjectSchema = require('./lists/Project');
 const TagSchema = require('./lists/Tag');
@@ -30,6 +32,7 @@ const authStrategy = keystone.createAuthStrategy({
 module.exports = {
   keystone,
   apps: [
+    new SessionAuth(keystone),
     new GraphQLApp(),
     new AdminUIApp({
       name: PROJECT_NAME,
