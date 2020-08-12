@@ -1,11 +1,11 @@
 import React from 'react';
-import { ApolloProvider } from '@apollo/react-hooks';
-import ApolloClient from 'apollo-boost';
+import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 import Projects from '../components/Projects';
 
 const Home = () => {
   const client = new ApolloClient({
     uri: 'http://localhost:3000/admin/api',
+    cache: new InMemoryCache(),
   });
 
   return (

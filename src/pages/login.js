@@ -1,12 +1,19 @@
 import React from 'react';
-import { Form, Button } from 'semantic-ui-react';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
-const Login = () => (
-  <Form action="/admin/api/signin" method="POST">
-    <Form.Input name="email" label="Email" type="email" />
-    <Form.Input name="password" label="Password" type="password" />
-    <Button type="submit">Submit</Button>
-  </Form>
-);
+import LoginForm from '../components/LoginForm';
+
+const Login = () => {
+  const apolloClient = new ApolloClient({
+    uri: 'http://localhost:3000/admin/api',
+    cache: new InMemoryCache(),
+  });
+
+  return (
+    <ApolloProvider client={apolloClient}>
+      <LoginForm />
+    </ApolloProvider>
+  );
+};
 
 export default Login;

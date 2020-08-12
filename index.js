@@ -6,8 +6,6 @@ const { NextApp } = require('@keystonejs/app-next');
 const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');
 const initialiseData = require('./initial-data');
 
-const { SessionAuth } = require('./routes/SessionAuth');
-
 const UserSchema = require('./lists/User');
 const ProjectSchema = require('./lists/Project');
 const TagSchema = require('./lists/Tag');
@@ -40,7 +38,6 @@ module.exports = {
       enableDefaultRoute: false,
       authStrategy,
     }),
-    new SessionAuth(keystone),
     new NextApp({ dir: 'src' }),
   ],
 };
