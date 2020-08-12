@@ -1,14 +1,16 @@
-/* eslint-disable no-use-before-define */
 const { Keystone } = require('@keystonejs/keystone');
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
-const { Text, Checkbox, Password, Relationship } = require('@keystonejs/fields');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { NextApp } = require('@keystonejs/app-next');
 const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');
 const initialiseData = require('./initial-data');
 
+const { SessionAuth } = require('./routes/SessionAuth');
+
+const UserSchema = require('./lists/User');
 const ProjectSchema = require('./lists/Project');
+const TagSchema = require('./lists/Tag');
 
 const PROJECT_NAME = 'imagineRio Narratives';
 const adapterConfig = { mongoUri: 'mongodb://localhost/imagine-rio-narratives' };
@@ -18,12 +20,9 @@ const keystone = new Keystone({
   onConnect: process.env.CREATE_TABLES !== 'true' && initialiseData,
 });
 
-// Access control functions
-const userIsAdmin = ({ authentication: { item: user } }) => Boolean(user && user.isAdmin);
-const userOwnsItem = ({ authentication: { item: user } }) => {
-  if (!user) {
-    return false;
-  }
+keystone.createList('User', UserSchema);
+keystone.createList('Project', ProjectSchema);
+keystone.createList('Tag', TagSchema);
 
   // Instead of a boolean, you can return a GraphQL query:
   // https://www.keystonejs.com/api/access-control#graphqlwhere
@@ -82,6 +81,7 @@ keystone.createList('Project', ProjectSchema);
 module.exports = {
   keystone,
   apps: [
+    new SessionAuth(keystone),
     new GraphQLApp(),
     new AdminUIApp({
       name: PROJECT_NAME,

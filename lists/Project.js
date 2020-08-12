@@ -10,11 +10,11 @@ module.exports = {
     description: {
       type: Wysiwyg,
     },
-    // tags: {
-    //   type: Relationship,
-    //   ref: 'Tag',
-    //   many: true,
-    // },
+    tags: {
+      type: Relationship,
+      ref: 'Tag',
+      many: true,
+    },
     category: {
       type: Select,
       options: ['History', 'Architecture', 'Literature'],

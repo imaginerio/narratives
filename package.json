@@ -17,6 +17,7 @@
     "create-tables": "cross-env CREATE_TABLES=true keystone create-tables"
   },
   "dependencies": {
+    "@apollo/react-hooks": "^4.0.0",
     "@keystonejs/adapter-mongoose": "^9.0.1",
     "@keystonejs/app-admin-ui": "^7.3.0",
     "@keystonejs/app-graphql": "^6.1.0",
@@ -25,10 +26,16 @@
     "@keystonejs/fields": "^16.0.0",
     "@keystonejs/fields-wysiwyg-tinymce": "^5.3.5",
     "@keystonejs/keystone": "^13.0.0",
+    "@keystonejs/server-side-graphql-client": "^1.1.0",
+    "apollo-boost": "^0.4.9",
+    "body-parser": "^1.19.0",
     "cross-env": "^7.0.0",
+    "express": "^4.17.1",
     "next": "^9.5.2",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^1.1.1"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
