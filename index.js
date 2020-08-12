@@ -1,12 +1,14 @@
 /* eslint-disable no-use-before-define */
 const { Keystone } = require('@keystonejs/keystone');
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
-const { Text, Checkbox, Password } = require('@keystonejs/fields');
+const { Text, Checkbox, Password, Relationship } = require('@keystonejs/fields');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { NextApp } = require('@keystonejs/app-next');
 const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');
 const initialiseData = require('./initial-data');
+
+const ProjectSchema = require('./lists/Project');
 
 const PROJECT_NAME = 'imagineRio Narratives';
 const adapterConfig = { mongoUri: 'mongodb://localhost/imagine-rio-narratives' };
@@ -54,6 +56,11 @@ keystone.createList('User', {
     password: {
       type: Password,
     },
+    projects: {
+      type: Relationship,
+      ref: 'Project.user',
+      many: true,
+    },
   },
   // List-level access controls
   access: {
@@ -69,6 +76,8 @@ const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
 });
+
+keystone.createList('Project', ProjectSchema);
 
 module.exports = {
   keystone,
