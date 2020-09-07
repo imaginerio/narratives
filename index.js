@@ -1,3 +1,5 @@
+/* eslint-disable class-methods-use-this */
+const express = require('express');
 const { Keystone } = require('@keystonejs/keystone');
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
@@ -29,6 +31,17 @@ const authStrategy = keystone.createAuthStrategy({
 
 keystone.createList('Project', ProjectSchema);
 
+class CheckAuthentication {
+  prepareMiddleware() {
+    const middleware = express();
+    middleware.get('/projects', (req, res, next) => {
+      if (req.user) return next();
+      return res.redirect('/login');
+    });
+    return middleware;
+  }
+}
+
 module.exports = {
   keystone,
   apps: [
@@ -38,6 +51,7 @@ module.exports = {
       enableDefaultRoute: false,
       authStrategy,
     }),
+    new CheckAuthentication(),
     new NextApp({ dir: 'src' }),
   ],
 };
