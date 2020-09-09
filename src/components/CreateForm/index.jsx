@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, gql } from '@apollo/client';
-import { Form, Input, Dropdown } from 'semantic-ui-react';
+import { Form, Input, Dropdown, Button } from 'semantic-ui-react';
 
 const GET_TAGS = gql`
   query GetTags {
@@ -29,25 +29,56 @@ const ADD_TAG = gql`
   }
 `;
 
+const CREATE_PROJECT = gql`
+  mutation AddProject(
+    $title: String
+    $description: String
+    $tags: TagRelateToManyInput
+    $category: ProjectCategoryType
+  ) {
+    createProject(
+      data: { title: $title, description: $description, tags: $tags, category: $category }
+    ) {
+      id
+    }
+  }
+`;
+
 const CreateForm = () => {
   const { loading, error, data } = useQuery(GET_TAGS);
   const [addTag] = useMutation(ADD_TAG);
+  const [createProject] = useMutation(CREATE_PROJECT);
 
-  const [selectedTags, setSelectedTags] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [tags, setTags] = useState([]);
+  const [category, setCategory] = useState(null);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
 
   return (
-    <Form>
+    <Form
+      onSubmit={() =>
+        createProject({
+          variables: {
+            title,
+            description,
+            tags: {
+              connect: tags.map(t => ({ id: t })),
+            },
+            category,
+          },
+        })
+      }
+    >
       <Form.Field required>
         <label>Map Title</label>
-        <Input />
+        <Input onChange={(e, { value }) => setTitle(value)} />
       </Form.Field>
       <Form.Field>
         <label>Map Description</label>
-        <textarea />
+        <Form.TextArea onChange={(e, { value }) => setDescription(value)} />
       </Form.Field>
       <Form.Field>
         <label>Tags</label>
@@ -59,15 +90,15 @@ const CreateForm = () => {
           selection
           fluid
           allowAdditions
-          value={selectedTags}
+          value={tags}
           onAddItem={(e, { value }) =>
             addTag({
               variables: { name: value },
               refetchQueries: ['GetTags'],
               awaitRefetchQueries: true,
-            }).then(({ data: { createTag } }) => setSelectedTags([...selectedTags, createTag.key]))
+            }).then(({ data: { createTag } }) => setTags([...tags, createTag.key]))
           }
-          onChange={(e, { value }) => setSelectedTags(value)}
+          onChange={(e, { value }) => setTags(value)}
         />
       </Form.Field>
       <Form.Field>
@@ -76,12 +107,13 @@ const CreateForm = () => {
           placeholder="Select a category"
           fluid
           selection
-          value={selectedCategory}
-          onChange={(e, { value }) => setSelectedCategory(value)}
+          value={category}
+          onChange={(e, { value }) => setCategory(value)}
           // eslint-disable-next-line no-underscore-dangle
           options={data.__type.enumValues}
         />
       </Form.Field>
+      <Button type="submit">Submit</Button>
     </Form>
   );
 };

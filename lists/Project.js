@@ -44,4 +44,15 @@ module.exports = {
     },
   },
   labelField: 'title',
+  hooks: {
+    resolveInput: ({ operation, resolvedData, context }) => {
+      if (operation === 'create') {
+        return {
+          ...resolvedData,
+          user: context.authedItem.id,
+        };
+      }
+      return resolvedData;
+    },
+  },
 };
