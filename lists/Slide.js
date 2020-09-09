@@ -1,11 +1,13 @@
-const { Text, Relationship, Select } = require('@keystonejs/fields');
+const { Text, Relationship, Float, Integer } = require('@keystonejs/fields');
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 
 const defaultAuth = ({ authentication: { item } }) => {
   if (item) {
     return {
-      user: {
-        id: item.id,
+      project: {
+        user: {
+          id: item.id,
+        },
       },
     };
   }
@@ -28,23 +30,27 @@ module.exports = {
     description: {
       type: Wysiwyg,
     },
-    tags: {
-      type: Relationship,
-      ref: 'Tag',
-      many: true,
+    year: {
+      type: Integer,
     },
-    category: {
-      type: Select,
-      options: ['History', 'Architecture', 'Literature'],
+    longitude: {
+      type: Float,
     },
-    slides: {
-      type: Relationship,
-      ref: 'Slide.project',
-      many: true,
+    latitude: {
+      type: Float,
     },
-    user: {
+    zoom: {
+      type: Float,
+    },
+    bearing: {
+      type: Float,
+    },
+    pitch: {
+      type: Float,
+    },
+    project: {
       type: Relationship,
-      ref: 'User.projects',
+      ref: 'Project.slides',
       many: false,
     },
   },

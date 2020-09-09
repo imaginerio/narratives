@@ -10,6 +10,7 @@ const initialiseData = require('./initial-data');
 
 const UserSchema = require('./lists/User');
 const ProjectSchema = require('./lists/Project');
+const SlideSchema = require('./lists/Slide');
 const TagSchema = require('./lists/Tag');
 
 const PROJECT_NAME = 'imagineRio Narratives';
@@ -22,15 +23,14 @@ const keystone = new Keystone({
 });
 
 keystone.createList('User', UserSchema);
-keystone.createList('Project', ProjectSchema);
-keystone.createList('Tag', TagSchema);
-
 const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
 });
 
+keystone.createList('Slide', SlideSchema);
 keystone.createList('Project', ProjectSchema);
+keystone.createList('Tag', TagSchema);
 
 class CheckAuthentication {
   prepareMiddleware() {
