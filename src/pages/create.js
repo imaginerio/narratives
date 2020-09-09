@@ -1,8 +1,10 @@
 import React from 'react';
 import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
-import Projects from '../components/Projects';
+import { Container, Header } from 'semantic-ui-react';
 
-const ProjectPage = () => {
+import CreateForm from '../components/CreateForm';
+
+const Create = () => {
   const client = new ApolloClient({
     uri: 'http://localhost:3000/admin/api',
     cache: new InMemoryCache(),
@@ -10,12 +12,12 @@ const ProjectPage = () => {
 
   return (
     <ApolloProvider client={client}>
-      <div>
-        <h1>NextJS GraphQL Apollo App</h1>
-        <Projects />
-      </div>
+      <Container>
+        <Header as="h1">Add Map</Header>
+        <CreateForm />
+      </Container>
     </ApolloProvider>
   );
 };
 
-export default ProjectPage;
+export default Create;
