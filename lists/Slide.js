@@ -25,7 +25,6 @@ module.exports = {
   fields: {
     title: {
       type: Text,
-      isRequired: true,
     },
     description: {
       type: Wysiwyg,
@@ -55,15 +54,4 @@ module.exports = {
     },
   },
   labelField: 'title',
-  hooks: {
-    resolveInput: ({ operation, resolvedData, context }) => {
-      if (operation === 'create') {
-        return {
-          ...resolvedData,
-          user: context.authedItem.id,
-        };
-      }
-      return resolvedData;
-    },
-  },
 };

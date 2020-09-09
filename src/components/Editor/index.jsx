@@ -24,8 +24,17 @@ const GET_SLIDES = gql`
   }
 `;
 
+const ADD_SLIDE = gql`
+  mutation AddSlide($project: ProjectRelateToOneInput) {
+    createSlide(data: { project: $project }) {
+      id
+    }
+  }
+`;
+
 const Editor = ({ project }) => {
   const { loading, error, data } = useQuery(GET_SLIDES, { variables: { project } });
+  const [addSlide] = useMutation(ADD_SLIDE);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
@@ -34,7 +43,19 @@ const Editor = ({ project }) => {
     <Grid>
       <Grid.Row>
         <Grid.Column>
-          <Header />
+          <Header
+            handler={() =>
+              addSlide({
+                variables: {
+                  project: {
+                    connect: { id: '5f591e863413500f86e010de' },
+                  },
+                },
+                refetchQueries: ['GetSlides'],
+                awaitRefetchQueries: true,
+              })
+            }
+          />
         </Grid.Column>
       </Grid.Row>
       <Grid.Row>

@@ -5,7 +5,7 @@ import { Segment } from 'semantic-ui-react';
 const Slides = ({ slides, active }) => (
   <>
     {slides.map((slide, i) => (
-      <Segment key={slide.title} color={i === active ? 'blue' : ''}>
+      <Segment key={`slide${i}`} color={i === active ? 'blue' : 'grey'}>
         {i}
       </Segment>
     ))}
