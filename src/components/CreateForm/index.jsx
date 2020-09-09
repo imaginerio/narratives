@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { Form, Input, Dropdown } from 'semantic-ui-react';
 
-const GET_CATEGORIES = gql`
-  query {
+const GET_TAGS = gql`
+  query GetTags {
     __type(name: "ProjectCategoryType") {
       enumValues {
         key: name
@@ -19,8 +19,21 @@ const GET_CATEGORIES = gql`
   }
 `;
 
+const ADD_TAG = gql`
+  mutation AddTag($name: String) {
+    createTag(data: { name: $name }) {
+      key: id
+      text: name
+      value: id
+    }
+  }
+`;
+
 const CreateForm = () => {
-  const { loading, error, data } = useQuery(GET_CATEGORIES);
+  const { loading, error, data } = useQuery(GET_TAGS);
+  const [addTag] = useMutation(ADD_TAG);
+
+  const [selectedTags, setSelectedTags] = useState([]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
@@ -45,9 +58,15 @@ const CreateForm = () => {
           selection
           fluid
           allowAdditions
-          // value={currentValue}
-          // onAddItem={this.handleAddition}
-          // onChange={this.handleChange}
+          value={selectedTags}
+          onAddItem={(e, { value }) =>
+            addTag({
+              variables: { name: value },
+              refetchQueries: ['GetTags'],
+              awaitRefetchQueries: true,
+            }).then(({ data: { createTag } }) => setSelectedTags([...selectedTags, createTag.key]))
+          }
+          onChange={(e, { value }) => setSelectedTags(value)}
         />
       </Form.Field>
       <Form.Field>
@@ -56,6 +75,7 @@ const CreateForm = () => {
           placeholder="Select a category"
           fluid
           selection
+          // eslint-disable-next-line no-underscore-dangle
           options={data.__type.enumValues}
         />
       </Form.Field>
