@@ -1,11 +1,33 @@
 import React from 'react';
-import Projects from '../components/Projects';
+import { useQuery, gql } from '@apollo/client';
 
-const ProjectPage = () => (
-  <div>
-    <h1>NextJS GraphQL Apollo App</h1>
-    <Projects />
-  </div>
-);
+const GET_PROJECTS = gql`
+  query {
+    allProjects {
+      id
+      title
+      description
+      category
+      tags {
+        name
+      }
+    }
+  }
+`;
 
-export default ProjectPage;
+const Projects = () => {
+  const { loading, error, data } = useQuery(GET_PROJECTS);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
+
+  return (
+    <div>
+      {data.allProjects.map(proj => (
+        <p key={proj.id}>{`${proj.title} - ${proj.category}`}</p>
+      ))}
+    </div>
+  );
+};
+
+export default Projects;
