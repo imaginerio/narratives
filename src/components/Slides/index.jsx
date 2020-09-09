@@ -2,10 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Segment } from 'semantic-ui-react';
 
-const Slides = ({ slides, active }) => (
+const Slides = ({ slides, active, handler }) => (
   <>
     {slides.map((slide, i) => (
-      <Segment key={`slide${i}`} color={i === active ? 'blue' : 'grey'}>
+      <Segment
+        key={slide.id}
+        color={slide.id === active ? 'blue' : 'grey'}
+        onClick={() => handler(slide.id)}
+      >
         {i}
       </Segment>
     ))}
@@ -14,12 +18,13 @@ const Slides = ({ slides, active }) => (
 
 Slides.propTypes = {
   slides: PropTypes.arrayOf(PropTypes.shape()),
-  active: PropTypes.number,
+  active: PropTypes.string,
+  handler: PropTypes.func.isRequired,
 };
 
 Slides.defaultProps = {
   slides: [],
-  active: 0,
+  active: null,
 };
 
 export default Slides;
