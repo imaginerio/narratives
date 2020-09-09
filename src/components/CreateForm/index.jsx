@@ -34,6 +34,7 @@ const CreateForm = () => {
   const [addTag] = useMutation(ADD_TAG);
 
   const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
@@ -75,6 +76,8 @@ const CreateForm = () => {
           placeholder="Select a category"
           fluid
           selection
+          value={selectedCategory}
+          onChange={(e, { value }) => setSelectedCategory(value)}
           // eslint-disable-next-line no-underscore-dangle
           options={data.__type.enumValues}
         />
