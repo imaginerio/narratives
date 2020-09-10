@@ -53,7 +53,7 @@ const EditPage = () => {
                 addSlide({
                   variables: {
                     project: {
-                      connect: { id: '5f591e863413500f86e010de' },
+                      connect: { id: project },
                     },
                   },
                 }).then(async ({ data: { createSlide } }) => {

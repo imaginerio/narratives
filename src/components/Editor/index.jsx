@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { pick } from 'lodash';
@@ -40,12 +40,33 @@ const UPDATE_SLIDE_DESCRIPTION = gql`
   }
 `;
 
+let updateTimer;
+
 const Editor = ({ slide }) => {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+
   const { loading, error, data } = useQuery(GET_SLIDES, {
     variables: { slide },
+    onCompleted: res => {
+      setTitle(res.Slide.title || '');
+      setDescription(res.Slide.description || '');
+    },
   });
   const [updateTitle] = useMutation(UPDATE_SLIDE_TITLE);
   const [updateDescription] = useMutation(UPDATE_SLIDE_DESCRIPTION);
+
+  const updateInterval = (value, updater) => {
+    clearTimeout(updateTimer);
+    updateTimer = setTimeout(() => {
+      updater({
+        variables: {
+          slide,
+          value,
+        },
+      });
+    }, 1000);
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
@@ -58,29 +79,21 @@ const Editor = ({ slide }) => {
             <Form.Field>
               <label>Title</label>
               <Input
-                value={data.Slide.title || ''}
-                onChange={(e, { value }) =>
-                  updateTitle({
-                    variables: {
-                      slide,
-                      value,
-                    },
-                  })
-                }
+                value={title}
+                onChange={(e, { value }) => {
+                  setTitle(value);
+                  updateInterval(value, updateTitle);
+                }}
               />
             </Form.Field>
             <Form.Field>
               <label>Description</label>
               <Form.TextArea
-                value={data.Slide.description || ''}
-                onChange={(e, { value }) =>
-                  updateDescription({
-                    variables: {
-                      slide,
-                      value,
-                    },
-                  })
-                }
+                value={description}
+                onChange={(e, { value }) => {
+                  setDescription(value);
+                  updateInterval(value, updateDescription);
+                }}
               />
             </Form.Field>
           </Form>
