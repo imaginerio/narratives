@@ -40,6 +40,31 @@ const UPDATE_SLIDE_DESCRIPTION = gql`
   }
 `;
 
+const UPDATE_VIEWPORT = gql`
+  mutation UpdateViewport(
+    $slide: ID!
+    $longitude: Float
+    $latitude: Float
+    $zoom: Float
+    $bearing: Float
+    $pitch: Float
+  ) {
+    updateSlide(
+      id: $slide
+      data: {
+        longitude: $longitude
+        latitude: $latitude
+        zoom: $zoom
+        bearing: $bearing
+        pitch: $pitch
+      }
+    ) {
+      id
+      description
+    }
+  }
+`;
+
 let updateTimer;
 
 const Editor = ({ slide }) => {
@@ -55,6 +80,7 @@ const Editor = ({ slide }) => {
   });
   const [updateTitle] = useMutation(UPDATE_SLIDE_TITLE);
   const [updateDescription] = useMutation(UPDATE_SLIDE_DESCRIPTION);
+  const [updateViewport] = useMutation(UPDATE_VIEWPORT);
 
   const updateInterval = (value, updater) => {
     clearTimeout(updateTimer);
@@ -62,7 +88,7 @@ const Editor = ({ slide }) => {
       updater({
         variables: {
           slide,
-          value,
+          ...value,
         },
       });
     }, 1000);
@@ -82,7 +108,7 @@ const Editor = ({ slide }) => {
                 value={title}
                 onChange={(e, { value }) => {
                   setTitle(value);
-                  updateInterval(value, updateTitle);
+                  updateInterval({ value }, updateTitle);
                 }}
               />
             </Form.Field>
@@ -92,7 +118,7 @@ const Editor = ({ slide }) => {
                 value={description}
                 onChange={(e, { value }) => {
                   setDescription(value);
-                  updateInterval(value, updateDescription);
+                  updateInterval({ value }, updateDescription);
                 }}
               />
             </Form.Field>
@@ -100,7 +126,7 @@ const Editor = ({ slide }) => {
         </Grid.Column>
         <Grid.Column width={10}>
           <Atlas
-            handler={console.log}
+            handler={viewport => updateInterval(viewport, updateViewport)}
             initialViewport={pick(data.Slide, [
               'longitude',
               'latitude',
