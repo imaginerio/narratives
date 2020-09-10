@@ -22,6 +22,7 @@ const ADD_SLIDE = gql`
   mutation AddSlide($project: ProjectRelateToOneInput) {
     createSlide(data: { project: $project }) {
       id
+      title
     }
   }
 `;
@@ -32,7 +33,7 @@ const EditPage = () => {
 
   const [activeSlide, setActiveSlide] = useState(null);
 
-  const { loading, error, data } = useQuery(GET_SLIDES, {
+  const { loading, error, data, refetch } = useQuery(GET_SLIDES, {
     variables: { project },
     onCompleted: res => setActiveSlide(res.Project.slides[0].id),
   });
@@ -55,8 +56,9 @@ const EditPage = () => {
                       connect: { id: '5f591e863413500f86e010de' },
                     },
                   },
-                  refetchQueries: ['GetSlides'],
-                  awaitRefetchQueries: true,
+                }).then(async ({ data: { createSlide } }) => {
+                  await refetch({ variables: { project } });
+                  setActiveSlide(createSlide.id);
                 })
               }
             />
