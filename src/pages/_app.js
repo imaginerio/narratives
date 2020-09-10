@@ -2,6 +2,8 @@
 import React from 'react';
 import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 import 'semantic-ui-css/semantic.min.css';
+import 'mapbox-gl/dist/mapbox-gl.css';
+
 // import App from 'next/app'
 
 function MyApp({ Component, pageProps }) {

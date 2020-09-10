@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation, gql } from '@apollo/client';
+import { pick } from 'lodash';
 import { Grid, Form, Input } from 'semantic-ui-react';
+
+import Atlas from '../Atlas';
 
 const GET_SLIDES = gql`
   query GetSlide($slide: ID!) {
@@ -81,6 +84,18 @@ const Editor = ({ slide }) => {
               />
             </Form.Field>
           </Form>
+        </Grid.Column>
+        <Grid.Column width={10}>
+          <Atlas
+            handler={console.log}
+            initialViewport={pick(data.Slide, [
+              'longitude',
+              'latitude',
+              'zoom',
+              'bearing',
+              'pitch',
+            ])}
+          />
         </Grid.Column>
       </Grid.Row>
     </Grid>

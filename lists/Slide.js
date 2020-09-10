@@ -34,18 +34,23 @@ module.exports = {
     },
     longitude: {
       type: Float,
+      defaultValue: -43.1,
     },
     latitude: {
       type: Float,
+      defaultValue: -22.9,
     },
     zoom: {
       type: Float,
+      defaultValue: 12,
     },
     bearing: {
       type: Float,
+      defaultValue: 0,
     },
     pitch: {
       type: Float,
+      defaultValue: 0,
     },
     project: {
       type: Relationship,
