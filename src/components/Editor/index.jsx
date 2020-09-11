@@ -18,6 +18,13 @@ const GET_SLIDES = gql`
       zoom
       bearing
       pitch
+      image {
+        title
+        creator
+        source
+        date
+        url
+      }
     }
   }
 `;

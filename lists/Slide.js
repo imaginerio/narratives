@@ -52,6 +52,11 @@ module.exports = {
       type: Float,
       defaultValue: 0,
     },
+    image: {
+      type: Relationship,
+      ref: 'Image.slide',
+      many: false,
+    },
     project: {
       type: Relationship,
       ref: 'Project.slides',

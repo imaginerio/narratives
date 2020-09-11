@@ -11,6 +11,7 @@ const initialiseData = require('./initial-data');
 const UserSchema = require('./lists/User');
 const ProjectSchema = require('./lists/Project');
 const SlideSchema = require('./lists/Slide');
+const ImageSchema = require('./lists/Image');
 const TagSchema = require('./lists/Tag');
 
 const PROJECT_NAME = 'imagineRio Narratives';
@@ -29,6 +30,7 @@ const authStrategy = keystone.createAuthStrategy({
 });
 
 keystone.createList('Slide', SlideSchema);
+keystone.createList('Image', ImageSchema);
 keystone.createList('Project', ProjectSchema);
 keystone.createList('Tag', TagSchema);
 
