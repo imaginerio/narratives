@@ -10,6 +10,7 @@ import Editor from '../../components/Editor';
 const GET_SLIDES = gql`
   query GetSlides($project: ID!) {
     Project(where: { id: $project }) {
+      title
       slides {
         id
         title
@@ -44,11 +45,11 @@ const EditPage = () => {
 
   return (
     <Container fluid>
-      <h1>NextJS GraphQL Apollo App</h1>
       <Grid>
         <Grid.Row>
           <Grid.Column>
             <Header
+              title={data.Project.title}
               handler={() =>
                 addSlide({
                   variables: {
