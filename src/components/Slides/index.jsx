@@ -2,18 +2,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Segment } from 'semantic-ui-react';
 
+import styles from './Slides.module.css';
+
 const Slides = ({ slides, active, handler }) => (
-  <>
-    {slides.map((slide, i) => (
-      <Segment
-        key={slide.id}
-        color={slide.id === active ? 'blue' : 'grey'}
-        onClick={() => handler(slide.id)}
-      >
-        {i}
-      </Segment>
-    ))}
-  </>
+  <div className={styles.slides}>
+    {slides.map((slide, i) => {
+      const color = slide.id === active ? { color: 'blue' } : {};
+      return (
+        <Segment
+          key={slide.id}
+          className={styles.slide}
+          {...color}
+          onClick={() => handler(slide.id)}
+        >
+          <div className={styles.slideTitle}>{slide.title}</div>
+          <div className={styles.slideNumber}>{i}</div>
+        </Segment>
+      );
+    })}
+  </div>
 );
 
 Slides.propTypes = {
@@ -24,7 +31,7 @@ Slides.propTypes = {
 
 Slides.defaultProps = {
   slides: [],
-  active: null,
+  active: '[Card title]',
 };
 
 export default Slides;

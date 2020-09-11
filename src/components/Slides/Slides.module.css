@@ -1,0 +1,24 @@
+.slides{
+  padding: 20px;
+  background-color: #E0E1E2;
+  height: calc(100vh - 60px);
+  overflow-y: scroll;
+}
+
+.slide{
+  min-height: 100px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.slideTitle{
+  text-align: center;
+  margin-top: -10px;
+}
+
+.slideNumber{
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+}
