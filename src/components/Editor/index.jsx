@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { pick } from 'lodash';
@@ -60,7 +60,11 @@ const UPDATE_VIEWPORT = gql`
       }
     ) {
       id
-      description
+      longitude
+      latitude
+      zoom
+      bearing
+      pitch
     }
   }
 `;
@@ -70,14 +74,20 @@ let updateTimer;
 const Editor = ({ slide }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [viewport, setViewport] = useState({});
 
   const { loading, error, data } = useQuery(GET_SLIDES, {
     variables: { slide },
-    onCompleted: res => {
-      setTitle(res.Slide.title || '');
-      setDescription(res.Slide.description || '');
-    },
   });
+
+  useEffect(() => {
+    setTitle(loading ? '' : data.Slide.title || '');
+    setDescription(loading ? '' : data.Slide.description || '');
+    setViewport(
+      loading ? {} : pick(data.Slide, ['longitude', 'latitude', 'zoom', 'bearing', 'pitch'])
+    );
+  }, [loading, data]);
+
   const [updateTitle] = useMutation(UPDATE_SLIDE_TITLE);
   const [updateDescription] = useMutation(UPDATE_SLIDE_DESCRIPTION);
   const [updateViewport] = useMutation(UPDATE_VIEWPORT);
@@ -125,16 +135,15 @@ const Editor = ({ slide }) => {
           </Form>
         </Grid.Column>
         <Grid.Column width={10}>
-          <Atlas
-            handler={viewport => updateInterval(viewport, updateViewport)}
-            initialViewport={pick(data.Slide, [
-              'longitude',
-              'latitude',
-              'zoom',
-              'bearing',
-              'pitch',
-            ])}
-          />
+          {viewport.latitude && viewport.longitude && (
+            <Atlas
+              handler={newViewport => {
+                setViewport(newViewport);
+                updateInterval(newViewport, updateViewport);
+              }}
+              viewport={viewport}
+            />
+          )}
         </Grid.Column>
       </Grid.Row>
     </Grid>
