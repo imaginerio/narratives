@@ -29,6 +29,9 @@ module.exports = {
     description: {
       type: Wysiwyg,
     },
+    order: {
+      type: Integer,
+    },
     year: {
       type: Integer,
     },

@@ -46,7 +46,7 @@ const EditPage = () => {
   return (
     <Container fluid>
       <Grid>
-        <Grid.Row style={{ paddingBottom: 0 }}>
+        <Grid.Row style={{ paddingBottom: 0, zIndex: 2 }}>
           <Grid.Column>
             <Header
               title={data.Project.title}
@@ -69,7 +69,7 @@ const EditPage = () => {
           <Grid.Column width={3}>
             <Slides slides={data.Project.slides} active={activeSlide} handler={setActiveSlide} />
           </Grid.Column>
-          <Grid.Column width={13}>
+          <Grid.Column width={13} style={{ padding: 0 }}>
             <Editor slide={activeSlide} />
           </Grid.Column>
         </Grid.Row>

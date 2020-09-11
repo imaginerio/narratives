@@ -1,10 +1,13 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { pick } from 'lodash';
 import { Grid, Form, Input } from 'semantic-ui-react';
+import { Editor as Wysiwyg } from '@tinymce/tinymce-react';
 
 import Atlas from '../Atlas';
+import styles from './Editor.module.css';
 
 const GET_SLIDES = gql`
   query GetSlide($slide: ID!) {
@@ -115,12 +118,12 @@ const Editor = ({ slide }) => {
   if (error) return <p>Error :(</p>;
 
   return (
-    <Grid>
-      <Grid.Row>
-        <Grid.Column width={6}>
-          <Form>
+    <Grid stretched style={{ height: '100%', margin: 0 }}>
+      <Grid.Row style={{ padding: 0 }}>
+        <Grid.Column width={6} className={styles.editor}>
+          <Form size="large">
             <Form.Field>
-              <label>Title</label>
+              <label>Card Title</label>
               <Input
                 value={title}
                 onChange={(e, { value }) => {
@@ -130,10 +133,19 @@ const Editor = ({ slide }) => {
               />
             </Form.Field>
             <Form.Field>
-              <label>Description</label>
-              <Form.TextArea
-                value={description}
-                onChange={(e, { value }) => {
+              <label>Card Description</label>
+              <Wysiwyg
+                apiKey="t0o761fz7mpxbpfouwngyrmyh89mhclnprer8e3bdkch7slf"
+                initialValue={description}
+                init={{
+                  height: 400,
+                  menubar: false,
+                  plugins: ['link lists'],
+                  toolbar: 'bold italic bullist numlist | link unlink | undo redo',
+                  branding: false,
+                  statusbar: false,
+                }}
+                onEditorChange={value => {
                   setDescription(value);
                   updateInterval({ value }, updateDescription);
                 }}
@@ -141,7 +153,7 @@ const Editor = ({ slide }) => {
             </Form.Field>
           </Form>
         </Grid.Column>
-        <Grid.Column width={10}>
+        <Grid.Column width={10} style={{ padding: 0 }}>
           {viewport.latitude && viewport.longitude && (
             <Atlas
               handler={newViewport => {
