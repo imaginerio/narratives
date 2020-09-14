@@ -6,7 +6,7 @@ module.exports = {
   access: {
     auth: true,
     create: defaultAuth,
-    read: defaultAuth,
+    read: true,
     update: defaultAuth,
     delete: defaultAuth,
   },

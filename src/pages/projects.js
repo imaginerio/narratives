@@ -1,5 +1,6 @@
 import React from 'react';
 import { useQuery, gql } from '@apollo/client';
+import withApollo from '../lib/withApollo';
 
 const GET_PROJECTS = gql`
   query {
@@ -30,4 +31,4 @@ const Projects = () => {
   );
 };
 
-export default Projects;
+export default withApollo(Projects);

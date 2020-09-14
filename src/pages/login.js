@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation, gql } from '@apollo/client';
 import { Container, Form, Button } from 'semantic-ui-react';
+import withApollo from '../lib/withApollo';
 
 const Login = () => {
   const AUTH_MUTATION = gql`
@@ -62,4 +63,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default withApollo(Login);
