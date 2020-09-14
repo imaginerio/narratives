@@ -7,7 +7,7 @@ import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 export default withApollo(
   ({ initialState, headers }) => {
     return new ApolloClient({
-      uri: 'http://localhost:3000/admin/api',
+      uri: '/admin/api',
       cache: new InMemoryCache().restore(initialState || {}),
       request: operation => {
         operation.setContext({
