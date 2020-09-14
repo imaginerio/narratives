@@ -1,0 +1,13 @@
+.closeButton{
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+.inlineLabel{
+  width: 45px !important;
+}
+
+.inlineInput{
+  width: calc(100% - 57px) !important;
+}
