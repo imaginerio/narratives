@@ -52,4 +52,7 @@ module.exports = {
     new S3Upload(),
     new NextApp({ dir: 'src' }),
   ],
+  configureExpress: app => {
+    app.set('trust proxy', true);
+  },
 };
