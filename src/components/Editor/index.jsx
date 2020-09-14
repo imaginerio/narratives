@@ -7,6 +7,8 @@ import { Grid, Form, Input } from 'semantic-ui-react';
 import { Editor as Wysiwyg } from '@tinymce/tinymce-react';
 
 import Atlas from '../Atlas';
+import Image from '../Image';
+
 import styles from './Editor.module.css';
 
 const GET_SLIDES = gql`
@@ -22,6 +24,7 @@ const GET_SLIDES = gql`
       bearing
       pitch
       image {
+        id
         title
         creator
         source
@@ -79,6 +82,19 @@ const UPDATE_VIEWPORT = gql`
   }
 `;
 
+const ADD_IMAGE = gql`
+  mutation AddImage($slide: SlideRelateToOneInput) {
+    createImage(data: { slide: $slide }) {
+      id
+      title
+      creator
+      source
+      date
+      url
+    }
+  }
+`;
+
 let updateTimer;
 
 const Editor = ({ slide }) => {
@@ -86,7 +102,7 @@ const Editor = ({ slide }) => {
   const [description, setDescription] = useState('');
   const [viewport, setViewport] = useState({});
 
-  const { loading, error, data } = useQuery(GET_SLIDES, {
+  const { loading, error, data, refetch } = useQuery(GET_SLIDES, {
     variables: { slide },
   });
 
@@ -101,6 +117,7 @@ const Editor = ({ slide }) => {
   const [updateTitle] = useMutation(UPDATE_SLIDE_TITLE);
   const [updateDescription] = useMutation(UPDATE_SLIDE_DESCRIPTION);
   const [updateViewport] = useMutation(UPDATE_VIEWPORT);
+  const [addImage] = useMutation(ADD_IMAGE);
 
   const updateInterval = (value, updater) => {
     clearTimeout(updateTimer);
@@ -149,6 +166,23 @@ const Editor = ({ slide }) => {
                   setDescription(value);
                   updateInterval({ value }, updateDescription);
                 }}
+              />
+              <Image
+                image={data.Slide.image}
+                addHandler={() =>
+                  addImage({
+                    variables: {
+                      slide: {
+                        connect: {
+                          id: slide,
+                        },
+                      },
+                    },
+                  }).then(refetch)
+                }
+                updateHandler={() => 
+                  
+                }
               />
             </Form.Field>
           </Form>

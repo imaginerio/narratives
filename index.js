@@ -1,5 +1,3 @@
-/* eslint-disable class-methods-use-this */
-const express = require('express');
 const { Keystone } = require('@keystonejs/keystone');
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
@@ -7,6 +5,9 @@ const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { NextApp } = require('@keystonejs/app-next');
 const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');
 const initialiseData = require('./initial-data');
+
+const CheckAuthentication = require('./routes/authentication');
+const S3Upload = require('./routes/upload');
 
 const UserSchema = require('./lists/User');
 const ProjectSchema = require('./lists/Project');
@@ -34,17 +35,6 @@ keystone.createList('Image', ImageSchema);
 keystone.createList('Project', ProjectSchema);
 keystone.createList('Tag', TagSchema);
 
-class CheckAuthentication {
-  prepareMiddleware() {
-    const middleware = express();
-    middleware.get('/projects', (req, res, next) => {
-      if (req.user) return next();
-      return res.redirect('/login');
-    });
-    return middleware;
-  }
-}
-
 module.exports = {
   keystone,
   apps: [
@@ -55,6 +45,7 @@ module.exports = {
       authStrategy,
     }),
     new CheckAuthentication(),
+    new S3Upload(),
     new NextApp({ dir: 'src' }),
   ],
 };

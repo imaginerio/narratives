@@ -70,7 +70,7 @@ const EditPage = () => {
             <Slides slides={data.Project.slides} active={activeSlide} handler={setActiveSlide} />
           </Grid.Column>
           <Grid.Column width={13} style={{ padding: 0 }}>
-            <Editor slide={activeSlide} />
+            {activeSlide && <Editor slide={activeSlide} />}
           </Grid.Column>
         </Grid.Row>
       </Grid>
