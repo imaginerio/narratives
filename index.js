@@ -42,7 +42,11 @@ keystone.createList('Tag', TagSchema);
 module.exports = {
   keystone,
   apps: [
-    new GraphQLApp(),
+    new GraphQLApp({
+      apollo: {
+        introspection: true,
+      },
+    }),
     new AdminUIApp({
       name: PROJECT_NAME,
       enableDefaultRoute: false,

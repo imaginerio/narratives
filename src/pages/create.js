@@ -58,7 +58,7 @@ const Create = () => {
   const [description, setDescription] = useState('');
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <Container>
