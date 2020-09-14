@@ -5,6 +5,8 @@ const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { NextApp } = require('@keystonejs/app-next');
 const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');
+const expressSession = require('express-session');
+const MongoStore = require('connect-mongo')(expressSession);
 const initialiseData = require('./initial-data');
 
 const CheckAuthentication = require('./routes/authentication');
@@ -23,6 +25,7 @@ const keystone = new Keystone({
   adapter: new Adapter(adapterConfig),
   onConnect: process.env.CREATE_TABLES !== 'true' && initialiseData,
   cookieSecret: process.env.COOKIE_SECRET,
+  sessionStore: new MongoStore({ url: process.env.MONGO_URI }),
 });
 
 keystone.createList('User', UserSchema);
