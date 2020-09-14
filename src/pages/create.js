@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { Container, Header, Form, Input, Dropdown, Button } from 'semantic-ui-react';
+import { getDataFromTree } from '@apollo/react-ssr';
 import withApollo from '../lib/withApollo';
 
 const GET_TAGS = gql`
@@ -123,4 +124,4 @@ const Create = () => {
   );
 };
 
-export default withApollo(Create);
+export default withApollo(Create, { getDataFromTree });
