@@ -1,20 +1,19 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { Segment, Image as Img, Button } from 'semantic-ui-react';
 
 const Image = ({ image, addHandler, updateHandler }) => {
-  console.log(image);
   const fileInputRef = useRef(null);
 
   const getSignedUrl = e => {
     const [file] = e.target.files;
     if (file) {
-      return axios
-        .post('/upload', { name: file.name, type: file.type })
-        .then(({ data }) =>
-          axios.put(data.signedUrl, file, { headers: { 'Content-Type': file.type } })
-        );
+      return axios.post('/upload', { name: file.name, type: file.type }).then(({ data }) => {
+        return axios
+          .put(data.signedRequest, file, { headers: { 'Content-Type': file.type } })
+          .then(() => updateHandler(image.id, { url: data.url }, 1));
+      });
     }
     return null;
   };
@@ -47,10 +46,11 @@ const Image = ({ image, addHandler, updateHandler }) => {
 Image.propTypes = {
   image: PropTypes.shape(),
   addHandler: PropTypes.func.isRequired,
+  updateHandler: PropTypes.func.isRequired,
 };
 
 Image.defaultProps = {
-  image: {},
+  image: null,
 };
 
 export default Image;

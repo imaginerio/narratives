@@ -95,6 +95,29 @@ const ADD_IMAGE = gql`
   }
 `;
 
+const UPDATE_IMAGE = gql`
+  mutation UpdateImage(
+    $image: ID!
+    $title: String
+    $creator: String
+    $source: String
+    $date: String
+    $url: String
+  ) {
+    updateImage(
+      id: $image
+      data: { title: $title, creator: $creator, source: $source, date: $date, url: $url }
+    ) {
+      id
+      title
+      creator
+      source
+      date
+      url
+    }
+  }
+`;
+
 let updateTimer;
 
 const Editor = ({ slide }) => {
@@ -118,17 +141,18 @@ const Editor = ({ slide }) => {
   const [updateDescription] = useMutation(UPDATE_SLIDE_DESCRIPTION);
   const [updateViewport] = useMutation(UPDATE_VIEWPORT);
   const [addImage] = useMutation(ADD_IMAGE);
+  const [updateImage] = useMutation(UPDATE_IMAGE);
 
-  const updateInterval = (value, updater) => {
+  const updateInterval = (value, updater, id, interval = 1000) => {
     clearTimeout(updateTimer);
     updateTimer = setTimeout(() => {
       updater({
         variables: {
-          slide,
+          ...id,
           ...value,
         },
       });
-    }, 1000);
+    }, interval);
   };
 
   if (loading) return <p>Loading...</p>;
@@ -145,7 +169,7 @@ const Editor = ({ slide }) => {
                 value={title}
                 onChange={(e, { value }) => {
                   setTitle(value);
-                  updateInterval({ value }, updateTitle);
+                  updateInterval({ value }, updateTitle, { slide });
                 }}
               />
             </Form.Field>
@@ -164,7 +188,7 @@ const Editor = ({ slide }) => {
                 }}
                 onEditorChange={value => {
                   setDescription(value);
-                  updateInterval({ value }, updateDescription);
+                  updateInterval({ value }, updateDescription, { slide });
                 }}
               />
               <Image
@@ -180,8 +204,8 @@ const Editor = ({ slide }) => {
                     },
                   }).then(refetch)
                 }
-                updateHandler={() => 
-                  
+                updateHandler={(id, values, interval) =>
+                  updateInterval(values, updateImage, { image: id }, interval)
                 }
               />
             </Form.Field>
@@ -192,7 +216,7 @@ const Editor = ({ slide }) => {
             <Atlas
               handler={newViewport => {
                 setViewport(newViewport);
-                updateInterval(newViewport, updateViewport);
+                updateInterval(newViewport, updateViewport, { slide });
               }}
               viewport={viewport}
             />
