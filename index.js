@@ -1,3 +1,4 @@
+require('dotenv-safe').config();
 const { Keystone } = require('@keystonejs/keystone');
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
@@ -16,12 +17,12 @@ const ImageSchema = require('./lists/Image');
 const TagSchema = require('./lists/Tag');
 
 const PROJECT_NAME = 'imagineRio Narratives';
-const adapterConfig = { mongoUri: 'mongodb://localhost/imagine-rio-narratives' };
+const adapterConfig = { mongoUri: process.env.MONGO_URI };
 
 const keystone = new Keystone({
   adapter: new Adapter(adapterConfig),
   onConnect: process.env.CREATE_TABLES !== 'true' && initialiseData,
-  cookieSecret: 'abc',
+  cookieSecret: process.env.COOKIE_SECRET,
 });
 
 keystone.createList('User', UserSchema);
