@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useQuery, useMutation, gql } from '@apollo/client';
+import { getDataFromTree } from '@apollo/react-ssr';
 import { Container, Grid } from 'semantic-ui-react';
+import withApollo from '../../lib/withApollo';
 
 import Header from '../../components/Header';
 import Slides from '../../components/Slides';
@@ -78,4 +80,4 @@ const EditPage = () => {
   );
 };
 
-export default EditPage;
+export default withApollo(EditPage, { getDataFromTree });

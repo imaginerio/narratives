@@ -1,6 +1,8 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState } from 'react';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { Container, Header, Form, Input, Dropdown, Button } from 'semantic-ui-react';
+import withApollo from '../lib/withApollo';
 
 const GET_TAGS = gql`
   query GetTags {
@@ -121,4 +123,4 @@ const Create = () => {
   );
 };
 
-export default Create;
+export default withApollo(Create);

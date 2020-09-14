@@ -16,7 +16,7 @@ module.exports = {
   access: {
     auth: true,
     create: ({ authentication: { item } }) => item !== undefined,
-    read: defaultAuth,
+    read: true,
     update: defaultAuth,
     delete: defaultAuth,
   },
