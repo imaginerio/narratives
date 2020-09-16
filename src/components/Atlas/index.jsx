@@ -1,9 +1,14 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactMapGL from 'react-map-gl';
 
-const Atlas = ({ handler, viewport, year }) => {
+const Atlas = ({ handler, viewport, year, scrollZoom }) => {
   const mapRef = useRef(null);
+
+  const [mapViewport, setMapViewport] = useState(viewport);
+
+  useEffect(() => setMapViewport(viewport), [viewport]);
+
   useEffect(() => {
     const map = mapRef.current.getMap();
     let style = null;
@@ -33,6 +38,11 @@ const Atlas = ({ handler, viewport, year }) => {
     }
   }, [year]);
 
+  const onViewportChange = nextViewport => {
+    setMapViewport(nextViewport);
+    handler(nextViewport);
+  };
+
   return (
     <ReactMapGL
       ref={mapRef}
@@ -40,8 +50,9 @@ const Atlas = ({ handler, viewport, year }) => {
       mapStyle="/style.json"
       width="100%"
       height="100%"
-      {...viewport}
-      onViewportChange={nextViewport => handler(nextViewport)}
+      scrollZoom={scrollZoom}
+      {...mapViewport}
+      onViewportChange={onViewportChange}
     />
   );
 };
@@ -56,6 +67,11 @@ Atlas.propTypes = {
     pitch: PropTypes.number,
   }).isRequired,
   year: PropTypes.number.isRequired,
+  scrollZoom: PropTypes.bool,
+};
+
+Atlas.defaultProps = {
+  scrollZoom: true,
 };
 
 export default Atlas;

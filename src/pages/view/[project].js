@@ -4,6 +4,7 @@ import { useQuery, gql } from '@apollo/client';
 import { getDataFromTree } from '@apollo/react-ssr';
 import { pick } from 'lodash';
 import { Scrollama, Step } from 'react-scrollama';
+import { FlyToInterpolator } from 'react-map-gl';
 import { Card, Image } from 'semantic-ui-react';
 import parse from 'html-react-parser';
 import withApollo from '../../lib/withApollo';
@@ -57,18 +58,29 @@ const View = () => {
   return (
     <>
       <div style={{ height: '100vh', width: '100vw', position: 'fixed', top: 0 }}>
-        <Atlas handler={() => null} year={year} viewport={viewport} />
+        <Atlas handler={() => null} year={year} viewport={viewport} scrollZoom={false} />
       </div>
       <div>
         <Scrollama
           debug
           onStepEnter={step => {
-            setViewport(pick(step.data, ['longitude', 'latitude', 'zoom', 'bearing', 'pitch']));
+            const newViewport = pick(step.data, [
+              'longitude',
+              'latitude',
+              'zoom',
+              'bearing',
+              'pitch',
+            ]);
+            if (step.data.index > 0) {
+              newViewport.transitionInterpolator = new FlyToInterpolator({ speed: 1.2 });
+              newViewport.transitionDuration = 'auto';
+            }
+            setViewport(newViewport);
             setYear(step.data.year);
           }}
         >
-          {data.Project.slides.map(slide => (
-            <Step key={slide.id} data={slide}>
+          {data.Project.slides.map((slide, i) => (
+            <Step key={slide.id} data={{ ...slide, index: i }}>
               <div style={{ padding: '50vh 0 50vh 80px', width: 600 }}>
                 <Card fluid>
                   {slide.image && slide.image.url && (
