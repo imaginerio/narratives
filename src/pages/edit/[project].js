@@ -36,11 +36,31 @@ const EditPage = () => {
 
   const [activeSlide, setActiveSlide] = useState(null);
 
+  const [addSlide] = useMutation(ADD_SLIDE);
+
   const { loading, error, data, refetch } = useQuery(GET_SLIDES, {
     variables: { project },
-    onCompleted: res => setActiveSlide(res.Project.slides[0].id),
+    onCompleted: res => {
+      if (res.Project.slides.length) {
+        setActiveSlide(res.Project.slides[0].id);
+      } else {
+        // eslint-disable-next-line no-use-before-define
+        newSlide();
+      }
+    },
   });
-  const [addSlide] = useMutation(ADD_SLIDE);
+
+  const newSlide = () =>
+    addSlide({
+      variables: {
+        project: {
+          connect: { id: project },
+        },
+      },
+    }).then(async ({ data: { createSlide } }) => {
+      await refetch({ variables: { project } });
+      setActiveSlide(createSlide.id);
+    });
 
   if (loading || !project) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
@@ -50,21 +70,7 @@ const EditPage = () => {
       <Grid>
         <Grid.Row style={{ paddingBottom: 0, zIndex: 2 }}>
           <Grid.Column>
-            <Header
-              title={data.Project.title}
-              handler={() =>
-                addSlide({
-                  variables: {
-                    project: {
-                      connect: { id: project },
-                    },
-                  },
-                }).then(async ({ data: { createSlide } }) => {
-                  await refetch({ variables: { project } });
-                  setActiveSlide(createSlide.id);
-                })
-              }
-            />
+            <Header title={data.Project.title} handler={newSlide} />
           </Grid.Column>
         </Grid.Row>
         <Grid.Row style={{ paddingTop: 0, paddingBottom: 0 }}>
