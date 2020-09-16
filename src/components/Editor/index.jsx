@@ -190,7 +190,7 @@ const Editor = ({ slide }) => {
               <label>Card Description</label>
               <Wysiwyg
                 apiKey="t0o761fz7mpxbpfouwngyrmyh89mhclnprer8e3bdkch7slf"
-                initialValue={description}
+                value={description}
                 init={{
                   height: 400,
                   menubar: false,

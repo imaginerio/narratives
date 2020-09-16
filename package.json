@@ -37,6 +37,8 @@
     "dotenv-safe": "^8.2.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
+    "html-react-parser": "^0.14.0",
+    "intersection-observer": "^0.11.0",
     "lodash": "^4.17.20",
     "mapbox-gl": "^1.12.0",
     "next": "^9.5.2",
@@ -45,6 +47,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-map-gl": "^5.2.8",
+    "react-scrollama": "^2.2.12",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^1.1.1",
     "uuid": "^8.3.0"
