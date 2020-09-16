@@ -1,10 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useQuery, gql } from '@apollo/client';
 import withApollo from '../lib/withApollo';
 
 const GET_PROJECTS = gql`
-  query {
-    allProjects {
+  query GetProjects($user: ID!) {
+    allProjects(where: { user: { id: $user } }) {
       id
       title
       description
@@ -16,8 +17,8 @@ const GET_PROJECTS = gql`
   }
 `;
 
-const Projects = () => {
-  const { loading, error, data } = useQuery(GET_PROJECTS);
+const Projects = ({ user }) => {
+  const { loading, error, data } = useQuery(GET_PROJECTS, { variables: { user } });
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
@@ -31,4 +32,16 @@ const Projects = () => {
   );
 };
 
+Projects.propTypes = {
+  user: PropTypes.string.isRequired,
+};
+
 export default withApollo(Projects);
+
+export async function getServerSideProps({ req }) {
+  return {
+    props: {
+      user: req.user.id,
+    },
+  };
+}
