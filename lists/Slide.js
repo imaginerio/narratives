@@ -34,6 +34,7 @@ module.exports = {
     },
     year: {
       type: Integer,
+      defaultValue: 1900,
     },
     longitude: {
       type: Float,

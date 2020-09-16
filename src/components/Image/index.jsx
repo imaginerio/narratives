@@ -10,10 +10,10 @@ import styles from './Image.module.css';
 const Image = ({ image, addHandler, updateHandler }) => {
   const fileInputRef = useRef(null);
   const [imageMeta, setImageMeta] = useState({
-    title: null,
-    creator: null,
-    source: null,
-    date: null,
+    title: '',
+    creator: '',
+    source: '',
+    date: '',
   });
 
   useEffect(() => setImageMeta(pick(image, Object.keys(imageMeta))), [image]);

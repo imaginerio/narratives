@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, gql } from '@apollo/client';
+import { Container, Header, Segment, Button, Image } from 'semantic-ui-react';
 import withApollo from '../lib/withApollo';
 
 const GET_PROJECTS = gql`
@@ -10,6 +11,7 @@ const GET_PROJECTS = gql`
       title
       description
       category
+      url
       tags {
         name
       }
@@ -24,11 +26,22 @@ const Projects = ({ user }) => {
   if (error) return <p>Error :(</p>;
 
   return (
-    <div>
-      {data.allProjects.map(proj => (
-        <p key={proj.id}>{`${proj.title} - ${proj.category}`}</p>
-      ))}
-    </div>
+    <Container text style={{ marginTop: 30, marginBottom: 30 }}>
+      <Header as="h1">Manage Story Maps</Header>
+      <Button content="Add Map" icon="plus" size="large" color="blue" as="a" href="/create" />
+      <Segment.Group>
+        {data.allProjects.map(proj => (
+          <Segment key={proj.id}>
+            {proj.url && <Image src={proj.url} floated="left" style={{ height: 60 }} />}
+            <span style={{ fontWeight: 'bold', fontSize: '1.25em' }}>
+              {`${proj.title} - ${proj.category}`}
+            </span>
+            <Button floated="right" content="Editor" icon="edit" as="a" href={`/edit/${proj.id}`} />
+            <div style={{ clear: 'right' }}>Created / Modified / Published</div>
+          </Segment>
+        ))}
+      </Segment.Group>
+    </Container>
   );
 };
 

@@ -1,4 +1,4 @@
-const { Text, Relationship, Select } = require('@keystonejs/fields');
+const { Text, Relationship, Select, Url } = require('@keystonejs/fields');
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 
 const defaultAuth = ({ authentication: { item } }) => {
@@ -36,6 +36,21 @@ module.exports = {
     category: {
       type: Select,
       options: ['History', 'Architecture', 'Literature'],
+    },
+    imageTitle: {
+      type: Text,
+    },
+    creator: {
+      type: Text,
+    },
+    source: {
+      type: Text,
+    },
+    date: {
+      type: Text,
+    },
+    url: {
+      type: Url,
     },
     slides: {
       type: Relationship,
