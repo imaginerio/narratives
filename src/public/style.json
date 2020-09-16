@@ -1,31 +1,6 @@
 {
     "version": 8,
     "name": "imagine-rio-1900-1960",
-    "metadata": {
-        "mapbox:autocomposite": true,
-        "mapbox:type": "template",
-        "mapbox:sdk-support": {
-            "js": "1.9.0",
-            "android": "8.6.0",
-            "ios": "5.6.0"
-        },
-        "mapbox:groups": {
-            "b34da1965d4552a6dbe7a738b627f8e8": {
-                "name": "road",
-                "collapsed": false
-            },
-            "95e4d2f4a1b50d00f989477d3476ebda": {
-                "name": "road-case",
-                "collapsed": false
-            },
-            "802f8c8fbf5e507900e80606c59562de": {
-                "name": "road-label",
-                "collapsed": false
-            }
-        },
-        "mapbox:trackposition": false,
-        "mapbox:uiParadigm": "layers"
-    },
     "center": [-43.17425, -22.90415],
     "zoom": 15,
     "bearing": 0,
@@ -50,15 +25,9 @@
             "type": "fill",
             "source": "composite",
             "source-layer": "landpoly",
-            
             "layout": {},
             "paint": {
-                "fill-color": "hsl(40, 15%, 94%)",
-                "fill-opacity": [
-                    "*",
-                    ["/", ["-", ["min", 1960, ["get", "lastyear"]], 1900], 60],
-                    0.5
-                ]
+                "fill-color": "hsl(40, 15%, 94%)"
             }
         },
         {
@@ -74,7 +43,7 @@
             "paint": {
                 "fill-color": "hsl(0, 0%, 86%)",
                 "fill-outline-color": "hsl(0, 0%, 75%)",
-                "fill-opacity": 0.1
+                "fill-opacity": 0.25
             }
         },
         {

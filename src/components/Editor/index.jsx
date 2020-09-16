@@ -8,6 +8,7 @@ import { Editor as Wysiwyg } from '@tinymce/tinymce-react';
 
 import Atlas from '../Atlas';
 import Image from '../Image';
+import Year from '../Year';
 
 import styles from './Editor.module.css';
 
@@ -49,6 +50,15 @@ const UPDATE_SLIDE_DESCRIPTION = gql`
     updateSlide(id: $slide, data: { description: $value }) {
       id
       description
+    }
+  }
+`;
+
+const UPDATE_SLIDE_YEAR = gql`
+  mutation UpdateSlideTitle($slide: ID!, $value: Int) {
+    updateSlide(id: $slide, data: { year: $value }) {
+      id
+      year
     }
   }
 `;
@@ -124,6 +134,7 @@ const Editor = ({ slide }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [viewport, setViewport] = useState({});
+  const [year, setYear] = useState(1900);
 
   const { loading, error, data, refetch } = useQuery(GET_SLIDES, {
     variables: { slide },
@@ -132,6 +143,7 @@ const Editor = ({ slide }) => {
   useEffect(() => {
     setTitle(loading ? '' : data.Slide.title || '');
     setDescription(loading ? '' : data.Slide.description || '');
+    setYear(loading ? 1900 : data.Slide.year);
     setViewport(
       loading ? {} : pick(data.Slide, ['longitude', 'latitude', 'zoom', 'bearing', 'pitch'])
     );
@@ -140,6 +152,7 @@ const Editor = ({ slide }) => {
   const [updateTitle] = useMutation(UPDATE_SLIDE_TITLE);
   const [updateDescription] = useMutation(UPDATE_SLIDE_DESCRIPTION);
   const [updateViewport] = useMutation(UPDATE_VIEWPORT);
+  const [updateYear] = useMutation(UPDATE_SLIDE_YEAR);
   const [addImage] = useMutation(ADD_IMAGE);
   const [updateImage] = useMutation(UPDATE_IMAGE);
 
@@ -213,13 +226,23 @@ const Editor = ({ slide }) => {
         </Grid.Column>
         <Grid.Column width={10} style={{ padding: 0 }}>
           {viewport.latitude && viewport.longitude && (
-            <Atlas
-              handler={newViewport => {
-                setViewport(newViewport);
-                updateInterval(newViewport, updateViewport, { slide });
-              }}
-              viewport={viewport}
-            />
+            <>
+              <Atlas
+                handler={newViewport => {
+                  setViewport(newViewport);
+                  updateInterval(newViewport, updateViewport, { slide });
+                }}
+                viewport={viewport}
+                year={year}
+              />
+              <Year
+                year={year}
+                handler={newYear => {
+                  setYear(newYear);
+                  updateInterval({ value: newYear }, updateYear, { slide });
+                }}
+              />
+            </>
           )}
         </Grid.Column>
       </Grid.Row>
