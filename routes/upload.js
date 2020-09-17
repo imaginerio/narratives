@@ -5,7 +5,10 @@ const bodyParser = require('body-parser');
 const aws = require('aws-sdk');
 const uuid = require('uuid').v4;
 
-const s3 = new aws.S3();
+const s3 = new aws.S3({
+  accessKeyId: process.env.ACCESS_KEY_ID,
+  secretAccessKey: process.env.SECRET_ACCESS_KEY,
+});
 
 module.exports = class S3Upload {
   prepareMiddleware() {
