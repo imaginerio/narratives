@@ -77,8 +77,11 @@ const Create = () => {
   const [imageMeta, setImageMeta] = useState(null);
 
   const submitForm = () => {
-    const imageData = omit(imageMeta, 'title');
-    imageData.imageTitle = imageMeta.title;
+    let imageData = {};
+    if (imageMeta) {
+      imageData = omit(imageMeta, 'title');
+      imageData.imageTitle = imageMeta.title;
+    }
     createProject({
       variables: {
         title,
