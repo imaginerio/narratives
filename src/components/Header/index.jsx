@@ -4,7 +4,7 @@ import { Button } from 'semantic-ui-react';
 
 import styles from './Header.module.css';
 
-const Header = ({ handler, title }) => (
+const Header = ({ handler, title, project }) => (
   <div className={styles.header}>
     <Button
       className={styles.headerButton}
@@ -16,10 +16,12 @@ const Header = ({ handler, title }) => (
     />
     <Button
       className={styles.headerButton}
-      onClick={handler}
       content="Preview"
       icon="play"
       labelPosition="left"
+      as="a"
+      href={`/view/${project}`}
+      target="_blank"
     />
     <div className={styles.title}>{title}</div>
   </div>
@@ -28,6 +30,7 @@ const Header = ({ handler, title }) => (
 Header.propTypes = {
   handler: PropTypes.func.isRequired,
   title: PropTypes.string,
+  project: PropTypes.string.isRequired,
 };
 
 Header.defaultProps = {
