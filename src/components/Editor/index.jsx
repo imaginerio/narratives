@@ -8,7 +8,7 @@ import { Editor as Wysiwyg } from '@tinymce/tinymce-react';
 
 import Atlas from '../Atlas';
 import Image from '../Image';
-import Year from '../Year';
+import MapControl from '../MapControl';
 
 import styles from './Editor.module.css';
 
@@ -235,9 +235,9 @@ const Editor = ({ slide }) => {
                 viewport={viewport}
                 year={year}
               />
-              <Year
+              <MapControl
                 year={year}
-                handler={newYear => {
+                yearHandler={newYear => {
                   setYear(newYear);
                   updateInterval({ value: newYear }, updateYear, { slide });
                 }}
