@@ -18,6 +18,11 @@ const GET_SLIDES = gql`
         title
       }
     }
+    allLayers {
+      id
+      layerId
+      title
+    }
   }
 `;
 
@@ -78,7 +83,7 @@ const EditPage = () => {
             <Slides slides={data.Project.slides} active={activeSlide} handler={setActiveSlide} />
           </Grid.Column>
           <Grid.Column width={13} style={{ padding: 0 }}>
-            {activeSlide && <Editor slide={activeSlide} />}
+            {activeSlide && <Editor slide={activeSlide} layers={data.allLayers} />}
           </Grid.Column>
         </Grid.Row>
       </Grid>

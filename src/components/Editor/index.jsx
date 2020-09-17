@@ -32,6 +32,10 @@ const GET_SLIDES = gql`
         date
         url
       }
+      disabledLayers: layers {
+        id
+        layerId
+      }
     }
   }
 `;
@@ -92,6 +96,17 @@ const UPDATE_VIEWPORT = gql`
   }
 `;
 
+const UPDATE_LAYERS = gql`
+  mutation UpdateLayers($slide: ID!, $layers: LayerRelateToManyInput) {
+    updateSlide(id: $slide, data: { layers: $layers }) {
+      id
+      layers {
+        layerId
+      }
+    }
+  }
+`;
+
 const ADD_IMAGE = gql`
   mutation AddImage($slide: SlideRelateToOneInput) {
     createImage(data: { slide: $slide }) {
@@ -130,10 +145,11 @@ const UPDATE_IMAGE = gql`
 
 let updateTimer;
 
-const Editor = ({ slide }) => {
+const Editor = ({ slide, layers }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [viewport, setViewport] = useState({});
+  const [disabledLayers, setDisabledLayers] = useState({});
   const [year, setYear] = useState(1900);
 
   const { loading, error, data, refetch } = useQuery(GET_SLIDES, {
@@ -144,6 +160,7 @@ const Editor = ({ slide }) => {
     setTitle(loading ? '' : data.Slide.title || '');
     setDescription(loading ? '' : data.Slide.description || '');
     setYear(loading ? 1900 : data.Slide.year);
+    setDisabledLayers(loading ? [] : data.Slide.disabledLayers);
     setViewport(
       loading ? {} : pick(data.Slide, ['longitude', 'latitude', 'zoom', 'bearing', 'pitch'])
     );
@@ -153,6 +170,7 @@ const Editor = ({ slide }) => {
   const [updateDescription] = useMutation(UPDATE_SLIDE_DESCRIPTION);
   const [updateViewport] = useMutation(UPDATE_VIEWPORT);
   const [updateYear] = useMutation(UPDATE_SLIDE_YEAR);
+  const [updateLayers] = useMutation(UPDATE_LAYERS);
   const [addImage] = useMutation(ADD_IMAGE);
   const [updateImage] = useMutation(UPDATE_IMAGE);
 
@@ -234,12 +252,27 @@ const Editor = ({ slide }) => {
                 }}
                 viewport={viewport}
                 year={year}
+                disabledLayers={disabledLayers}
               />
               <MapControl
                 year={year}
                 yearHandler={newYear => {
                   setYear(newYear);
                   updateInterval({ value: newYear }, updateYear, { slide });
+                }}
+                layers={layers}
+                disabledLayers={disabledLayers}
+                layerHandler={newLayers => {
+                  setDisabledLayers(newLayers);
+                  updateInterval(
+                    {
+                      layers: {
+                        connect: newLayers.map(nl => ({ id: nl.id })),
+                      },
+                    },
+                    updateLayers,
+                    { slide }
+                  );
                 }}
               />
             </>
@@ -252,6 +285,7 @@ const Editor = ({ slide }) => {
 
 Editor.propTypes = {
   slide: PropTypes.string.isRequired,
+  layers: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 
 export default Editor;

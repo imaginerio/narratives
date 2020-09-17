@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactMapGL from 'react-map-gl';
+import { map as mapProp } from 'lodash';
 
-const Atlas = ({ handler, viewport, year, scrollZoom }) => {
+const Atlas = ({ handler, viewport, year, scrollZoom, disabledLayers }) => {
   const mapRef = useRef(null);
 
   const [mapViewport, setMapViewport] = useState(viewport);
@@ -38,6 +39,33 @@ const Atlas = ({ handler, viewport, year, scrollZoom }) => {
     }
   }, [year]);
 
+  useEffect(() => {
+    const layerIds = mapProp(disabledLayers, 'layerId');
+    const map = mapRef.current.getMap();
+    let style = null;
+    try {
+      style = map.getStyle();
+    } catch (err) {
+      style = null;
+    } finally {
+      if (style) {
+        style.layers = style.layers.map(layer => {
+          const layout = layer.layout || {};
+          if (layerIds.includes(layer['source-layer'])) {
+            layout.visibility = 'none';
+          } else {
+            layout.visibility = 'visible';
+          }
+          return {
+            ...layer,
+            layout,
+          };
+        });
+        map.setStyle(style);
+      }
+    }
+  }, [disabledLayers]);
+
   const onViewportChange = nextViewport => {
     setMapViewport(nextViewport);
     handler(nextViewport);
@@ -68,10 +96,12 @@ Atlas.propTypes = {
   }).isRequired,
   year: PropTypes.number.isRequired,
   scrollZoom: PropTypes.bool,
+  disabledLayers: PropTypes.arrayOf(PropTypes.string),
 };
 
 Atlas.defaultProps = {
   scrollZoom: true,
+  disabledLayers: [],
 };
 
 export default Atlas;
