@@ -56,6 +56,11 @@ module.exports = {
       type: Float,
       defaultValue: 0,
     },
+    layers: {
+      type: Relationship,
+      ref: 'Layer',
+      many: true,
+    },
     image: {
       type: Relationship,
       ref: 'Image.slide',

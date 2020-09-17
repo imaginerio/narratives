@@ -1,16 +1,19 @@
 /* eslint-disable no-console */
 const crypto = require('crypto');
+const axios = require('axios');
+const { map } = require('lodash');
 
 const randomString = () => crypto.randomBytes(6).hexSlice();
 
 module.exports = async keystone => {
+  const context = keystone.createContext({ skipAccessControl: true });
   // Count existing users
   const {
     data: {
       _allUsersMeta: { count },
     },
   } = await keystone.executeGraphQL({
-    context: keystone.createContext({ skipAccessControl: true }),
+    context,
     query: `query {
       _allUsersMeta {
         count
@@ -23,7 +26,7 @@ module.exports = async keystone => {
     const email = 'admin@example.com';
 
     const { errors } = await keystone.executeGraphQL({
-      context: keystone.createContext({ skipAccessControl: true }),
+      context,
       query: `mutation initialUser($password: String, $email: String) {
             createUser(data: {name: "Admin", email: $email, isAdmin: true, password: $password}) {
               id
@@ -44,4 +47,44 @@ module.exports = async keystone => {
       `);
     }
   }
+
+  // Populate layers
+  let {
+    data: { allLayers },
+  } = await keystone.executeGraphQL({
+    context,
+    query: `query{
+      allLayers{
+        layerId
+      }
+    }`,
+  });
+  allLayers = map(allLayers, 'layerId');
+
+  let {
+    data: { layers },
+  } = await axios.get(
+    'https://arcgis.rice.edu/arcgis/rest/services/imagineRio_Data/FeatureServer/layers?f=json'
+  );
+  layers = layers
+    .filter(l => !l.name.match(/^ir_rio/))
+    .filter(l => !allLayers.includes(l.name.toLowerCase()))
+    .map(layer => ({
+      layerId: layer.name.toLowerCase(),
+      title: layer.name.replace(/(Poly|Line)$/, '').replace(/([A-Z])/g, ' $1'),
+    }));
+
+  return Promise.all(
+    layers.map(layer =>
+      keystone.executeGraphQL({
+        context,
+        query: `mutation InitLayer($layerId: String, $title: String) {
+      createLayer(data: { layerId: $layerId, title: $title }) {
+        id
+      }
+    }`,
+        variables: layer,
+      })
+    )
+  );
 };
