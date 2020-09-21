@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import ReactMapGL from 'react-map-gl';
+import ReactMapGL, { Source, Layer } from 'react-map-gl';
+import axios from 'axios';
 import { map as mapProp } from 'lodash';
 
-const Atlas = ({ handler, viewport, year, scrollZoom, disabledLayers }) => {
+const Atlas = ({ handler, viewport, year, scrollZoom, disabledLayers, selectedFeature }) => {
   const mapRef = useRef(null);
 
   const [mapViewport, setMapViewport] = useState(viewport);
+  const [featureData, setFeatureData] = useState(null);
 
   useEffect(() => setMapViewport(viewport), [viewport]);
 
@@ -66,6 +68,21 @@ const Atlas = ({ handler, viewport, year, scrollZoom, disabledLayers }) => {
     }
   }, [disabledLayers]);
 
+  useEffect(() => {
+    const { layerid, objectid } = selectedFeature;
+    const loadGeoJSON = async () => {
+      const { data } = await axios.get(
+        `https://arcgis.rice.edu/arcgis/rest/services/imagineRio_Data/FeatureServer/${layerid}/query?where=objectid=${objectid}&f=geojson`
+      );
+      setFeatureData(data);
+    };
+    if (layerid && objectid) {
+      loadGeoJSON();
+    } else {
+      setFeatureData(null);
+    }
+  }, [selectedFeature]);
+
   const onViewportChange = nextViewport => {
     setMapViewport(nextViewport);
     handler(nextViewport);
@@ -81,7 +98,12 @@ const Atlas = ({ handler, viewport, year, scrollZoom, disabledLayers }) => {
       scrollZoom={scrollZoom}
       {...mapViewport}
       onViewportChange={onViewportChange}
-    />
+    >
+      <Source type="geojson" data={featureData}>
+        <Layer id="selected" type="line" />
+        <Layer id="selected" type="line" />
+      </Source>
+    </ReactMapGL>
   );
 };
 
@@ -97,11 +119,16 @@ Atlas.propTypes = {
   year: PropTypes.number.isRequired,
   scrollZoom: PropTypes.bool,
   disabledLayers: PropTypes.arrayOf(PropTypes.string),
+  selectedFeature: PropTypes.shape({
+    layerid: PropTypes.number.isRequired,
+    objectid: PropTypes.number.isRequired,
+  }),
 };
 
 Atlas.defaultProps = {
   scrollZoom: true,
   disabledLayers: [],
+  selectedFeature: null,
 };
 
 export default Atlas;

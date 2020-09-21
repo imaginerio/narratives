@@ -24,6 +24,8 @@ const GET_SLIDES = gql`
       zoom
       bearing
       pitch
+      selectedFeature
+      selectedLayer
       image {
         id
         title
@@ -63,6 +65,16 @@ const UPDATE_SLIDE_YEAR = gql`
     updateSlide(id: $slide, data: { year: $value }) {
       id
       year
+    }
+  }
+`;
+
+const UPDATE_SLIDE_FEATURE = gql`
+  mutation UpdateSlideFeature($slide: ID!, $layerid: Int, $objectid: Int) {
+    updateSlide(id: $slide, data: { selectedFeature: $objectid, selectedLayer: $layerid }) {
+      id
+      selectedFeature
+      selectedLayer
     }
   }
 `;
@@ -149,6 +161,10 @@ const Editor = ({ slide, layers }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [viewport, setViewport] = useState({});
+  const [selectedFeature, setSelectedFeature] = useState({
+    selectedFeature: null,
+    selectedLayer: null,
+  });
   const [disabledLayers, setDisabledLayers] = useState({});
   const [year, setYear] = useState(1900);
 
@@ -161,6 +177,17 @@ const Editor = ({ slide, layers }) => {
     setDescription(loading ? '' : data.Slide.description || '');
     setYear(loading ? 1900 : data.Slide.year);
     setDisabledLayers(loading ? [] : data.Slide.disabledLayers);
+    setSelectedFeature(
+      loading
+        ? {
+            selectedFeature: null,
+            selectedLayer: null,
+          }
+        : {
+            objectid: data.Slide.selectedFeature,
+            layerid: data.Slide.selectedLayer,
+          }
+    );
     setViewport(
       loading ? {} : pick(data.Slide, ['longitude', 'latitude', 'zoom', 'bearing', 'pitch'])
     );
@@ -171,6 +198,7 @@ const Editor = ({ slide, layers }) => {
   const [updateViewport] = useMutation(UPDATE_VIEWPORT);
   const [updateYear] = useMutation(UPDATE_SLIDE_YEAR);
   const [updateLayers] = useMutation(UPDATE_LAYERS);
+  const [updateFeature] = useMutation(UPDATE_SLIDE_FEATURE);
   const [addImage] = useMutation(ADD_IMAGE);
   const [updateImage] = useMutation(UPDATE_IMAGE);
 
@@ -253,6 +281,7 @@ const Editor = ({ slide, layers }) => {
                 viewport={viewport}
                 year={year}
                 disabledLayers={disabledLayers}
+                selectedFeature={selectedFeature}
               />
               <MapControl
                 year={year}
@@ -273,6 +302,10 @@ const Editor = ({ slide, layers }) => {
                     updateLayers,
                     { slide }
                   );
+                }}
+                featureHandler={newFeature => {
+                  setSelectedFeature(newFeature);
+                  updateInterval(newFeature, updateFeature, { slide }, 1);
                 }}
               />
             </>

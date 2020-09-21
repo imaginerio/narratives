@@ -1,22 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Grid, Segment } from 'semantic-ui-react';
+import { Segment } from 'semantic-ui-react';
 
 import Year from '../Year';
 import Layers from '../Layers';
+import Search from '../Search';
 
 import styles from './MapControl.module.css';
 
-const MapControl = ({ year, yearHandler, layers, disabledLayers, layerHandler }) => (
+const MapControl = ({
+  year,
+  yearHandler,
+  layers,
+  disabledLayers,
+  layerHandler,
+  featureHandler,
+}) => (
   <Segment className={styles.control}>
-    <Grid>
-      <Grid.Column width={14}>
-        <Year year={year} handler={yearHandler} />
-      </Grid.Column>
-      <Grid.Column width={2}>
-        <Layers layers={layers} disabledLayers={disabledLayers} layerHandler={layerHandler} />
-      </Grid.Column>
-    </Grid>
+    <div style={{ float: 'right', width: 85 }}>
+      <Layers layers={layers} disabledLayers={disabledLayers} layerHandler={layerHandler} />
+      <Search year={year} layers={layers} handler={featureHandler} />
+    </div>
+    <Year year={year} handler={yearHandler} />
   </Segment>
 );
 
@@ -26,6 +31,7 @@ MapControl.propTypes = {
   layers: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   disabledLayers: PropTypes.arrayOf(PropTypes.string),
   layerHandler: PropTypes.func.isRequired,
+  featureHandler: PropTypes.func.isRequired,
 };
 
 MapControl.defaultProps = {

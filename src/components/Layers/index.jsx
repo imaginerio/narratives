@@ -13,7 +13,11 @@ const Layers = ({ layers, disabledLayers, layerHandler }) => {
 
   return (
     <>
-      <Button icon="clone outline" inline floated="right" onClick={() => setOpen(!open)} />
+      <Button
+        icon="clone outline"
+        onClick={() => setOpen(!open)}
+        style={{ display: 'inline-block' }}
+      />
       {open && (
         <Segment className={styles.layerMenu}>
           <Form.Group>
