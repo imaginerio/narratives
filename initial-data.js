@@ -72,14 +72,15 @@ module.exports = async keystone => {
     .map(layer => ({
       layerId: layer.name.toLowerCase(),
       title: layer.name.replace(/(Poly|Line)$/, '').replace(/([A-Z])/g, ' $1'),
+      remoteId: layer.id,
     }));
 
   return Promise.all(
     layers.map(layer =>
       keystone.executeGraphQL({
         context,
-        query: `mutation InitLayer($layerId: String, $title: String) {
-      createLayer(data: { layerId: $layerId, title: $title }) {
+        query: `mutation InitLayer($layerId: String, $title: String, $remoteId:Int) {
+      createLayer(data: { layerId: $layerId, title: $title, remoteId: $remoteId }) {
         id
       }
     }`,

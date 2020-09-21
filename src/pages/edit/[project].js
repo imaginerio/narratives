@@ -22,6 +22,7 @@ const GET_SLIDES = gql`
       id
       layerId
       title
+      remoteId
     }
   }
 `;

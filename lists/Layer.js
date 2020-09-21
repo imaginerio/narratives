@@ -1,4 +1,4 @@
-const { Text } = require('@keystonejs/fields');
+const { Text, Integer } = require('@keystonejs/fields');
 
 module.exports = {
   fields: {
@@ -7,6 +7,9 @@ module.exports = {
     },
     title: {
       type: Text,
+    },
+    remoteId: {
+      type: Integer,
     },
   },
   labelField: 'title',

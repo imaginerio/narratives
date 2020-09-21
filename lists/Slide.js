@@ -56,6 +56,12 @@ module.exports = {
       type: Float,
       defaultValue: 0,
     },
+    selectedFeature: {
+      type: Integer,
+    },
+    selectedLayer: {
+      type: Integer,
+    },
     layers: {
       type: Relationship,
       ref: 'Layer',
