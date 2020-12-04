@@ -50,6 +50,7 @@ const Projects = ({ user }) => {
             </Card>
           ))}
         </Card.Group>
+        <Image src="img/hrc-logo.png" />
       </Container>
     </>
   );

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, gql } from '@apollo/client';
-import { Container, Form, Button } from 'semantic-ui-react';
+import { Header, Container, Segment, Form, Button, Image } from 'semantic-ui-react';
 import withApollo from '../lib/withApollo';
 
 const Login = () => {
@@ -41,24 +41,33 @@ const Login = () => {
   };
 
   return (
-    <Container>
-      <Form method="POST" onSubmit={onSubmit}>
-        <Form.Input
-          name="email"
-          label="Email"
-          type="email"
-          value={identity}
-          onChange={e => setIdentity(e.target.value)}
-        />
-        <Form.Input
-          name="password"
-          label="Password"
-          type="password"
-          value={secret}
-          onChange={e => setSecret(e.target.value)}
-        />
-        <Button type="submit">Submit</Button>
-      </Form>
+    <Container text>
+      <Header as="h1" style={{ marginTop: '20%' }}>
+        Welcome to Rio Story Maps
+      </Header>
+      <Segment>
+        <Header as="h3">Log in to your account</Header>
+        <Form method="POST" onSubmit={onSubmit}>
+          <Form.Input
+            name="email"
+            label="Email"
+            type="email"
+            value={identity}
+            onChange={e => setIdentity(e.target.value)}
+          />
+          <Form.Input
+            name="password"
+            label="Password"
+            type="password"
+            value={secret}
+            onChange={e => setSecret(e.target.value)}
+          />
+          <Button type="submit" fluid primary>
+            Login
+          </Button>
+        </Form>
+      </Segment>
+      <Image src="img/hrc-logo.png" />
     </Container>
   );
 };
