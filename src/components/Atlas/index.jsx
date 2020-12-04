@@ -48,7 +48,7 @@ const Atlas = ({
         map.setStyle(style);
       }
     }
-  });
+  }, [year]);
 
   useEffect(() => {
     const layerIds = mapProp(disabledLayers, 'layerId');
@@ -75,7 +75,7 @@ const Atlas = ({
         map.setStyle(style);
       }
     }
-  });
+  }, [disabledLayers]);
 
   useEffect(() => {
     const { layerid, objectid } = selectedFeature;

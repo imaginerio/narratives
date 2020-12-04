@@ -339,12 +339,15 @@ const Editor = ({ slide, layers, basemaps }) => {
                   );
                 }}
                 basemapHandler={newBasemap => {
-                  setActiveBasemap(newBasemap);
-                  let basemap = null;
+                  let basemap;
                   if (newBasemap) {
+                    setActiveBasemap(newBasemap);
                     basemap = {
                       connect: { id: newBasemap.id },
                     };
+                  } else {
+                    basemap = { disconnectAll: true };
+                    setActiveBasemap(null);
                   }
                   updateInterval(
                     {
