@@ -66,7 +66,7 @@ const Atlas = ({ handler, viewport, year, scrollZoom, disabledLayers, selectedFe
         map.setStyle(style);
       }
     }
-  }, [disabledLayers]);
+  });
 
   useEffect(() => {
     const { layerid, objectid } = selectedFeature;

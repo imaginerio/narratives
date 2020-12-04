@@ -1,6 +1,15 @@
 .layerMenu{
   position: absolute !important;
-  width: 150px;
-  right: 10px;
-  top: 40px;
+  width: 200px;
+  right: 0;
+  top: 60px;
+}
+
+.layerCheck{
+  margin: 15px 0 15px 5px;
+  font-size: 1.25em;
+}
+
+.layerCheck label input{
+  margin-right: 10px;
 }

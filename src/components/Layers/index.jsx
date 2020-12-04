@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { some } from 'lodash';
-import { Segment, Form, Button } from 'semantic-ui-react';
+import { Segment, Form, Button, Icon } from 'semantic-ui-react';
 
 import styles from './Layers.module.css';
 
@@ -20,9 +20,16 @@ const Layers = ({ layers, disabledLayers, layerHandler }) => {
       />
       {open && (
         <Segment className={styles.layerMenu}>
+          <Icon
+            style={{ float: 'right', cursor: 'pointer' }}
+            name="close"
+            onClick={() => setOpen(false)}
+          />
+          <h3 style={{ marginTop: 0 }}>Layers</h3>
           <Form.Group>
             {layers.map(layer => (
               <Form.Field
+                className={styles.layerCheck}
                 key={layer.id}
                 label={layer.title}
                 control="input"
