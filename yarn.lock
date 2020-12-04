@@ -2074,6 +2074,14 @@
   dependencies:
     loader-utils "^2.0.0"
 
+"@keystonejs/fields-authed-relationship@^1.0.15":
+  version "1.0.15"
+  resolved "https://registry.yarnpkg.com/@keystonejs/fields-authed-relationship/-/fields-authed-relationship-1.0.15.tgz#2fcb090b8ca0bcc180d0b5cdfabe2a5ca0cf9314"
+  integrity sha512-89+vmr6XgpQNHUjp8FufpADUNNigR3Di8JAEHyLYuKboCSFLnLJLiw9NxTds7UDQrIcPMk/QMiCTnYmof9jAhg==
+  dependencies:
+    "@babel/runtime" "^7.12.1"
+    "@keystonejs/fields" "^20.0.0"
+
 "@keystonejs/fields-auto-increment@^8.0.0", "@keystonejs/fields-auto-increment@^8.1.0":
   version "8.1.0"
   resolved "https://registry.yarnpkg.com/@keystonejs/fields-auto-increment/-/fields-auto-increment-8.1.0.tgz#ad4f1ddf725ea33d40d0f29cd53b7a017c201f82"
@@ -2204,6 +2212,14 @@
     serialize-error "^7.0.1"
     stack-utils "^2.0.3"
     terminal-link "^2.1.1"
+
+"@keystonejs/list-plugins@^7.1.4":
+  version "7.1.4"
+  resolved "https://registry.yarnpkg.com/@keystonejs/list-plugins/-/list-plugins-7.1.4.tgz#b52c9ec83ddf8c056035102346811e9f83d7ea42"
+  integrity sha512-6KFJL7EViHxGR3tVApvIYtOBwWT8Aly3SkiaqIxFAiOxhVBFNsW/CtEOv+HaQ+Fm8DjF7f30NzEgsrOKK3dN+A==
+  dependencies:
+    "@keystonejs/fields" "^20.0.0"
+    "@keystonejs/fields-authed-relationship" "^1.0.15"
 
 "@keystonejs/server-side-graphql-client@^1.1.0", "@keystonejs/server-side-graphql-client@^1.1.2":
   version "1.1.2"

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, gql } from '@apollo/client';
-import { Container, Header, Segment, Button, Image } from 'semantic-ui-react';
+import { Container, Header, Segment, Button, Image, Icon } from 'semantic-ui-react';
 import withApollo from '../lib/withApollo';
 
 const GET_PROJECTS = gql`
@@ -12,6 +12,9 @@ const GET_PROJECTS = gql`
       description
       category
       url
+      createdAt
+      updatedAt
+      published
       tags {
         name
       }
@@ -37,10 +40,37 @@ const Projects = ({ user }) => {
               {`${proj.title} - ${proj.category}`}
             </span>
             <Button floated="right" content="Editor" icon="edit" as="a" href={`/edit/${proj.id}`} />
-            <div style={{ clear: 'right' }}>Created / Modified / Published</div>
+            <Button
+              basic
+              floated="right"
+              content="Preview"
+              icon="play"
+              as="a"
+              style={{ marginRight: 10 }}
+              href={`/view/${proj.id}`}
+            />
+            <div style={{ clear: 'right' }}>
+              {proj.updatedAt && (
+                <span style={{ marginRight: 10 }}>
+                  {`Modified: ${new Date(proj.updatedAt).toLocaleDateString()}`}
+                </span>
+              )}
+              {proj.createdAt && (
+                <span style={{ marginRight: 10 }}>
+                  {`Created: ${new Date(proj.createdAt).toLocaleDateString()}`}
+                </span>
+              )}
+              {proj.published && (
+                <span>
+                  <Icon name="check" />
+                  Published
+                </span>
+              )}
+            </div>
           </Segment>
         ))}
       </Segment.Group>
+      <Image src="img/hrc-logo.png" />
     </Container>
   );
 };

@@ -1,4 +1,5 @@
 const { Text, Relationship, Select, Url, Checkbox } = require('@keystonejs/fields');
+const { atTracking } = require('@keystonejs/list-plugins');
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 
 const defaultAuth = ({ authentication: { item } }) => {
@@ -66,6 +67,7 @@ module.exports = {
       many: false,
     },
   },
+  plugins: [atTracking()],
   labelField: 'title',
   hooks: {
     resolveInput: ({ operation, resolvedData, context }) => {
