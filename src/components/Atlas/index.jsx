@@ -4,7 +4,16 @@ import ReactMapGL, { Source, Layer } from 'react-map-gl';
 import axios from 'axios';
 import { map as mapProp } from 'lodash';
 
-const Atlas = ({ handler, viewport, year, scrollZoom, disabledLayers, selectedFeature }) => {
+const Atlas = ({
+  handler,
+  viewport,
+  year,
+  scrollZoom,
+  disabledLayers,
+  selectedFeature,
+  activeBasemap,
+  opacity,
+}) => {
   const mapRef = useRef(null);
 
   const [mapViewport, setMapViewport] = useState(viewport);
@@ -103,6 +112,17 @@ const Atlas = ({ handler, viewport, year, scrollZoom, disabledLayers, selectedFe
         <Layer id="selected" type="line" />
         <Layer id="selected" type="line" />
       </Source>
+      {activeBasemap && (
+        <Source
+          type="raster"
+          tiles={[
+            `https://imaginerio-rasters.s3.us-east-1.amazonaws.com/${activeBasemap.ssid}/{z}/{x}/{y}.png`,
+          ]}
+          scheme="tms"
+        >
+          <Layer id="overlay" type="raster" paint={{ 'raster-opacity': opacity }} />
+        </Source>
+      )}
     </ReactMapGL>
   );
 };
@@ -119,16 +139,20 @@ Atlas.propTypes = {
   year: PropTypes.number.isRequired,
   scrollZoom: PropTypes.bool,
   disabledLayers: PropTypes.arrayOf(PropTypes.string),
+  activeBasemap: PropTypes.shape(),
   selectedFeature: PropTypes.shape({
     layerid: PropTypes.number.isRequired,
     objectid: PropTypes.number.isRequired,
   }),
+  opacity: PropTypes.number,
 };
 
 Atlas.defaultProps = {
   scrollZoom: true,
   disabledLayers: [],
+  activeBasemap: null,
   selectedFeature: null,
+  opacity: 1,
 };
 
 export default Atlas;

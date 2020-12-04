@@ -11,7 +11,7 @@
     "node": ">=12.0.0 <13"
   },
   "scripts": {
-    "dev": "cross-env NODE_ENV=development DISABLE_LOGGING=true keystone dev",
+    "dev": "cross-env NODE_ENV=development keystone dev",
     "build": "cross-env NODE_ENV=production keystone build",
     "start": "cross-env NODE_ENV=production keystone start",
     "create-tables": "cross-env CREATE_TABLES=true keystone create-tables"
@@ -49,6 +49,7 @@
     "react-dom": "^16.13.1",
     "react-map-gl": "^5.2.8",
     "react-scrollama": "^2.2.12",
+    "react-semantic-ui-range": "^0.7.0",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^1.1.1",
     "uuid": "^8.3.0"

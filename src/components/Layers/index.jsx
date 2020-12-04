@@ -3,9 +3,20 @@ import PropTypes from 'prop-types';
 import { some } from 'lodash';
 import { Segment, Form, Button, Icon } from 'semantic-ui-react';
 
+import Basemaps from '../Basemaps';
+
 import styles from './Layers.module.css';
 
-const Layers = ({ layers, disabledLayers, layerHandler }) => {
+const Layers = ({
+  layers,
+  basemaps,
+  disabledLayers,
+  activeBasemap,
+  layerHandler,
+  basemapHandler,
+  opacityHandler,
+  opacity,
+}) => {
   const [open, setOpen] = useState(false);
   const [newLayers, setNewLayers] = useState(disabledLayers);
 
@@ -26,6 +37,13 @@ const Layers = ({ layers, disabledLayers, layerHandler }) => {
             onClick={() => setOpen(false)}
           />
           <h3 style={{ marginTop: 0 }}>Layers</h3>
+          <Basemaps
+            basemaps={basemaps}
+            basemapHandler={basemapHandler}
+            activeBasemap={activeBasemap}
+            opacityHandler={opacityHandler}
+            opacity={opacity}
+          />
           <Form.Group>
             {layers.map(layer => (
               <Form.Field
@@ -54,12 +72,19 @@ const Layers = ({ layers, disabledLayers, layerHandler }) => {
 
 Layers.propTypes = {
   layers: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  basemaps: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   disabledLayers: PropTypes.arrayOf(PropTypes.string),
+  activeBasemap: PropTypes.shape(),
   layerHandler: PropTypes.func.isRequired,
+  basemapHandler: PropTypes.func.isRequired,
+  opacityHandler: PropTypes.func.isRequired,
+  opacity: PropTypes.number,
 };
 
 Layers.defaultProps = {
   disabledLayers: [],
+  activeBasemap: null,
+  opacity: 1,
 };
 
 export default Layers;

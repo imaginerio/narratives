@@ -67,6 +67,14 @@ module.exports = {
       ref: 'Layer',
       many: true,
     },
+    basemap: {
+      type: Relationship,
+      ref: 'Basemap',
+      many: false,
+    },
+    opacity: {
+      type: Float,
+    },
     image: {
       type: Relationship,
       ref: 'Image.slide',

@@ -24,6 +24,13 @@ const GET_SLIDES = gql`
       title
       remoteId
     }
+    allBasemaps {
+      id
+      ssid
+      title
+      firstYear
+      lastYear
+    }
   }
 `;
 
@@ -84,7 +91,9 @@ const EditPage = () => {
             <Slides slides={data.Project.slides} active={activeSlide} handler={setActiveSlide} />
           </Grid.Column>
           <Grid.Column width={13} style={{ padding: 0 }}>
-            {activeSlide && <Editor slide={activeSlide} layers={data.allLayers} />}
+            {activeSlide && (
+              <Editor slide={activeSlide} layers={data.allLayers} basemaps={data.allBasemaps} />
+            )}
           </Grid.Column>
         </Grid.Row>
       </Grid>

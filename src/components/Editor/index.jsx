@@ -26,6 +26,7 @@ const GET_SLIDES = gql`
       pitch
       selectedFeature
       selectedLayer
+      opacity
       image {
         id
         title
@@ -37,6 +38,10 @@ const GET_SLIDES = gql`
       disabledLayers: layers {
         id
         layerId
+      }
+      basemap {
+        id
+        ssid
       }
     }
   }
@@ -119,6 +124,26 @@ const UPDATE_LAYERS = gql`
   }
 `;
 
+const UPDATE_BASEMAP = gql`
+  mutation UpdateBasemap($slide: ID!, $basemap: BasemapRelateToOneInput) {
+    updateSlide(id: $slide, data: { basemap: $basemap }) {
+      id
+      basemap {
+        ssid
+      }
+    }
+  }
+`;
+
+const UPDATE_SLIDE_OPACITY = gql`
+  mutation UpdateSlideTitle($slide: ID!, $value: Float) {
+    updateSlide(id: $slide, data: { opacity: $value }) {
+      id
+      opacity
+    }
+  }
+`;
+
 const ADD_IMAGE = gql`
   mutation AddImage($slide: SlideRelateToOneInput) {
     createImage(data: { slide: $slide }) {
@@ -157,7 +182,7 @@ const UPDATE_IMAGE = gql`
 
 let updateTimer;
 
-const Editor = ({ slide, layers }) => {
+const Editor = ({ slide, layers, basemaps }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [viewport, setViewport] = useState({});
@@ -166,6 +191,8 @@ const Editor = ({ slide, layers }) => {
     selectedLayer: null,
   });
   const [disabledLayers, setDisabledLayers] = useState({});
+  const [activeBasemap, setActiveBasemap] = useState({});
+  const [opacity, setOpacity] = useState(0);
   const [year, setYear] = useState(1900);
 
   const { loading, error, data, refetch } = useQuery(GET_SLIDES, {
@@ -177,6 +204,8 @@ const Editor = ({ slide, layers }) => {
     setDescription(loading ? '' : data.Slide.description || '');
     setYear(loading ? 1900 : data.Slide.year);
     setDisabledLayers(loading ? [] : data.Slide.disabledLayers);
+    setActiveBasemap(loading ? null : data.Slide.basemap);
+    setOpacity(loading ? 0 : data.Slide.opacity);
     setSelectedFeature(
       loading
         ? {
@@ -198,6 +227,8 @@ const Editor = ({ slide, layers }) => {
   const [updateViewport] = useMutation(UPDATE_VIEWPORT);
   const [updateYear] = useMutation(UPDATE_SLIDE_YEAR);
   const [updateLayers] = useMutation(UPDATE_LAYERS);
+  const [updateBasemap] = useMutation(UPDATE_BASEMAP);
+  const [updateOpacity] = useMutation(UPDATE_SLIDE_OPACITY);
   const [updateFeature] = useMutation(UPDATE_SLIDE_FEATURE);
   const [addImage] = useMutation(ADD_IMAGE);
   const [updateImage] = useMutation(UPDATE_IMAGE);
@@ -281,6 +312,8 @@ const Editor = ({ slide, layers }) => {
                 viewport={viewport}
                 year={year}
                 disabledLayers={disabledLayers}
+                activeBasemap={activeBasemap}
+                opacity={opacity}
                 selectedFeature={selectedFeature}
               />
               <MapControl
@@ -290,7 +323,9 @@ const Editor = ({ slide, layers }) => {
                   updateInterval({ value: newYear }, updateYear, { slide });
                 }}
                 layers={layers}
+                basemaps={basemaps}
                 disabledLayers={disabledLayers}
+                activeBasemap={activeBasemap}
                 layerHandler={newLayers => {
                   setDisabledLayers(newLayers);
                   updateInterval(
@@ -303,6 +338,27 @@ const Editor = ({ slide, layers }) => {
                     { slide }
                   );
                 }}
+                basemapHandler={newBasemap => {
+                  setActiveBasemap(newBasemap);
+                  let basemap = null;
+                  if (newBasemap) {
+                    basemap = {
+                      connect: { id: newBasemap.id },
+                    };
+                  }
+                  updateInterval(
+                    {
+                      basemap,
+                    },
+                    updateBasemap,
+                    { slide }
+                  );
+                }}
+                opacityHandler={newOpacity => {
+                  setOpacity(newOpacity);
+                  updateInterval({ value: newOpacity }, updateOpacity, { slide });
+                }}
+                opacity={opacity}
                 featureHandler={newFeature => {
                   setSelectedFeature(newFeature);
                   updateInterval(newFeature, updateFeature, { slide }, 1);
@@ -319,6 +375,7 @@ const Editor = ({ slide, layers }) => {
 Editor.propTypes = {
   slide: PropTypes.string.isRequired,
   layers: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  basemaps: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 
 export default Editor;

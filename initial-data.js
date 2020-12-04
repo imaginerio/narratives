@@ -75,11 +75,11 @@ module.exports = async keystone => {
       remoteId: layer.id,
     }));
 
-  return Promise.all(
+  await Promise.all(
     layers.map(layer =>
       keystone.executeGraphQL({
         context,
-        query: `mutation InitLayer($layerId: String, $title: String, $remoteId:Int) {
+        query: `mutation InitLayer($layerId: String, $title: String, $remoteId: Int) {
       createLayer(data: { layerId: $layerId, title: $title, remoteId: $remoteId }) {
         id
       }
@@ -87,5 +87,50 @@ module.exports = async keystone => {
         variables: layer,
       })
     )
+  );
+
+  // Populate basemaps
+  let {
+    data: { allBasemaps },
+  } = await keystone.executeGraphQL({
+    context,
+    query: `query{
+        allBasemaps{
+          ssid
+        }
+      }`,
+  });
+  allBasemaps = map(allBasemaps, 'ssid');
+  const loadManifest = url =>
+    axios.get(url).then(({ data: { manifests } }) => {
+      const manifestReqs = manifests
+        .filter(m => {
+          const ssid = m['@id'].match(/SSID\d*/)[0];
+          return !allBasemaps.includes(ssid);
+        })
+        .map(m =>
+          axios.get(m['@id']).then(({ data: { metadata } }) => {
+            const variables = {
+              ssid: metadata.find(md => md.label === 'Identifier').value[0],
+              title: metadata.find(md => md.label === 'Title').value,
+              firstYear: 1800,
+              lastYear: 2000,
+            };
+            return keystone.executeGraphQL({
+              context,
+              query: `mutation InitBasemap($ssid: String, $title: String, $firstYear: Int, $lastYear: Int) {
+            createBasemap(data: { ssid: $ssid, title: $title, firstYear: $firstYear, lastYear: $lastYear}) {
+              id
+            }
+          }`,
+              variables,
+            });
+          })
+        );
+      return Promise.all(manifestReqs);
+    });
+
+  return loadManifest('https://situatedviews.axismaps.io/iiif/2/collection/maps').then(() =>
+    loadManifest('https://situatedviews.axismaps.io/iiif/2/collection/plans')
   );
 };
