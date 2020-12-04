@@ -39,7 +39,7 @@ const Atlas = ({ handler, viewport, year, scrollZoom, disabledLayers, selectedFe
         map.setStyle(style);
       }
     }
-  }, [year]);
+  });
 
   useEffect(() => {
     const layerIds = mapProp(disabledLayers, 'layerId');
