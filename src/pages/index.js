@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useQuery, gql } from '@apollo/client';
 import { Container, Header, Image, Card, Popup, Icon } from 'semantic-ui-react';
 import withApollo from '../lib/withApollo';
@@ -19,8 +18,8 @@ const GET_PROJECTS = gql`
   }
 `;
 
-const Projects = ({ user }) => {
-  const { loading, error, data } = useQuery(GET_PROJECTS, { variables: { user } });
+const Projects = () => {
+  const { loading, error, data } = useQuery(GET_PROJECTS);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
@@ -56,16 +55,4 @@ const Projects = ({ user }) => {
   );
 };
 
-Projects.propTypes = {
-  user: PropTypes.string.isRequired,
-};
-
 export default withApollo(Projects);
-
-export async function getServerSideProps({ req }) {
-  return {
-    props: {
-      user: req.user.id,
-    },
-  };
-}
