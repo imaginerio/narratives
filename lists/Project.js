@@ -1,4 +1,4 @@
-const { Text, Relationship, Select, Url } = require('@keystonejs/fields');
+const { Text, Relationship, Select, Url, Checkbox } = require('@keystonejs/fields');
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 
 const defaultAuth = ({ authentication: { item } }) => {
@@ -51,6 +51,9 @@ module.exports = {
     },
     url: {
       type: Url,
+    },
+    published: {
+      type: Checkbox,
     },
     slides: {
       type: Relationship,
