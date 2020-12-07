@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 const crypto = require('crypto');
 const axios = require('axios');
-const { map } = require('lodash');
+const { map, flatten } = require('lodash');
 
 const randomString = () => crypto.randomBytes(6).hexSlice();
 
@@ -101,36 +101,25 @@ module.exports = async keystone => {
       }`,
   });
   allBasemaps = map(allBasemaps, 'ssid');
-  const loadManifest = url =>
-    axios.get(url).then(({ data: { manifests } }) => {
-      const manifestReqs = manifests
-        .filter(m => {
-          const ssid = m['@id'].match(/SSID\d*/)[0];
-          return !allBasemaps.includes(ssid);
-        })
-        .map(m =>
-          axios.get(m['@id']).then(({ data: { metadata } }) => {
-            const variables = {
-              ssid: metadata.find(md => md.label === 'Identifier').value[0],
-              title: metadata.find(md => md.label === 'Title').value,
-              firstYear: 1800,
-              lastYear: 2000,
-            };
-            return keystone.executeGraphQL({
-              context,
-              query: `mutation InitBasemap($ssid: String, $title: String, $firstYear: Int, $lastYear: Int) {
-            createBasemap(data: { ssid: $ssid, title: $title, firstYear: $firstYear, lastYear: $lastYear}) {
-              id
-            }
-          }`,
-              variables,
-            });
-          })
-        );
-      return Promise.all(manifestReqs);
+  let { data } = await axios.get('https://search.imaginerio.org/documents');
+  data = data.filter(d => d.title !== 'Views');
+  const documents = flatten(map(data, 'Documents')).filter(d => !allBasemaps.includes(d.ssid));
+  console.log(documents);
+  const documentReqs = documents.map(m => {
+    const variables = {
+      ...m,
+      firstYear: m.firstyear,
+      lastYear: m.lastyear,
+    };
+    return keystone.executeGraphQL({
+      context,
+      query: `mutation InitBasemap($ssid: String, $title: String, $firstYear: Int, $lastYear: Int, $longitude: Float, $latitude: Float) {
+        createBasemap(data: { ssid: $ssid, title: $title, firstYear: $firstYear, lastYear: $lastYear, longitude: $longitude, latitude: $latitude }) {
+          id
+        }
+      }`,
+      variables,
     });
-
-  return loadManifest('https://situatedviews.axismaps.io/iiif/2/collection/maps').then(() =>
-    loadManifest('https://situatedviews.axismaps.io/iiif/2/collection/plans')
-  );
+  });
+  return Promise.all(documentReqs);
 };

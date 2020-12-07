@@ -1,4 +1,4 @@
-const { Text, Integer } = require('@keystonejs/fields');
+const { Text, Integer, Float } = require('@keystonejs/fields');
 
 module.exports = {
   fields: {
@@ -16,6 +16,12 @@ module.exports = {
     },
     lastYear: {
       type: Integer,
+    },
+    longitude: {
+      type: Float,
+    },
+    latitude: {
+      type: Float,
     },
   },
   labelField: 'title',
