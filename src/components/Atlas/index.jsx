@@ -19,9 +19,7 @@ const Atlas = ({
   const [mapViewport, setMapViewport] = useState(viewport);
   const [featureData, setFeatureData] = useState(null);
 
-  useEffect(() => setMapViewport(viewport), [viewport]);
-
-  useEffect(() => {
+  const setMapYear = () => {
     const map = mapRef.current.getMap();
     let style = null;
     try {
@@ -48,9 +46,9 @@ const Atlas = ({
         map.setStyle(style);
       }
     }
-  }, [year]);
+  };
 
-  useEffect(() => {
+  const setDisabledLayers = () => {
     const layerIds = mapProp(disabledLayers, 'layerId');
     const map = mapRef.current.getMap();
     let style = null;
@@ -75,7 +73,11 @@ const Atlas = ({
         map.setStyle(style);
       }
     }
-  }, [disabledLayers]);
+  };
+
+  useEffect(() => setMapViewport(viewport), [viewport]);
+  useEffect(setMapYear, [year]);
+  useEffect(setDisabledLayers, [disabledLayers]);
 
   useEffect(() => {
     const { layerid, objectid } = selectedFeature;
@@ -97,6 +99,11 @@ const Atlas = ({
     handler(nextViewport);
   };
 
+  const onMapLoad = () => {
+    setMapYear();
+    setDisabledLayers();
+  };
+
   return (
     <ReactMapGL
       ref={mapRef}
@@ -107,6 +114,7 @@ const Atlas = ({
       scrollZoom={scrollZoom}
       {...mapViewport}
       onViewportChange={onViewportChange}
+      onLoad={onMapLoad}
     >
       <Source type="geojson" data={featureData}>
         <Layer id="selected" type="line" />
@@ -138,7 +146,7 @@ Atlas.propTypes = {
   }).isRequired,
   year: PropTypes.number.isRequired,
   scrollZoom: PropTypes.bool,
-  disabledLayers: PropTypes.arrayOf(PropTypes.string),
+  disabledLayers: PropTypes.arrayOf(PropTypes.shape()),
   activeBasemap: PropTypes.shape(),
   selectedFeature: PropTypes.shape({
     layerid: PropTypes.number.isRequired,
