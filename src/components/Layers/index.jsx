@@ -9,6 +9,7 @@ import styles from './Layers.module.css';
 
 const Layers = ({
   layers,
+  year,
   basemaps,
   disabledLayers,
   activeBasemap,
@@ -43,6 +44,7 @@ const Layers = ({
             activeBasemap={activeBasemap}
             opacityHandler={opacityHandler}
             opacity={opacity}
+            year={year}
           />
           <Form.Group>
             {layers.map(layer => (
@@ -79,6 +81,7 @@ Layers.propTypes = {
   basemapHandler: PropTypes.func.isRequired,
   opacityHandler: PropTypes.func.isRequired,
   opacity: PropTypes.number,
+  year: PropTypes.number.isRequired,
 };
 
 Layers.defaultProps = {

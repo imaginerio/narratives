@@ -3,12 +3,27 @@ import PropTypes from 'prop-types';
 import { Dropdown } from 'semantic-ui-react';
 import { Slider } from 'react-semantic-ui-range';
 
-const Basemaps = ({ activeBasemap, basemaps, basemapHandler, opacityHandler, opacity }) => {
+const Basemaps = ({ activeBasemap, basemaps, basemapHandler, opacityHandler, opacity, year }) => {
   const [newBasemap, setNewBasemap] = useState(activeBasemap ? activeBasemap.id : null);
+  const [options, setOptions] = useState(
+    basemaps
+      .filter(b => b.firstYear <= year && b.lastYear >= year)
+      .map(b => ({ value: b.id, text: b.title }))
+  );
+
   useEffect(() => {
     const active = basemaps.find(b => b.id === newBasemap);
     basemapHandler(active);
   }, [newBasemap]);
+
+  useEffect(() => {
+    setOptions(
+      basemaps
+        .filter(b => b.firstYear <= year && b.lastYear >= year)
+        .map(b => ({ value: b.id, text: b.title }))
+    );
+  }, [year]);
+
   return (
     <div>
       <Dropdown
@@ -17,7 +32,7 @@ const Basemaps = ({ activeBasemap, basemaps, basemapHandler, opacityHandler, opa
         selection
         clearable
         value={newBasemap}
-        options={basemaps.map(b => ({ value: b.id, text: b.title }))}
+        options={options}
         onChange={(e, { value }) => setNewBasemap(value)}
       />
       <Slider
@@ -41,6 +56,7 @@ Basemaps.propTypes = {
   basemapHandler: PropTypes.func.isRequired,
   opacityHandler: PropTypes.func.isRequired,
   opacity: PropTypes.number,
+  year: PropTypes.number.isRequired,
 };
 
 Basemaps.defaultProps = {
