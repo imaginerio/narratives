@@ -332,6 +332,7 @@ const Editor = ({ slide, layers, basemaps }) => {
                     {
                       layers: {
                         connect: newLayers.map(nl => ({ id: nl.id })),
+                        disconnectAll: true,
                       },
                     },
                     updateLayers,
