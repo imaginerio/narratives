@@ -25,7 +25,6 @@ const GET_SLIDES = gql`
       bearing
       pitch
       selectedFeature
-      selectedLayer
       opacity
       image {
         id
@@ -75,11 +74,10 @@ const UPDATE_SLIDE_YEAR = gql`
 `;
 
 const UPDATE_SLIDE_FEATURE = gql`
-  mutation UpdateSlideFeature($slide: ID!, $layerid: Int, $objectid: Int) {
-    updateSlide(id: $slide, data: { selectedFeature: $objectid, selectedLayer: $layerid }) {
+  mutation UpdateSlideFeature($slide: ID!, $value: String) {
+    updateSlide(id: $slide, data: { selectedFeature: $value }) {
       id
       selectedFeature
-      selectedLayer
     }
   }
 `;
@@ -186,10 +184,7 @@ const Editor = ({ slide, layers, basemaps }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [viewport, setViewport] = useState({});
-  const [selectedFeature, setSelectedFeature] = useState({
-    selectedFeature: null,
-    selectedLayer: null,
-  });
+  const [selectedFeature, setSelectedFeature] = useState(null);
   const [disabledLayers, setDisabledLayers] = useState({});
   const [activeBasemap, setActiveBasemap] = useState({});
   const [opacity, setOpacity] = useState(0);
@@ -206,17 +201,7 @@ const Editor = ({ slide, layers, basemaps }) => {
     setDisabledLayers(loading ? [] : data.Slide.disabledLayers);
     setActiveBasemap(loading ? null : data.Slide.basemap);
     setOpacity(loading ? 0 : data.Slide.opacity);
-    setSelectedFeature(
-      loading
-        ? {
-            selectedFeature: null,
-            selectedLayer: null,
-          }
-        : {
-            objectid: data.Slide.selectedFeature,
-            layerid: data.Slide.selectedLayer,
-          }
-    );
+    setSelectedFeature(loading ? null : data.Slide.selectedFeature);
     setViewport(
       loading ? {} : pick(data.Slide, ['longitude', 'latitude', 'zoom', 'bearing', 'pitch'])
     );
@@ -365,7 +350,7 @@ const Editor = ({ slide, layers, basemaps }) => {
                 opacity={opacity}
                 featureHandler={newFeature => {
                   setSelectedFeature(newFeature);
-                  updateInterval(newFeature, updateFeature, { slide }, 1);
+                  updateInterval({ value: newFeature }, updateFeature, { slide }, 1);
                 }}
               />
             </>

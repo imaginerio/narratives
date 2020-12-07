@@ -80,14 +80,11 @@ const Atlas = ({
   useEffect(setDisabledLayers, [disabledLayers]);
 
   useEffect(() => {
-    const { layerid, objectid } = selectedFeature;
     const loadGeoJSON = async () => {
-      const { data } = await axios.get(
-        `https://arcgis.rice.edu/arcgis/rest/services/imagineRio_Data/FeatureServer/${layerid}/query?where=objectid=${objectid}&f=geojson`
-      );
+      const { data } = await axios.get(`https://search.imaginerio.org/feature/${selectedFeature}`);
       setFeatureData(data);
     };
-    if (layerid && objectid) {
+    if (selectedFeature) {
       loadGeoJSON();
     } else {
       setFeatureData(null);
@@ -148,10 +145,7 @@ Atlas.propTypes = {
   scrollZoom: PropTypes.bool,
   disabledLayers: PropTypes.arrayOf(PropTypes.shape()),
   activeBasemap: PropTypes.shape(),
-  selectedFeature: PropTypes.shape({
-    layerid: PropTypes.number.isRequired,
-    objectid: PropTypes.number.isRequired,
-  }),
+  selectedFeature: PropTypes.string,
   opacity: PropTypes.number,
 };
 

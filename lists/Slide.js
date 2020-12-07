@@ -57,10 +57,7 @@ module.exports = {
       defaultValue: 0,
     },
     selectedFeature: {
-      type: Integer,
-    },
-    selectedLayer: {
-      type: Integer,
+      type: Text,
     },
     layers: {
       type: Relationship,
