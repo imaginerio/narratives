@@ -31,12 +31,22 @@ const GET_PROJECT = gql`
         zoom
         bearing
         pitch
+        opacity
+        size
         image {
           title
           creator
           source
           date
           url
+        }
+        disabledLayers: layers {
+          id
+          layerId
+        }
+        basemap {
+          id
+          ssid
         }
       }
     }
@@ -49,6 +59,8 @@ const View = () => {
 
   const [viewport, setViewport] = useState({});
   const [year, setYear] = useState(1900);
+  const [activeBasemap, setActiveBasemap] = useState(null);
+  const [opacity, setOpacity] = useState(1);
 
   const { loading, error, data } = useQuery(GET_PROJECT, { variables: { project } });
 
@@ -58,7 +70,14 @@ const View = () => {
   return (
     <>
       <div style={{ height: '100vh', width: '100vw', position: 'fixed', top: 0 }}>
-        <Atlas handler={() => null} year={year} viewport={viewport} scrollZoom={false} />
+        <Atlas
+          handler={() => null}
+          year={year}
+          viewport={viewport}
+          scrollZoom={false}
+          activeBasemap={activeBasemap}
+          opacity={opacity}
+        />
       </div>
       <div>
         <Scrollama
@@ -77,12 +96,14 @@ const View = () => {
             }
             setViewport(newViewport);
             setYear(step.data.year);
+            setActiveBasemap(step.data.basemap);
+            setOpacity(step.data.opacity);
           }}
         >
           {data.Project.slides.map((slide, i) => (
             <Step key={slide.id} data={{ ...slide, index: i }}>
-              <div style={{ padding: '50vh 0 50vh 80px', width: 600 }}>
-                <Card fluid>
+              <div style={{ padding: '50vh 80px 50vh 80px' }}>
+                <Card fluid className={`slide${slide.size}`}>
                   {slide.image && slide.image.url && (
                     <Image src={slide.image.url} wrapped ui={false} />
                   )}

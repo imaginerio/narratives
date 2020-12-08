@@ -1,0 +1,11 @@
+.slideFullscreen{
+  width: 100% !important;
+}
+
+.slideMedium{
+  width: 50% !important;
+}
+
+.slideSmall{
+  width: 400px !important;
+}

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { pick } from 'lodash';
-import { Grid, Form, Input } from 'semantic-ui-react';
+import { Grid, Form, Input, Dropdown } from 'semantic-ui-react';
 import { Editor as Wysiwyg } from '@tinymce/tinymce-react';
 
 import Atlas from '../Atlas';
@@ -19,6 +19,7 @@ const GET_SLIDES = gql`
       title
       description
       year
+      size
       longitude
       latitude
       zoom
@@ -56,7 +57,7 @@ const UPDATE_SLIDE_TITLE = gql`
 `;
 
 const UPDATE_SLIDE_DESCRIPTION = gql`
-  mutation UpdateSlideTitle($slide: ID!, $value: String) {
+  mutation UpdateSlideDescription($slide: ID!, $value: String) {
     updateSlide(id: $slide, data: { description: $value }) {
       id
       description
@@ -65,8 +66,17 @@ const UPDATE_SLIDE_DESCRIPTION = gql`
 `;
 
 const UPDATE_SLIDE_YEAR = gql`
-  mutation UpdateSlideTitle($slide: ID!, $value: Int) {
+  mutation UpdateSlideYear($slide: ID!, $value: Int) {
     updateSlide(id: $slide, data: { year: $value }) {
+      id
+      year
+    }
+  }
+`;
+
+const UPDATE_SLIDE_SIZE = gql`
+  mutation UpdateSlideSize($slide: ID!, $value: SlideSizeType) {
+    updateSlide(id: $slide, data: { size: $value }) {
       id
       year
     }
@@ -187,6 +197,7 @@ const Editor = ({ slide, layers, basemaps }) => {
   const [activeBasemap, setActiveBasemap] = useState({});
   const [opacity, setOpacity] = useState(0);
   const [year, setYear] = useState(1900);
+  const [size, setSize] = useState('Small');
 
   const { loading, error, data, refetch } = useQuery(GET_SLIDES, {
     variables: { slide },
@@ -196,6 +207,7 @@ const Editor = ({ slide, layers, basemaps }) => {
     setTitle(loading ? '' : data.Slide.title || '');
     setDescription(loading ? '' : data.Slide.description || '');
     setYear(loading ? 1900 : data.Slide.year);
+    setYear(loading ? 'Small' : data.Slide.size);
     setDisabledLayers(loading ? [] : data.Slide.disabledLayers);
     setActiveBasemap(loading ? null : data.Slide.basemap);
     setOpacity(loading ? 0 : data.Slide.opacity);
@@ -209,6 +221,7 @@ const Editor = ({ slide, layers, basemaps }) => {
   const [updateDescription] = useMutation(UPDATE_SLIDE_DESCRIPTION);
   const [updateViewport] = useMutation(UPDATE_VIEWPORT);
   const [updateYear] = useMutation(UPDATE_SLIDE_YEAR);
+  const [updateSize] = useMutation(UPDATE_SLIDE_SIZE);
   const [updateLayers] = useMutation(UPDATE_LAYERS);
   const [updateBasemap] = useMutation(UPDATE_BASEMAP);
   const [updateOpacity] = useMutation(UPDATE_SLIDE_OPACITY);
@@ -265,6 +278,27 @@ const Editor = ({ slide, layers, basemaps }) => {
                   updateInterval({ value }, updateDescription, { slide });
                 }}
               />
+            </Form.Field>
+            <Form.Field>
+              <label>Size</label>
+              <Dropdown
+                placeholder="Select Friend"
+                fluid
+                selection
+                value={size}
+                options={[
+                  { text: 'Fullscreen', value: 'Fullscreen' },
+                  { text: 'Medium', value: 'Medium' },
+                  { text: 'Small', value: 'Small' },
+                ]}
+                onChange={(e, { value }) => {
+                  setSize(value);
+                  updateInterval({ value }, updateSize, { slide });
+                }}
+              />
+            </Form.Field>
+            <Form.Field>
+              <label>Image</label>
               <Image
                 image={data.Slide.image}
                 addHandler={() =>

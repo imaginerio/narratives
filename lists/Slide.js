@@ -1,4 +1,4 @@
-const { Text, Relationship, Float, Integer } = require('@keystonejs/fields');
+const { Text, Relationship, Float, Integer, Select } = require('@keystonejs/fields');
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 
 const defaultAuth = ({ authentication: { item } }) => {
@@ -31,6 +31,10 @@ module.exports = {
     },
     order: {
       type: Integer,
+    },
+    size: {
+      type: Select,
+      options: 'Fullscreen, Medium, Small',
     },
     year: {
       type: Integer,

@@ -2,6 +2,7 @@
 import React from 'react';
 import 'semantic-ui-css/semantic.min.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import './view/view.css';
 
 // import App from 'next/app'
 
