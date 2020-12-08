@@ -33,6 +33,7 @@ const GET_PROJECT = gql`
         pitch
         opacity
         size
+        selectedFeature
         image {
           title
           creator
@@ -61,6 +62,7 @@ const View = () => {
   const [year, setYear] = useState(1900);
   const [activeBasemap, setActiveBasemap] = useState(null);
   const [opacity, setOpacity] = useState(1);
+  const [selectedFeature, setSelectedFeature] = useState(null);
 
   const { loading, error, data } = useQuery(GET_PROJECT, { variables: { project } });
 
@@ -77,6 +79,7 @@ const View = () => {
           scrollZoom={false}
           activeBasemap={activeBasemap}
           opacity={opacity}
+          selectedFeature={selectedFeature}
         />
       </div>
       <div>
@@ -98,6 +101,7 @@ const View = () => {
             setYear(step.data.year);
             setActiveBasemap(step.data.basemap);
             setOpacity(step.data.opacity);
+            setSelectedFeature(step.data.selectedFeature);
           }}
         >
           {data.Project.slides.map((slide, i) => (

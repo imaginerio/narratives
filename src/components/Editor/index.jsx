@@ -338,8 +338,6 @@ const Editor = ({ slide, layers, basemaps }) => {
                 year={year}
                 yearHandler={newYear => {
                   setYear(newYear);
-                  console.log(newYear);
-                  console.log(slide);
                   updateInterval({ value: newYear }, updateYear, { slide });
                 }}
                 layers={layers}
