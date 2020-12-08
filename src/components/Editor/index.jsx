@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { pick } from 'lodash';
@@ -178,8 +178,6 @@ const UPDATE_IMAGE = gql`
   }
 `;
 
-let updateTimer;
-
 const Editor = ({ slide, layers, basemaps }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -218,9 +216,10 @@ const Editor = ({ slide, layers, basemaps }) => {
   const [addImage] = useMutation(ADD_IMAGE);
   const [updateImage] = useMutation(UPDATE_IMAGE);
 
+  const updateTimer = useRef();
   const updateInterval = (value, updater, id, interval = 500) => {
-    clearTimeout(updateTimer);
-    updateTimer = setTimeout(() => {
+    clearTimeout(updateTimer.current);
+    updateTimer.current = setTimeout(() => {
       updater({
         variables: {
           ...id,
