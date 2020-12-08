@@ -277,7 +277,7 @@ const Editor = ({ slide, layers, basemaps }) => {
                         },
                       },
                     },
-                  }).then(refetch)
+                  }).then(() => refetch)
                 }
                 updateHandler={(id, values, interval) =>
                   updateInterval(values, updateImage, { image: id }, interval)
