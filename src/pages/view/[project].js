@@ -106,7 +106,7 @@ const View = () => {
         >
           {data.Project.slides.map((slide, i) => (
             <Step key={slide.id} data={{ ...slide, index: i }}>
-              <div style={{ padding: '50vh 80px 50vh 80px' }}>
+              <div style={{ padding: '25vh 80px 25vh 80px' }}>
                 <Card fluid className={`slide${slide.size}`}>
                   {slide.image && slide.image.url && (
                     <Image src={slide.image.url} wrapped ui={false} />

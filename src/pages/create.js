@@ -100,15 +100,20 @@ const Create = () => {
 
   return (
     <Container style={{ marginTop: 30 }} text>
-      <Button content="Back to maps" icon="angle left" as="a" href="/projects" />
-      <Header as="h1">Add Map</Header>
+      <Button
+        content="My narratives / Minhas narrativas"
+        icon="angle left"
+        as="a"
+        href="/projects"
+      />
+      <Header as="h1">New Narrative / Nova Narrativa</Header>
       <Form>
         <Form.Field required>
-          <label>Map Title</label>
+          <label>Title</label>
           <Input onChange={(e, { value }) => setTitle(value)} />
         </Form.Field>
         <Form.Field>
-          <label>Map Description</label>
+          <label>Description</label>
           <Form.TextArea onChange={(e, { value }) => setDescription(value)} />
         </Form.Field>
         <Image

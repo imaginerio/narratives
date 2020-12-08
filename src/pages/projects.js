@@ -30,8 +30,15 @@ const Projects = ({ user }) => {
 
   return (
     <Container text style={{ marginTop: 30, marginBottom: 30 }}>
-      <Header as="h1">Manage Story Maps</Header>
-      <Button content="Add Map" icon="plus" size="large" color="blue" as="a" href="/create" />
+      <Header as="h1">My Narratives / Minhas narrativas</Header>
+      <Button
+        content="Add Narrative / Nova narrativa"
+        icon="plus"
+        size="large"
+        color="blue"
+        as="a"
+        href="/create"
+      />
       <Segment.Group>
         {data.allProjects.map(proj => (
           <Segment key={proj.id}>

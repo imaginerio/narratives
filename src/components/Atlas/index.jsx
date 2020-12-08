@@ -114,10 +114,6 @@ const Atlas = ({
       onViewportChange={onViewportChange}
       onLoad={onMapLoad}
     >
-      <Source type="geojson" data={featureData}>
-        <Layer id="selected" type="line" />
-        <Layer id="selected" type="line" />
-      </Source>
       {activeBasemap && (
         <Source
           type="raster"
@@ -129,6 +125,10 @@ const Atlas = ({
           <Layer id="overlay" type="raster" paint={{ 'raster-opacity': opacity }} />
         </Source>
       )}
+      <Source type="geojson" data={featureData}>
+        <Layer id="selected" type="line" />
+        <Layer id="selected" type="line" />
+      </Source>
     </ReactMapGL>
   );
 };
