@@ -23,8 +23,6 @@ const BasemapSchema = require('./lists/Basemap');
 const PROJECT_NAME = 'imagineRio Narratives';
 const adapterConfig = { mongoUri: process.env.MONGO_URI };
 
-console.log(process.env.MONGO_URI);
-
 const keystone = new Keystone({
   adapter: new Adapter(adapterConfig),
   onConnect: process.env.CREATE_TABLES !== 'true' && initialiseData,
