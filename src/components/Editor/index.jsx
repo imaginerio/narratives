@@ -207,7 +207,7 @@ const Editor = ({ slide, layers, basemaps }) => {
     setTitle(loading ? '' : data.Slide.title || '');
     setDescription(loading ? '' : data.Slide.description || '');
     setYear(loading ? 1900 : data.Slide.year);
-    setYear(loading ? 'Small' : data.Slide.size);
+    setSize(loading ? 'Small' : data.Slide.size);
     setDisabledLayers(loading ? [] : data.Slide.disabledLayers);
     setActiveBasemap(loading ? null : data.Slide.basemap);
     setOpacity(loading ? 0 : data.Slide.opacity);
@@ -338,6 +338,8 @@ const Editor = ({ slide, layers, basemaps }) => {
                 year={year}
                 yearHandler={newYear => {
                   setYear(newYear);
+                  console.log(newYear);
+                  console.log(slide);
                   updateInterval({ value: newYear }, updateYear, { slide });
                 }}
                 layers={layers}
