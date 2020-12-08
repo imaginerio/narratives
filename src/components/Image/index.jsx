@@ -78,28 +78,28 @@ const Image = ({ image, addHandler, updateHandler }) => {
               }}
             />
           </Form.Field>
-          <Form.Group widths="equal">
-            <Form.Field>
-              <label>Source</label>
-              <Input
-                value={imageMeta.source}
-                onChange={(e, { value }) => {
-                  setImageMeta({ ...imageMeta, source: value });
-                  updateHandler(image.id, imageMeta);
-                }}
-              />
-            </Form.Field>
-            <Form.Field>
-              <label>Date</label>
-              <Input
-                value={imageMeta.date}
-                onChange={(e, { value }) => {
-                  setImageMeta({ ...imageMeta, date: value });
-                  updateHandler(image.id, imageMeta);
-                }}
-              />
-            </Form.Field>
-          </Form.Group>
+          <Form.Field inline>
+            <label className={styles.inlineLabel}>Source</label>
+            <Input
+              className={styles.inlineInput}
+              value={imageMeta.source}
+              onChange={(e, { value }) => {
+                setImageMeta({ ...imageMeta, source: value });
+                updateHandler(image.id, imageMeta);
+              }}
+            />
+          </Form.Field>
+          <Form.Field inline>
+            <label className={styles.inlineLabel}>Date</label>
+            <Input
+              className={styles.inlineInput}
+              value={imageMeta.date}
+              onChange={(e, { value }) => {
+                setImageMeta({ ...imageMeta, date: value });
+                updateHandler(image.id, imageMeta);
+              }}
+            />
+          </Form.Field>
         </>
       ) : (
         <Button content="Add an image" onClick={addHandler} />
