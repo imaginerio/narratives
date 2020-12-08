@@ -218,7 +218,7 @@ const Editor = ({ slide, layers, basemaps }) => {
   const [addImage] = useMutation(ADD_IMAGE);
   const [updateImage] = useMutation(UPDATE_IMAGE);
 
-  const updateInterval = (value, updater, id, interval = 1000) => {
+  const updateInterval = (value, updater, id, interval = 500) => {
     clearTimeout(updateTimer);
     updateTimer = setTimeout(() => {
       updater({
