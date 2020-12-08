@@ -99,6 +99,7 @@ const Atlas = ({
   const onMapLoad = () => {
     setMapYear();
     setDisabledLayers();
+    onViewportChange(viewport);
   };
 
   return (

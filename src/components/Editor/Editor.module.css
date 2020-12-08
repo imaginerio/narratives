@@ -1,4 +1,6 @@
 .editor{
+  height: calc(100vh - 60px);
+  overflow-y: scroll;
   margin-left: -1rem;
   padding: 20px;
   background-color: #FAFAFA;
