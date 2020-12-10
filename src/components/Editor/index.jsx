@@ -269,7 +269,7 @@ const Editor = ({ slide, layers, basemaps }) => {
                   height: 400,
                   menubar: false,
                   plugins: ['link lists'],
-                  toolbar: 'bold italic bullist numlist | link unlink | undo redo',
+                  toolbar: 'bold italic superscript bullist numlist | link unlink | undo redo',
                   branding: false,
                   statusbar: false,
                 }}
