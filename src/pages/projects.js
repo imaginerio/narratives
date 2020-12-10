@@ -29,7 +29,7 @@ const Projects = ({ user }) => {
   if (error) return <p>Error :(</p>;
 
   return (
-    <Container text style={{ marginTop: 30, marginBottom: 30 }}>
+    <Container style={{ marginTop: 30, marginBottom: 30 }}>
       <Header as="h1">My Narratives / Minhas narrativas</Header>
       <Button
         content="Add Narrative / Nova narrativa"
