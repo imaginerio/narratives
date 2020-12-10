@@ -135,13 +135,13 @@ const Atlas = ({
           id="selected-case"
           type="line"
           paint={{ 'line-width': 6, 'line-color': '#eeeeee' }}
-          beforeId="overlay"
+          beforeId={activeBasemap ? 'overlay' : 'expressway-label'}
         />
         <Layer
           id="selected-line"
           type="line"
           paint={{ 'line-width': 3, 'line-color': '#000000' }}
-          beforeId="overlay"
+          beforeId={activeBasemap ? 'overlay' : 'expressway-label'}
         />
       </Source>
     </ReactMapGL>

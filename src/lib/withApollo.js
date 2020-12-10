@@ -5,10 +5,10 @@ import withApollo from 'next-with-apollo';
 import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 
 export default withApollo(
-  ({ initialState, headers }) => {
+  ({ headers }) => {
     return new ApolloClient({
       uri: '/admin/api',
-      cache: new InMemoryCache().restore(initialState || {}),
+      cache: new InMemoryCache(),
       request: operation => {
         operation.setContext({
           fetchOptions: {

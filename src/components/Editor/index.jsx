@@ -78,7 +78,7 @@ const UPDATE_SLIDE_SIZE = gql`
   mutation UpdateSlideSize($slide: ID!, $value: SlideSizeType) {
     updateSlide(id: $slide, data: { size: $value }) {
       id
-      year
+      size
     }
   }
 `;
@@ -126,6 +126,7 @@ const UPDATE_LAYERS = gql`
     updateSlide(id: $slide, data: { layers: $layers }) {
       id
       layers {
+        id
         layerId
       }
     }
@@ -137,6 +138,7 @@ const UPDATE_BASEMAP = gql`
     updateSlide(id: $slide, data: { basemap: $basemap }) {
       id
       basemap {
+        id
         ssid
       }
     }
@@ -229,17 +231,229 @@ const Editor = ({ slide, layers, basemaps }) => {
   const [addImage] = useMutation(ADD_IMAGE);
   const [updateImage] = useMutation(UPDATE_IMAGE);
 
-  const updateTimer = useRef();
-  const updateInterval = (value, updater, id, interval = 500) => {
-    clearTimeout(updateTimer.current);
-    updateTimer.current = setTimeout(() => {
-      updater({
+  const titleTimer = useRef();
+  const onTitleChange = newTitle => {
+    clearTimeout(titleTimer.current);
+    titleTimer.current = setTimeout(() => {
+      updateTitle({
         variables: {
-          ...id,
-          ...value,
+          slide,
+          value: newTitle,
+        },
+        optimisticResponse: {
+          __typename: 'Mutation',
+          updateSlide: {
+            __typename: 'Slide',
+            id: slide,
+            title: newTitle,
+          },
         },
       });
-    }, interval);
+    }, 500);
+  };
+
+  const descriptionTimer = useRef();
+  const onDescriptionChange = newDescription => {
+    clearTimeout(descriptionTimer.current);
+    descriptionTimer.current = setTimeout(() => {
+      updateDescription({
+        variables: {
+          slide,
+          value: newDescription,
+        },
+        optimisticResponse: {
+          __typename: 'Mutation',
+          updateSlide: {
+            __typename: 'Slide',
+            id: slide,
+            description: newDescription,
+          },
+        },
+      });
+    }, 500);
+  };
+
+  const yearTimer = useRef();
+  const onYearChange = newYear => {
+    clearTimeout(yearTimer.current);
+    yearTimer.current = setTimeout(() => {
+      updateYear({
+        variables: {
+          slide,
+          value: newYear,
+        },
+        optimisticResponse: {
+          __typename: 'Mutation',
+          updateSlide: {
+            __typename: 'Slide',
+            id: slide,
+            year: newYear,
+          },
+        },
+      });
+    }, 500);
+  };
+
+  const sizeTimer = useRef();
+  const onSizeChange = newSize => {
+    clearTimeout(sizeTimer.current);
+    sizeTimer.current = setTimeout(() => {
+      updateSize({
+        variables: {
+          slide,
+          value: newSize,
+        },
+        optimisticResponse: {
+          __typename: 'Mutation',
+          updateSlide: {
+            __typename: 'Slide',
+            id: slide,
+            size: newSize,
+          },
+        },
+      });
+    }, 500);
+  };
+
+  const featureTimer = useRef();
+  const onFeatureChange = newFeature => {
+    clearTimeout(featureTimer.current);
+    featureTimer.current = setTimeout(() => {
+      updateFeature({
+        variables: {
+          slide,
+          value: newFeature,
+        },
+        optimisticResponse: {
+          __typename: 'Mutation',
+          updateSlide: {
+            __typename: 'Slide',
+            id: slide,
+            selectedFeature: newFeature,
+          },
+        },
+      });
+    }, 500);
+  };
+
+  const viewportTimer = useRef();
+  const onViewportChange = newViewport => {
+    clearTimeout(viewportTimer.current);
+    viewportTimer.current = setTimeout(() => {
+      updateViewport({
+        variables: {
+          slide,
+          ...newViewport,
+        },
+        optimisticResponse: {
+          __typename: 'Mutation',
+          updateSlide: {
+            __typename: 'Slide',
+            id: slide,
+            ...newViewport,
+          },
+        },
+      });
+    }, 500);
+  };
+
+  const layersTimer = useRef();
+  const onLayersChange = newLayers => {
+    clearTimeout(layersTimer.current);
+    layersTimer.current = setTimeout(() => {
+      updateLayers({
+        variables: {
+          slide,
+          layers: {
+            connect: newLayers.map(nl => ({ id: nl.id })),
+            disconnectAll: true,
+          },
+        },
+        optimisticResponse: {
+          __typename: 'Mutation',
+          updateSlide: {
+            __typename: 'Slide',
+            id: slide,
+            layers: newLayers.map(l => ({
+              __typename: 'Layer',
+              ...pick(l, 'id', 'layerId'),
+            })),
+          },
+        },
+      });
+    }, 500);
+  };
+
+  const basemapTimer = useRef();
+  const onBasemapChange = newBasemap => {
+    clearTimeout(basemapTimer.current);
+    basemapTimer.current = setTimeout(() => {
+      let basemap = { disconnectAll: true };
+      if (newBasemap) {
+        basemap = {
+          connect: { id: newBasemap.id },
+        };
+      }
+      updateBasemap({
+        variables: {
+          slide,
+          basemap,
+          optimisticResponse: {
+            __typename: 'Mutation',
+            updateSlide: {
+              __typename: 'Slide',
+              id: slide,
+              basemap: {
+                __typename: 'Basemap',
+                ...pick(newBasemap, 'id', 'ssid'),
+              },
+            },
+          },
+        },
+      });
+    }, 500);
+  };
+
+  const opacityTimer = useRef();
+  const onOpacityChange = newOpacity => {
+    clearTimeout(opacityTimer.current);
+    opacityTimer.current = setTimeout(() => {
+      updateOpacity({
+        variables: {
+          slide,
+          value: newOpacity,
+        },
+        optimisticResponse: {
+          __typename: 'Mutation',
+          updateSlide: {
+            __typename: 'Slide',
+            id: slide,
+            opacity: newOpacity,
+          },
+        },
+      });
+    }, 500);
+  };
+
+  const imageTimer = useRef();
+  const onImageChange = (image, imageValues) => {
+    clearTimeout(imageTimer.current);
+    imageTimer.current = setTimeout(() => {
+      updateImage({
+        variables: {
+          image,
+          ...imageValues,
+        },
+        optimisticResponse: {
+          __typename: 'Mutation',
+          updateImage: {
+            __typename: 'Image',
+            id: image,
+            ...imageValues,
+          },
+        },
+      });
+    }, 500);
   };
 
   if (loading) return <p>Loading...</p>;
@@ -256,7 +470,7 @@ const Editor = ({ slide, layers, basemaps }) => {
                 value={title}
                 onChange={(e, { value }) => {
                   setTitle(value);
-                  updateInterval({ value }, updateTitle, { slide });
+                  onTitleChange(value);
                 }}
               />
             </Form.Field>
@@ -275,7 +489,7 @@ const Editor = ({ slide, layers, basemaps }) => {
                 }}
                 onEditorChange={value => {
                   setDescription(value);
-                  updateInterval({ value }, updateDescription, { slide });
+                  onDescriptionChange(value);
                 }}
               />
             </Form.Field>
@@ -293,7 +507,7 @@ const Editor = ({ slide, layers, basemaps }) => {
                 ]}
                 onChange={(e, { value }) => {
                   setSize(value);
-                  updateInterval({ value }, updateSize, { slide });
+                  onSizeChange(value);
                 }}
               />
             </Form.Field>
@@ -312,9 +526,7 @@ const Editor = ({ slide, layers, basemaps }) => {
                     },
                   }).then(() => refetch)
                 }
-                updateHandler={(id, values, interval) =>
-                  updateInterval(values, updateImage, { image: id }, interval)
-                }
+                updateHandler={onImageChange}
               />
             </Form.Field>
           </Form>
@@ -325,7 +537,7 @@ const Editor = ({ slide, layers, basemaps }) => {
               <Atlas
                 handler={newViewport => {
                   setViewport(newViewport);
-                  updateInterval(newViewport, updateViewport, { slide });
+                  onViewportChange(newViewport);
                 }}
                 viewport={viewport}
                 year={year}
@@ -338,7 +550,7 @@ const Editor = ({ slide, layers, basemaps }) => {
                 year={year}
                 yearHandler={newYear => {
                   setYear(newYear);
-                  updateInterval({ value: newYear }, updateYear, { slide });
+                  onYearChange(newYear);
                 }}
                 layers={layers}
                 basemaps={basemaps}
@@ -346,44 +558,20 @@ const Editor = ({ slide, layers, basemaps }) => {
                 activeBasemap={activeBasemap}
                 layerHandler={newLayers => {
                   setDisabledLayers(newLayers);
-                  updateInterval(
-                    {
-                      layers: {
-                        connect: newLayers.map(nl => ({ id: nl.id })),
-                        disconnectAll: true,
-                      },
-                    },
-                    updateLayers,
-                    { slide }
-                  );
+                  onLayersChange(newLayers);
                 }}
                 basemapHandler={newBasemap => {
-                  let basemap;
-                  if (newBasemap) {
-                    setActiveBasemap(newBasemap);
-                    basemap = {
-                      connect: { id: newBasemap.id },
-                    };
-                  } else {
-                    basemap = { disconnectAll: true };
-                    setActiveBasemap(null);
-                  }
-                  updateInterval(
-                    {
-                      basemap,
-                    },
-                    updateBasemap,
-                    { slide }
-                  );
+                  setActiveBasemap(newBasemap);
+                  onBasemapChange(newBasemap);
                 }}
                 opacityHandler={newOpacity => {
                   setOpacity(newOpacity);
-                  updateInterval({ value: newOpacity }, updateOpacity, { slide });
+                  onOpacityChange(newOpacity);
                 }}
                 opacity={opacity}
                 featureHandler={newFeature => {
                   setSelectedFeature(newFeature);
-                  updateInterval({ value: newFeature }, updateFeature, { slide }, 1);
+                  onFeatureChange(newFeature);
                 }}
               />
             </>
