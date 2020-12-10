@@ -122,12 +122,27 @@ const Atlas = ({
           ]}
           scheme="tms"
         >
-          <Layer id="overlay" type="raster" paint={{ 'raster-opacity': opacity }} />
+          <Layer
+            id="overlay"
+            type="raster"
+            paint={{ 'raster-opacity': opacity }}
+            beforeId="expressway-label"
+          />
         </Source>
       )}
       <Source type="geojson" data={featureData}>
-        <Layer id="selected" type="line" />
-        <Layer id="selected" type="line" />
+        <Layer
+          id="selected-case"
+          type="line"
+          paint={{ 'line-width': 6, 'line-color': '#eeeeee' }}
+          beforeId="overlay"
+        />
+        <Layer
+          id="selected-line"
+          type="line"
+          paint={{ 'line-width': 3, 'line-color': '#000000' }}
+          beforeId="overlay"
+        />
       </Source>
     </ReactMapGL>
   );
