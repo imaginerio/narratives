@@ -75,6 +75,7 @@ module.exports = {
     },
     opacity: {
       type: Float,
+      defaultValue: 1,
     },
     image: {
       type: Relationship,
