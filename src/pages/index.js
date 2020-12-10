@@ -14,6 +14,9 @@ const GET_PROJECTS = gql`
       tags {
         name
       }
+      user {
+        name
+      }
     }
   }
 `;
@@ -41,6 +44,7 @@ const Projects = () => {
               <Card.Content>
                 <Card.Header>{proj.title}</Card.Header>
                 <Card.Meta>{proj.category}</Card.Meta>
+                <Card.Description>{proj.user.name}</Card.Description>
               </Card.Content>
               <Card.Content extra>
                 <Popup content={proj.description} trigger={<Icon name="info circle" />} />

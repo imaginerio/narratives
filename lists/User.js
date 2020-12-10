@@ -22,34 +22,55 @@ const access = { userIsAdmin, userOwnsItem, userIsAdminOrOwner };
 
 module.exports = {
   fields: {
-    name: { type: Text },
+    name: {
+      type: Text,
+      access: {
+        read: true,
+        update: access.userIsAdminOrOwner,
+        create: access.userIsAdmin,
+        delete: access.userIsAdmin,
+      },
+    },
     email: {
       type: Text,
       isUnique: true,
+      access: {
+        read: access.userIsAdminOrOwner,
+        update: access.userIsAdminOrOwner,
+        create: access.userIsAdmin,
+        delete: access.userIsAdmin,
+      },
     },
     isAdmin: {
       type: Checkbox,
       // Field-level access controls
       // Here, we set more restrictive field access so a non-admin cannot make themselves admin.
       access: {
+        read: access.userIsAdminOrOwner,
         update: access.userIsAdmin,
+        create: access.userIsAdmin,
+        delete: access.userIsAdmin,
       },
     },
     password: {
       type: Password,
+      access: {
+        read: access.userIsAdminOrOwner,
+        update: access.userIsAdminOrOwner,
+        create: access.userIsAdmin,
+        delete: access.userIsAdmin,
+      },
     },
     projects: {
       type: Relationship,
       ref: 'Project.user',
       many: true,
+      access: {
+        read: access.userIsAdminOrOwner,
+        update: access.userIsAdminOrOwner,
+        create: access.userIsAdmin,
+        delete: access.userIsAdmin,
+      },
     },
-  },
-  // List-level access controls
-  access: {
-    read: access.userIsAdminOrOwner,
-    update: access.userIsAdminOrOwner,
-    create: access.userIsAdmin,
-    delete: access.userIsAdmin,
-    auth: true,
   },
 };
