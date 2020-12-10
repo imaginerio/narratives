@@ -26,7 +26,7 @@ const Basemaps = ({ activeBasemap, basemaps, basemapHandler, opacityHandler, opa
 
   return (
     <div>
-      <h3 style={{ marginTop: 0 }}>Overlays</h3>
+      <h3 style={{ marginTop: 0 }}>Maps / Plans / Aerials</h3>
       <Dropdown
         placeholder="Select overlay"
         fluid

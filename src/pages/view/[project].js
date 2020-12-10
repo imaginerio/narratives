@@ -111,12 +111,36 @@ const View = () => {
                   {slide.image && slide.image.url && (
                     <Image src={slide.image.url} wrapped ui={false} />
                   )}
-                  <Card.Content>
-                    {slide.title && <Card.Header>{slide.title}</Card.Header>}
-                    {slide.description && (
-                      <Card.Description>{parse(slide.description)}</Card.Description>
+                  {slide.image &&
+                    (slide.image.title ||
+                      slide.image.creatort ||
+                      slide.image.date ||
+                      slide.image.source) && (
+                      <div
+                        style={{
+                          backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                          lineHeight: '25px',
+                          marginTop: -25,
+                          paddingLeft: 15,
+                          position: 'relative',
+                        }}
+                      >
+                        <i>{slide.image.title}</i>
+                        <span>: </span>
+                        <span>{` ${slide.image.creator || ''}`}</span>
+                        <span>{` ${slide.image.date || ''}`}</span>
+                        <span>&nbsp;</span>
+                        <span>{` ${slide.image.source || ''}`}</span>
+                      </div>
                     )}
-                  </Card.Content>
+                  {(slide.title || slide.description) && (
+                    <Card.Content>
+                      {slide.title && <Card.Header>{slide.title}</Card.Header>}
+                      {slide.description && (
+                        <Card.Description>{parse(slide.description)}</Card.Description>
+                      )}
+                    </Card.Content>
+                  )}
                 </Card>
               </div>
             </Step>
