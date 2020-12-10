@@ -37,7 +37,6 @@ const Layers = ({
             name="close"
             onClick={() => setOpen(false)}
           />
-          <h3 style={{ marginTop: 0 }}>Layers</h3>
           <Basemaps
             basemaps={basemaps}
             basemapHandler={basemapHandler}
@@ -46,7 +45,8 @@ const Layers = ({
             opacity={opacity}
             year={year}
           />
-          <Form.Group>
+          <Form.Group style={{ borderTop: '1px solid #ccc', marginTop: 15, paddingTop: 15 }}>
+            <h3 style={{ marginTop: 0 }}>Layers</h3>
             {layers.map(layer => (
               <Form.Field
                 className={styles.layerCheck}

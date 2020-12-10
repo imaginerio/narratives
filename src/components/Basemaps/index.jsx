@@ -26,6 +26,7 @@ const Basemaps = ({ activeBasemap, basemaps, basemapHandler, opacityHandler, opa
 
   return (
     <div>
+      <h3 style={{ marginTop: 0 }}>Overlays</h3>
       <Dropdown
         placeholder="Select overlay"
         fluid
@@ -35,6 +36,7 @@ const Basemaps = ({ activeBasemap, basemaps, basemapHandler, opacityHandler, opa
         options={options}
         onChange={(e, { value }) => setNewBasemap(value)}
       />
+      <h3>Overlay Opacity</h3>
       <Slider
         discrete
         inverted={false}
