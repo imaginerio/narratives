@@ -9,6 +9,8 @@ import styles from './Image.module.css';
 
 const Image = ({ image, addHandler, updateHandler }) => {
   const fileInputRef = useRef(null);
+
+  const [isLoading, setIsLoading] = useState(false);
   const [imageMeta, setImageMeta] = useState({
     title: '',
     creator: '',
@@ -21,10 +23,14 @@ const Image = ({ image, addHandler, updateHandler }) => {
   const getSignedUrl = e => {
     const [file] = e.target.files;
     if (file) {
+      setIsLoading(true);
       return axios.post('/upload', { name: file.name, type: file.type }).then(({ data }) => {
         return axios
           .put(data.signedRequest, file, { headers: { 'Content-Type': file.type } })
-          .then(() => updateHandler(image.id, { url: data.url }, 1));
+          .then(() => {
+            setIsLoading(false);
+            updateHandler(image.id, { url: data.url }, 1);
+          });
       });
     }
     return null;
@@ -52,6 +58,7 @@ const Image = ({ image, addHandler, updateHandler }) => {
                 labelPosition="left"
                 icon="file"
                 onClick={() => fileInputRef.current.click()}
+                  loading={isLoading}
               />
               <input ref={fileInputRef} type="file" hidden onChange={getSignedUrl} />
             </>
