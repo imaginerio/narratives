@@ -1,11 +1,14 @@
 .slideFullscreen{
   width: 100% !important;
+  font-size: 1.25em;
 }
 
 .slideMedium{
   width: 50% !important;
+  font-size: 1.25em;
 }
 
 .slideSmall{
   width: 400px !important;
+  font-size: 1.25em;
 }
