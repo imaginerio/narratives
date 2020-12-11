@@ -20,6 +20,7 @@ const MapControl = ({
   opacityHandler,
   opacity,
   featureHandler,
+  selectedFeature,
 }) => (
   <Segment className={styles.control}>
     <div style={{ float: 'right', width: 85 }}>
@@ -34,7 +35,12 @@ const MapControl = ({
         opacityHandler={opacityHandler}
         opacity={opacity}
       />
-      <Search year={year} layers={layers} handler={featureHandler} />
+      <Search
+        year={year}
+        layers={layers}
+        handler={featureHandler}
+        selectedFeature={selectedFeature}
+      />
     </div>
     <Year year={year} handler={yearHandler} />
   </Segment>
@@ -52,12 +58,14 @@ MapControl.propTypes = {
   featureHandler: PropTypes.func.isRequired,
   opacityHandler: PropTypes.func.isRequired,
   opacity: PropTypes.number,
+  selectedFeature: PropTypes.string,
 };
 
 MapControl.defaultProps = {
   disabledLayers: [],
   activeBasemap: null,
   opacity: 1,
+  selectedFeature: null,
 };
 
 export default MapControl;

@@ -122,20 +122,22 @@ const Atlas = ({
           />
         </Source>
       )}
-      <Source type="geojson" data={featureData}>
-        <Layer
-          id="selected-case"
-          type="line"
-          paint={{ 'line-width': 6, 'line-color': '#eeeeee' }}
-          beforeId={activeBasemap ? 'overlay' : 'expressway-label'}
-        />
-        <Layer
-          id="selected-line"
-          type="line"
-          paint={{ 'line-width': 3, 'line-color': '#000000' }}
-          beforeId={activeBasemap ? 'overlay' : 'expressway-label'}
-        />
-      </Source>
+      {selectedFeature && (
+        <Source type="geojson" data={featureData}>
+          <Layer
+            id="selected-case"
+            type="line"
+            paint={{ 'line-width': 6, 'line-color': '#eeeeee' }}
+            beforeId={activeBasemap ? 'overlay' : 'expressway-label'}
+          />
+          <Layer
+            id="selected-line"
+            type="line"
+            paint={{ 'line-width': 3, 'line-color': '#000000' }}
+            beforeId={activeBasemap ? 'overlay' : 'expressway-label'}
+          />
+        </Source>
+      )}
       {scrollZoom && (
         <div style={{ position: 'absolute', left: 15, top: 100 }}>
           <NavigationControl />

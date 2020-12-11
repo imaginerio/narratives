@@ -573,6 +573,7 @@ const Editor = ({ slide, layers, basemaps }) => {
                   setSelectedFeature(newFeature);
                   onFeatureChange(newFeature);
                 }}
+                selectedFeature={selectedFeature}
               />
             </>
           )}
