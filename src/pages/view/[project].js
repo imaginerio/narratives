@@ -5,7 +5,7 @@ import { getDataFromTree } from '@apollo/react-ssr';
 import { pick } from 'lodash';
 import { Scrollama, Step } from 'react-scrollama';
 import { FlyToInterpolator } from 'react-map-gl';
-import { Card, Image } from 'semantic-ui-react';
+import { Card, Header, Image } from 'semantic-ui-react';
 import parse from 'html-react-parser';
 import withApollo from '../../lib/withApollo';
 
@@ -21,6 +21,9 @@ const GET_PROJECT = gql`
       source
       date
       url
+      user {
+        name
+      }
       slides {
         id
         title
@@ -69,6 +72,30 @@ const View = () => {
   if (loading || !project) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
 
+  const getCaption = image => {
+    if (image.title || image.creator || image.date || image.source) {
+      return (
+        <div
+          style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            lineHeight: '25px',
+            marginTop: -25,
+            paddingLeft: 15,
+            position: 'relative',
+          }}
+        >
+          <i>{image.title}</i>
+          <span>: </span>
+          <span>{` ${image.creator || ''}`}</span>
+          <span>{` ${image.date || ''}`}</span>
+          <span>&nbsp;</span>
+          <span>{` ${image.source || ''}`}</span>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <>
       <div style={{ height: '100vh', width: '100vw', position: 'fixed', top: 0 }}>
@@ -84,7 +111,6 @@ const View = () => {
       </div>
       <div>
         <Scrollama
-          debug
           onStepEnter={step => {
             const newViewport = pick(step.data, [
               'longitude',
@@ -104,35 +130,46 @@ const View = () => {
             setSelectedFeature(step.data.selectedFeature);
           }}
         >
+          <Step data={{ ...data.Project.slides[0], index: 0 }}>
+            <div style={{ padding: '25vh 80px 25vh 80px' }}>
+              <Card fluid className="slideMedium">
+                <Card.Content>
+                  <Card.Header style={{ fontSize: '1.5em', textAlign: 'center' }}>
+                    {data.Project.title}
+                  </Card.Header>
+                  <Header as="h3" style={{ textAlign: 'center' }}>
+                    {`Author: ${data.Project.user.name}`}
+                  </Header>
+                  {data.Project.url && (
+                    <>
+                      <Image src={data.Project.url} style={{ marginTop: 20 }} />
+                      {getCaption({ ...data.Project, title: data.Project.imageTitle })}
+                    </>
+                  )}
+                  {data.Project.description && (
+                    <Card.Description style={{ marginTop: 20 }}>
+                      {data.Project.description}
+                    </Card.Description>
+                  )}
+                </Card.Content>
+              </Card>
+            </div>
+          </Step>
           {data.Project.slides.map((slide, i) => (
-            <Step key={slide.id} data={{ ...slide, index: i }}>
-              <div style={{ padding: '25vh 80px 25vh 80px' }}>
+            <Step key={slide.id} data={{ ...slide, index: i + 1 }}>
+              <div
+                style={{
+                  paddingTop: '25vh',
+                  paddingRight: 80,
+                  paddingBottom: i + 1 === data.Project.slides.length ? '75vh' : '25vh',
+                  paddingLeft: 80,
+                }}
+              >
                 <Card fluid className={`slide${slide.size}`}>
                   {slide.image && slide.image.url && (
                     <Image src={slide.image.url} wrapped ui={false} />
                   )}
-                  {slide.image &&
-                    (slide.image.title ||
-                      slide.image.creatort ||
-                      slide.image.date ||
-                      slide.image.source) && (
-                      <div
-                        style={{
-                          backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                          lineHeight: '25px',
-                          marginTop: -25,
-                          paddingLeft: 15,
-                          position: 'relative',
-                        }}
-                      >
-                        <i>{slide.image.title}</i>
-                        <span>: </span>
-                        <span>{` ${slide.image.creator || ''}`}</span>
-                        <span>{` ${slide.image.date || ''}`}</span>
-                        <span>&nbsp;</span>
-                        <span>{` ${slide.image.source || ''}`}</span>
-                      </div>
-                    )}
+                  {slide.image && getCaption(slide.image)}
                   {(slide.title || slide.description) && (
                     <Card.Content>
                       {slide.title && <Card.Header>{slide.title}</Card.Header>}
