@@ -354,7 +354,7 @@ const Editor = ({ slide, layers, basemaps }) => {
           },
         },
       });
-    }, 500);
+    }, 1000);
   };
 
   const layersTimer = useRef();

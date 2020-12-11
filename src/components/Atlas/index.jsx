@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import ReactMapGL, { Source, Layer } from 'react-map-gl';
+import ReactMapGL, { Source, Layer, NavigationControl } from 'react-map-gl';
 import axios from 'axios';
 import { map as mapProp } from 'lodash';
 
@@ -15,8 +15,6 @@ const Atlas = ({
   opacity,
 }) => {
   const mapRef = useRef(null);
-
-  const [mapViewport, setMapViewport] = useState(viewport);
   const [featureData, setFeatureData] = useState(null);
 
   const setMapYear = () => {
@@ -75,7 +73,6 @@ const Atlas = ({
     }
   };
 
-  useEffect(() => setMapViewport(viewport), [viewport]);
   useEffect(setMapYear, [year]);
   useEffect(setDisabledLayers, [disabledLayers]);
 
@@ -91,15 +88,10 @@ const Atlas = ({
     }
   }, [selectedFeature]);
 
-  const onViewportChange = nextViewport => {
-    setMapViewport(nextViewport);
-    handler(nextViewport);
-  };
-
   const onMapLoad = () => {
     setMapYear();
     setDisabledLayers();
-    onViewportChange(viewport);
+    // onViewportChange(viewport);
   };
 
   return (
@@ -110,8 +102,8 @@ const Atlas = ({
       width="100%"
       height="100%"
       scrollZoom={scrollZoom}
-      {...mapViewport}
-      onViewportChange={onViewportChange}
+      {...viewport}
+      onViewportChange={handler}
       onLoad={onMapLoad}
     >
       {activeBasemap && (
@@ -144,6 +136,11 @@ const Atlas = ({
           beforeId={activeBasemap ? 'overlay' : 'expressway-label'}
         />
       </Source>
+      {scrollZoom && (
+        <div style={{ position: 'absolute', left: 15, top: 100 }}>
+          <NavigationControl />
+        </div>
+      )}
     </ReactMapGL>
   );
 };
