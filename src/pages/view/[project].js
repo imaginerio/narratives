@@ -103,7 +103,7 @@ const View = () => {
           handler={() => null}
           year={year}
           viewport={viewport}
-          scrollZoom={false}
+          viewer
           activeBasemap={activeBasemap}
           opacity={opacity}
           selectedFeature={selectedFeature}

@@ -8,13 +8,15 @@ const Atlas = ({
   handler,
   viewport,
   year,
-  scrollZoom,
+  viewer,
   disabledLayers,
   selectedFeature,
   activeBasemap,
   opacity,
 }) => {
   const mapRef = useRef(null);
+
+  const [mapViewport, setMapViewport] = useState(viewport);
   const [featureData, setFeatureData] = useState(null);
 
   const setMapYear = () => {
@@ -73,6 +75,7 @@ const Atlas = ({
     }
   };
 
+  useEffect(() => setMapViewport(viewport), [viewport]);
   useEffect(setMapYear, [year]);
   useEffect(setDisabledLayers, [disabledLayers]);
 
@@ -88,24 +91,45 @@ const Atlas = ({
     }
   }, [selectedFeature]);
 
+  const onViewportChange = nextViewport => {
+    setMapViewport(nextViewport);
+    handler(nextViewport);
+  };
+
   const onMapLoad = () => {
     setMapYear();
     setDisabledLayers();
-    // onViewportChange(viewport);
+    onViewportChange(viewport);
+  };
+
+  const getMapProps = () => {
+    let props = {
+      ref: mapRef,
+      mapboxApiAccessToken: 'pk.eyJ1IjoiYXhpc21hcHMiLCJhIjoieUlmVFRmRSJ9.CpIxovz1TUWe_ecNLFuHNg',
+      mapStyle: '/style.json',
+      width: '100%',
+      height: '100%',
+      onLoad: onMapLoad,
+    };
+    if (viewer) {
+      props = {
+        ...props,
+        ...mapViewport,
+        scrollZoom: false,
+        onViewportChange,
+      };
+    } else {
+      props = {
+        ...props,
+        ...viewport,
+        onViewportChange: handler,
+      };
+    }
+    return props;
   };
 
   return (
-    <ReactMapGL
-      ref={mapRef}
-      mapboxApiAccessToken="pk.eyJ1IjoiYXhpc21hcHMiLCJhIjoieUlmVFRmRSJ9.CpIxovz1TUWe_ecNLFuHNg"
-      mapStyle="/style.json"
-      width="100%"
-      height="100%"
-      scrollZoom={scrollZoom}
-      {...viewport}
-      onViewportChange={handler}
-      onLoad={onMapLoad}
-    >
+    <ReactMapGL {...getMapProps()}>
       {activeBasemap && (
         <Source
           type="raster"
@@ -138,7 +162,7 @@ const Atlas = ({
           />
         </Source>
       )}
-      {scrollZoom && (
+      {!viewer && (
         <div style={{ position: 'absolute', left: 15, top: 100 }}>
           <NavigationControl />
         </div>
@@ -157,7 +181,7 @@ Atlas.propTypes = {
     pitch: PropTypes.number,
   }).isRequired,
   year: PropTypes.number.isRequired,
-  scrollZoom: PropTypes.bool,
+  viewer: PropTypes.bool,
   disabledLayers: PropTypes.arrayOf(PropTypes.shape()),
   activeBasemap: PropTypes.shape(),
   selectedFeature: PropTypes.string,
@@ -165,7 +189,7 @@ Atlas.propTypes = {
 };
 
 Atlas.defaultProps = {
-  scrollZoom: true,
+  viewer: false,
   disabledLayers: [],
   activeBasemap: null,
   selectedFeature: null,
