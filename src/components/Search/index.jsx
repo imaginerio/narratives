@@ -52,7 +52,12 @@ const Search = ({ year, handler, selectedFeature }) => {
       <Button icon="search" onClick={() => setOpen(!open)} style={{ display: 'inline-block' }} />
       {open && (
         <Segment className={styles.searchMenu} style={{ paddingTop: 20, paddingBottom: 20 }}>
-          <Header as="h4" style={{ marginLeft: 5 }}>
+          <Icon
+            style={{ position: 'absolute', right: 10, cursor: 'pointer' }}
+            name="close"
+            onClick={() => setOpen(false)}
+          />
+          <Header as="h3" style={{ marginLeft: 5, marginTop: 0 }}>
             Search by name
           </Header>
           <SeachBar
