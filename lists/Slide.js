@@ -1,5 +1,7 @@
 const { Text, Relationship, Float, Integer, Select } = require('@keystonejs/fields');
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
+const { gql } = require('apollo-server-express');
+const { last } = require('lodash');
 
 const defaultAuth = ({ authentication: { item } }) => {
   if (item) {
@@ -89,4 +91,29 @@ module.exports = {
     },
   },
   labelField: 'title',
+  hooks: {
+    resolveInput: async ({ operation, resolvedData, context }) => {
+      if (operation === 'create') {
+        const {
+          data: { allSlides },
+        } = await context.executeGraphQL({
+          query: gql`
+            query lastSlide($project: ProjectWhereInput) {
+              allSlides(where: { project: $project }) {
+                year
+                latitude
+                longitude
+                zoom
+                pitch
+                bearing
+              }
+            }
+          `,
+        });
+        const slide = last(allSlides);
+        return { ...resolvedData, ...slide };
+      }
+      return resolvedData;
+    },
+  },
 };
