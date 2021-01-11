@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
 
@@ -6,11 +6,12 @@ import Slide from '../Slide';
 
 import styles from './Slides.module.css';
 
-const Slides = ({ slides, active, handler }) => {
+const Slides = ({ slides, active, handler, onUpdate }) => {
   const [cards, setCards] = useState(slides);
   const moveCard = useCallback(
     (dragIndex, hoverIndex) => {
       const dragCard = cards[dragIndex];
+      console.log(hoverIndex);
       setCards(
         update(cards, {
           $splice: [
@@ -20,19 +21,21 @@ const Slides = ({ slides, active, handler }) => {
         })
       );
     },
-    [slides]
+    [cards]
   );
+
+  useEffect(() => {});
 
   return (
     <div className={styles.slides}>
-      {cards.map(slide => {
+      {cards.map((slide, i) => {
         const color = slide.id === active ? { color: 'blue' } : {};
         return (
           <Slide
             key={slide.id}
             id={slide.id}
             title={slide.title}
-            index={slide.order}
+            index={i}
             color={color}
             moveCard={moveCard}
             handler={handler}
@@ -47,6 +50,7 @@ Slides.propTypes = {
   slides: PropTypes.arrayOf(PropTypes.shape()),
   active: PropTypes.string,
   handler: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func.isRequired,
 };
 
 Slides.defaultProps = {
