@@ -1,0 +1,17 @@
+.slide{
+  min-height: 100px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.slideTitle{
+  text-align: center;
+  margin-top: -10px;
+}
+
+.slideNumber{
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+}

@@ -1,27 +1,47 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { Segment } from 'semantic-ui-react';
+import update from 'immutability-helper';
+
+import Slide from '../Slide';
 
 import styles from './Slides.module.css';
 
-const Slides = ({ slides, active, handler }) => (
-  <div className={styles.slides}>
-    {slides.map((slide, i) => {
-      const color = slide.id === active ? { color: 'blue' } : {};
-      return (
-        <Segment
-          key={slide.id}
-          className={styles.slide}
-          {...color}
-          onClick={() => handler(slide.id)}
-        >
-          <div className={styles.slideTitle}>{slide.title}</div>
-          <div className={styles.slideNumber}>{i}</div>
-        </Segment>
+const Slides = ({ slides, active, handler }) => {
+  const [cards, setCards] = useState(slides);
+  const moveCard = useCallback(
+    (dragIndex, hoverIndex) => {
+      const dragCard = cards[dragIndex];
+      setCards(
+        update(cards, {
+          $splice: [
+            [dragIndex, 1],
+            [hoverIndex, 0, dragCard],
+          ],
+        })
       );
-    })}
-  </div>
-);
+    },
+    [slides]
+  );
+
+  return (
+    <div className={styles.slides}>
+      {cards.map(slide => {
+        const color = slide.id === active ? { color: 'blue' } : {};
+        return (
+          <Slide
+            key={slide.id}
+            id={slide.id}
+            title={slide.title}
+            index={slide.order}
+            color={color}
+            moveCard={moveCard}
+            handler={handler}
+          />
+        );
+      })}
+    </div>
+  );
+};
 
 Slides.propTypes = {
   slides: PropTypes.arrayOf(PropTypes.shape()),

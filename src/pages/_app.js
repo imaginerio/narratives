@@ -1,5 +1,8 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+
 import 'semantic-ui-css/semantic.min.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import './view/view.css';
@@ -7,7 +10,11 @@ import './view/view.css';
 // import App from 'next/app'
 
 function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />;
+  return (
+    <DndProvider backend={HTML5Backend}>
+      <Component {...pageProps} />
+    </DndProvider>
+  );
 }
 
 // Only uncomment this method if you have blocking data requirements for

@@ -16,6 +16,7 @@ const GET_SLIDES = gql`
       slides(sortBy: order_ASC) {
         id
         title
+        order
       }
     }
     allLayers {
