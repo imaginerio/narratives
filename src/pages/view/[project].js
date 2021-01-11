@@ -148,7 +148,7 @@ const View = () => {
                   )}
                   {data.Project.description && (
                     <Card.Description style={{ marginTop: 20 }}>
-                      {data.Project.description}
+                      {parse(data.Project.description)}
                     </Card.Description>
                   )}
                 </Card.Content>
