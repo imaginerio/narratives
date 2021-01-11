@@ -482,10 +482,11 @@ const Editor = ({ slide, layers, basemaps }) => {
                 init={{
                   height: 400,
                   menubar: false,
-                  plugins: ['link lists'],
+                  plugins: ['link lists paste'],
                   toolbar: 'bold italic superscript bullist numlist | link unlink | undo redo',
                   branding: false,
                   statusbar: false,
+                  paste_as_text: true,
                 }}
                 onEditorChange={value => {
                   setDescription(value);
