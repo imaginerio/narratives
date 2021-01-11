@@ -201,7 +201,7 @@ const Editor = ({ slide, layers, basemaps }) => {
   const [year, setYear] = useState(1900);
   const [size, setSize] = useState('Small');
 
-  const { loading, error, data, refetch } = useQuery(GET_SLIDES, {
+  const { loading, error, data } = useQuery(GET_SLIDES, {
     variables: { slide },
   });
 
@@ -524,7 +524,8 @@ const Editor = ({ slide, layers, basemaps }) => {
                         },
                       },
                     },
-                  }).then(() => refetch)
+                    refetchQueries: [{ query: GET_SLIDES, variables: { slide } }],
+                  })
                 }
                 updateHandler={onImageChange}
               />
