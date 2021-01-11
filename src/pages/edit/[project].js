@@ -19,6 +19,11 @@ const GET_SLIDES = gql`
         order
       }
     }
+  }
+`;
+
+const GET_META = gql`
+  query {
     allLayers {
       id
       layerId
@@ -44,6 +49,14 @@ const ADD_SLIDE = gql`
   }
 `;
 
+const DELETE_SLIDE = gql`
+  mutation deleteSlide($id: ID!) {
+    deleteSlide(id: $id) {
+      id
+    }
+  }
+`;
+
 const EDIT_SLIDE_ORDER = gql`
   mutation setOrder($data: [SlidesUpdateInput]) {
     updateSlides(data: $data) {
@@ -60,6 +73,7 @@ const EditPage = () => {
   const [activeSlide, setActiveSlide] = useState(null);
 
   const [addSlide] = useMutation(ADD_SLIDE);
+  const [deleteSlide] = useMutation(DELETE_SLIDE);
   const [editSlideOrder] = useMutation(EDIT_SLIDE_ORDER);
 
   const { loading, error, data, refetch } = useQuery(GET_SLIDES, {
@@ -73,6 +87,7 @@ const EditPage = () => {
       }
     },
   });
+  const meta = useQuery(GET_META);
 
   const newSlide = () =>
     addSlide({
@@ -86,6 +101,14 @@ const EditPage = () => {
       setActiveSlide(createSlide.id);
     });
 
+  const removeSlide = id =>
+    deleteSlide({
+      variables: {
+        id,
+      },
+      refetchQueries: [{ query: GET_SLIDES, variables: { project } }],
+    }).then(() => setActiveSlide(data.Project.slides[0].id));
+
   const updateSlideOrder = newData =>
     editSlideOrder({
       variables: {
@@ -93,7 +116,7 @@ const EditPage = () => {
       },
     });
 
-  if (loading || !project) return <p>Loading...</p>;
+  if (loading || !project || meta.loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
 
   return (
@@ -115,7 +138,12 @@ const EditPage = () => {
           </Grid.Column>
           <Grid.Column width={13} style={{ padding: 0 }}>
             {activeSlide && (
-              <Editor slide={activeSlide} layers={data.allLayers} basemaps={data.allBasemaps} />
+              <Editor
+                slide={activeSlide}
+                layers={meta.data.allLayers}
+                basemaps={meta.data.allBasemaps}
+                removeSlide={removeSlide}
+              />
             )}
           </Grid.Column>
         </Grid.Row>

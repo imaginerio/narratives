@@ -33,10 +33,14 @@ const Slides = ({ slides, active, handler, onUpdate }) => {
     onUpdate(data);
   }, [cards]);
 
+  useEffect(() => {
+    setCards(slides);
+  }, [slides]);
+
   return (
     <div className={styles.slides}>
       {cards.map((slide, i) => {
-        const color = slide.id === active ? { color: 'blue' } : {};
+        const color = slide.id === active ? 'blue' : '';
         return (
           <Slide
             key={slide.id}

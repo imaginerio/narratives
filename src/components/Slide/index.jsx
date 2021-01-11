@@ -55,8 +55,7 @@ const Slide = ({ id, title, index, color, moveCard, handler }) => {
       style={{ opacity }}
       role="button"
       tabIndex={index}
-      className={`ui segment ${styles.slide}`}
-      {...color}
+      className={`ui segment ${styles.slide} ${color}`}
       onClick={() => handler(id)}
       onKeyPress={() => handler(id)}
     >
@@ -70,14 +69,14 @@ Slide.propTypes = {
   id: PropTypes.string.isRequired,
   title: PropTypes.string,
   index: PropTypes.number.isRequired,
-  color: PropTypes.shape({ color: PropTypes.string }),
+  color: PropTypes.string,
   moveCard: PropTypes.func.isRequired,
   handler: PropTypes.func.isRequired,
 };
 
 Slide.defaultProps = {
   title: '',
-  color: {},
+  color: '',
 };
 
 export default Slide;

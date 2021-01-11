@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { pick } from 'lodash';
-import { Grid, Form, Input, Dropdown } from 'semantic-ui-react';
+import { Grid, Form, Input, Dropdown, Button, Icon, Modal, Header } from 'semantic-ui-react';
 import { Editor as Wysiwyg } from '@tinymce/tinymce-react';
 
 import Atlas from '../Atlas';
@@ -190,7 +190,7 @@ const UPDATE_IMAGE = gql`
   }
 `;
 
-const Editor = ({ slide, layers, basemaps }) => {
+const Editor = ({ slide, layers, basemaps, removeSlide }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [viewport, setViewport] = useState({});
@@ -200,6 +200,7 @@ const Editor = ({ slide, layers, basemaps }) => {
   const [opacity, setOpacity] = useState(0);
   const [year, setYear] = useState(1900);
   const [size, setSize] = useState('Small');
+  const [open, setOpen] = useState(false);
 
   const { loading, error, data } = useQuery(GET_SLIDES, {
     variables: { slide },
@@ -497,7 +498,7 @@ const Editor = ({ slide, layers, basemaps }) => {
             <Form.Field>
               <label>Size</label>
               <Dropdown
-                placeholder="Select Friend"
+                placeholder="Select Size"
                 fluid
                 selection
                 value={size}
@@ -530,6 +531,46 @@ const Editor = ({ slide, layers, basemaps }) => {
                 }
                 updateHandler={onImageChange}
               />
+            </Form.Field>
+            <Form.Field>
+              <Modal
+                basic
+                onClose={() => setOpen(false)}
+                onOpen={() => setOpen(true)}
+                open={open}
+                size="small"
+                trigger={
+                  <Button negative fluid labelPosition="left" icon="trash" content="Delete Slide" />
+                }
+              >
+                <Header icon>
+                  <Icon name="trash" />
+                  Delete this slide?
+                </Header>
+                <Modal.Content>
+                  <p>
+                    Are you sure you want to delete this slide? This action is permanent and cannot
+                    be undone.
+                  </p>
+                </Modal.Content>
+                <Modal.Actions>
+                  <Button basic color="red" inverted onClick={() => setOpen(false)}>
+                    <Icon name="remove" />
+                    <span>No</span>
+                  </Button>
+                  <Button
+                    negative
+                    inverted
+                    onClick={() => {
+                      setOpen(false);
+                      removeSlide(slide);
+                    }}
+                  >
+                    <Icon name="trash" />
+                    <span>Yes</span>
+                  </Button>
+                </Modal.Actions>
+              </Modal>
             </Form.Field>
           </Form>
         </Grid.Column>
@@ -589,6 +630,7 @@ Editor.propTypes = {
   slide: PropTypes.string.isRequired,
   layers: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   basemaps: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  removeSlide: PropTypes.func.isRequired,
 };
 
 export default Editor;
