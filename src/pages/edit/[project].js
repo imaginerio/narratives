@@ -44,6 +44,15 @@ const ADD_SLIDE = gql`
   }
 `;
 
+const EDIT_SLIDE_ORDER = gql`
+  mutation setOrder($data: [SlidesUpdateInput]) {
+    updateSlides(data: $data) {
+      id
+      order
+    }
+  }
+`;
+
 const EditPage = () => {
   const router = useRouter();
   const { project } = router.query;
@@ -51,6 +60,7 @@ const EditPage = () => {
   const [activeSlide, setActiveSlide] = useState(null);
 
   const [addSlide] = useMutation(ADD_SLIDE);
+  const [editSlideOrder] = useMutation(EDIT_SLIDE_ORDER);
 
   const { loading, error, data, refetch } = useQuery(GET_SLIDES, {
     variables: { project },
@@ -76,6 +86,13 @@ const EditPage = () => {
       setActiveSlide(createSlide.id);
     });
 
+  const updateSlideOrder = newData =>
+    editSlideOrder({
+      variables: {
+        data: newData,
+      },
+    });
+
   if (loading || !project) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
 
@@ -89,7 +106,12 @@ const EditPage = () => {
         </Grid.Row>
         <Grid.Row style={{ paddingTop: 0, paddingBottom: 0 }}>
           <Grid.Column width={3}>
-            <Slides slides={data.Project.slides} active={activeSlide} handler={setActiveSlide} />
+            <Slides
+              slides={data.Project.slides}
+              active={activeSlide}
+              handler={setActiveSlide}
+              onUpdate={updateSlideOrder}
+            />
           </Grid.Column>
           <Grid.Column width={13} style={{ padding: 0 }}>
             {activeSlide && (

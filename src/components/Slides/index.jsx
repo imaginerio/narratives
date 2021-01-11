@@ -11,7 +11,6 @@ const Slides = ({ slides, active, handler, onUpdate }) => {
   const moveCard = useCallback(
     (dragIndex, hoverIndex) => {
       const dragCard = cards[dragIndex];
-      console.log(hoverIndex);
       setCards(
         update(cards, {
           $splice: [
@@ -24,7 +23,15 @@ const Slides = ({ slides, active, handler, onUpdate }) => {
     [cards]
   );
 
-  useEffect(() => {});
+  useEffect(() => {
+    const data = cards.map((c, i) => ({
+      id: c.id,
+      data: {
+        order: i + 1,
+      },
+    }));
+    onUpdate(data);
+  }, [cards]);
 
   return (
     <div className={styles.slides}>

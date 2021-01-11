@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useDrag, useDrop } from 'react-dnd';
-import { Segment } from 'semantic-ui-react';
 
 import ItemTypes from './ItemTypes';
 
@@ -51,11 +50,18 @@ const Slide = ({ id, title, index, color, moveCard, handler }) => {
   drag(drop(ref));
 
   return (
-    <div ref={ref} style={{ opacity }} onClick={handler}>
-      <Segment className={styles.slide} {...color}>
-        <div className={styles.slideTitle}>{title}</div>
-        <div className={styles.slideNumber}>{index}</div>
-      </Segment>
+    <div
+      ref={ref}
+      style={{ opacity }}
+      role="button"
+      tabIndex={index}
+      className={`ui segment ${styles.slide}`}
+      {...color}
+      onClick={() => handler(id)}
+      onKeyPress={() => handler(id)}
+    >
+      <div className={styles.slideTitle}>{title}</div>
+      <div className={styles.slideNumber}>{index}</div>
     </div>
   );
 };
