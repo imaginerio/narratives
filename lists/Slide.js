@@ -95,24 +95,32 @@ module.exports = {
   hooks: {
     resolveInput: async ({ operation, resolvedData, context }) => {
       if (operation === 'create') {
+        const { project } = resolvedData;
         const {
-          data: { allSlides },
+          data: {
+            Project: { slides },
+          },
         } = await context.executeGraphQL({
           query: gql`
-            query lastSlide($project: ProjectWhereInput) {
-              allSlides(where: { project: $project }) {
-                year
-                latitude
-                longitude
-                zoom
-                pitch
-                bearing
+            query lastSlide($project: ID!) {
+              Project(where: { id: $project }) {
+                slides(sortBy: order_ASC) {
+                  year
+                  latitude
+                  longitude
+                  zoom
+                  pitch
+                  bearing
+                }
               }
             }
           `,
+          variables: { project },
         });
-        const slide = last(allSlides);
-        return { ...resolvedData, ...slide };
+
+        const slide = last(slides);
+        const order = slides.length;
+        return { ...resolvedData, ...slide, order };
       }
       return resolvedData;
     },

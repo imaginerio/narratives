@@ -13,7 +13,7 @@ const GET_SLIDES = gql`
   query GetSlides($project: ID!) {
     Project(where: { id: $project }) {
       title
-      slides {
+      slides(sortBy: order_ASC) {
         id
         title
       }
