@@ -37,6 +37,7 @@ module.exports = {
     size: {
       type: Select,
       options: 'Fullscreen, Medium, Small',
+      defaultValue: 'Small',
     },
     year: {
       type: Integer,
