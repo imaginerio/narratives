@@ -3,3 +3,12 @@
   font-weight: bold;
   margin-right: 5px;
 }
+
+.yearInput{
+  width: 85px;
+}
+
+.yearSlider{
+  width: calc(100% - 225px);
+  display: inline-block;
+}
