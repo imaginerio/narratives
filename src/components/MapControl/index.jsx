@@ -42,7 +42,14 @@ const MapControl = ({
         selectedFeature={selectedFeature}
       />
     </div>
-    <Year year={year} handler={yearHandler} />
+    <Year
+      year={year}
+      handler={yearHandler}
+      selectedFeature={selectedFeature}
+      activeBasemap={activeBasemap}
+      basemapHandler={basemapHandler}
+      featureHandler={featureHandler}
+    />
   </Segment>
 );
 
