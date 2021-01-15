@@ -4,7 +4,7 @@ import { useQuery, gql } from '@apollo/client';
 import { getDataFromTree } from '@apollo/react-ssr';
 import { pick } from 'lodash';
 import { Scrollama, Step } from 'react-scrollama';
-import { FlyToInterpolator } from 'react-map-gl';
+import { FlyToInterpolator, WebMercatorViewport } from 'react-map-gl';
 import { Card, Header, Image } from 'semantic-ui-react';
 import parse from 'html-react-parser';
 import withApollo from '../../lib/withApollo';
@@ -119,6 +119,17 @@ const View = () => {
               'bearing',
               'pitch',
             ]);
+
+            let xOffset = 0.5;
+            if (step.data.size === 'Medium') xOffset = window.innerWidth * 0.25;
+            if (step.data.size === 'Small') xOffset = 240;
+
+            const wmViewport = new WebMercatorViewport(newViewport);
+            [newViewport.longitude] = wmViewport.getMapCenterByLngLatPosition({
+              lngLat: [step.data.longitude, step.data.latitude],
+              pos: [xOffset, 0],
+            });
+
             if (step.data.index > 0) {
               newViewport.transitionInterpolator = new FlyToInterpolator({ speed: 1.2 });
               newViewport.transitionDuration = 'auto';
