@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
+import { sortBy } from 'lodash';
 
 import Slide from '../Slide';
 
@@ -27,6 +28,7 @@ const Slides = ({ slides, active, handler, onUpdate }) => {
     const data = cards.map((c, i) => ({
       id: c.id,
       data: {
+        title: c.title,
         order: i + 1,
       },
     }));
@@ -34,7 +36,7 @@ const Slides = ({ slides, active, handler, onUpdate }) => {
   }, [cards]);
 
   useEffect(() => {
-    setCards(slides);
+    setCards(sortBy(slides, s => s.order));
   }, [slides]);
 
   return (

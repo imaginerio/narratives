@@ -61,6 +61,7 @@ const EDIT_SLIDE_ORDER = gql`
   mutation setOrder($data: [SlidesUpdateInput]) {
     updateSlides(data: $data) {
       id
+      title
       order
     }
   }
@@ -114,6 +115,16 @@ const EditPage = () => {
       variables: {
         data: newData,
       },
+      optimisticResponse: {
+        __typename: 'Mutation',
+        updateSlides: newData.map(d => ({
+          __typename: 'Slide',
+          id: d.id,
+          title: d.data.title,
+          order: d.data.order,
+        })),
+      },
+      refetchQueries: [{ query: GET_SLIDES, variables: { project } }],
     });
 
   if (loading || !project || meta.loading) return <p>Loading...</p>;
