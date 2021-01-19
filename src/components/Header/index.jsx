@@ -1,40 +1,50 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from 'semantic-ui-react';
+import { useMutation, gql } from '@apollo/client';
+import { Header as Heading } from 'semantic-ui-react';
 
 import styles from './Header.module.css';
 
-const Header = ({ handler, title, project }) => (
-  <div className={styles.header}>
-    <Button
-      className={styles.headerButton}
-      onClick={handler}
-      content="Add Card"
-      icon="plus"
-      labelPosition="left"
-      color="blue"
-    />
-    <Button
-      className={styles.headerButton}
-      content="Preview"
-      icon="play"
-      labelPosition="left"
-      as="a"
-      href={`/view/${project}`}
-      target="_blank"
-    />
-    <div className={styles.title}>{title}</div>
-  </div>
-);
+const UNAUTH_MUTATION = gql`
+  mutation {
+    unauthenticateUser {
+      success
+    }
+  }
+`;
+
+const Header = ({ user }) => {
+  const [signOut, { client }] = useMutation(UNAUTH_MUTATION, {
+    onCompleted: async () => {
+      // Ensure there's no old authenticated data hanging around
+      await client.clearStore();
+      window.location.replace('/');
+    },
+  });
+
+  return (
+    <div className={styles.header}>
+      <Heading className={styles.title}>Rio Story Maps</Heading>
+      {user ? (
+        // eslint-disable-next-line jsx-a11y/anchor-is-valid
+        <a className={styles.logout} onClick={signOut} href="#">
+          Logout
+        </a>
+      ) : (
+        <a className={styles.logout} href="/projects">
+          Login
+        </a>
+      )}
+    </div>
+  );
+};
 
 Header.propTypes = {
-  handler: PropTypes.func.isRequired,
-  title: PropTypes.string,
-  project: PropTypes.string.isRequired,
+  user: PropTypes.string,
 };
 
 Header.defaultProps = {
-  title: null,
+  user: null,
 };
 
 export default Header;

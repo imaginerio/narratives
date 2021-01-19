@@ -5,9 +5,9 @@ import { getDataFromTree } from '@apollo/react-ssr';
 import { Container, Grid } from 'semantic-ui-react';
 import withApollo from '../../lib/withApollo';
 
-import Header from '../../components/Header';
 import Slides from '../../components/Slides';
 import Editor from '../../components/Editor';
+import EditorHeader from '../../components/Editor/EditorHeader';
 
 const GET_SLIDES = gql`
   query GetSlides($project: ID!) {
@@ -135,7 +135,7 @@ const EditPage = () => {
       <Grid>
         <Grid.Row style={{ paddingBottom: 0, zIndex: 2 }}>
           <Grid.Column>
-            <Header title={data.Project.title} handler={newSlide} project={project} />
+            <EditorHeader title={data.Project.title} handler={newSlide} project={project} />
           </Grid.Column>
         </Grid.Row>
         <Grid.Row style={{ paddingTop: 0, paddingBottom: 0 }}>

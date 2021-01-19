@@ -1,7 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useQuery, gql } from '@apollo/client';
-import { Container, Header, Image, Card, Popup, Icon } from 'semantic-ui-react';
+import { Container, Header as Heading, Image, Card, Popup, Icon } from 'semantic-ui-react';
+import parse from 'html-react-parser';
 import withApollo from '../lib/withApollo';
+
+import Header from '../components/Header';
 
 const GET_PROJECTS = gql`
   query GetPublished {
@@ -21,22 +25,27 @@ const GET_PROJECTS = gql`
   }
 `;
 
-const Projects = () => {
+const Home = ({ user }) => {
   const { loading, error, data } = useQuery(GET_PROJECTS);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
 
   return (
-    <>
-      <div style={{ height: 60, lineHeight: '60px', padding: '0 20px', marginTop: -20 }}>
-        <a href="/projects" style={{ display: 'block', float: 'right' }}>
-          Login
-        </a>
-        <h4 style={{ lineHeight: '60px' }}>Rio Story Maps</h4>
-      </div>
-      <Container text style={{ marginTop: 30, marginBottom: 30 }}>
-        <Header as="h1">Map Gallery</Header>
+    <div style={{ backgroundColor: '#FAFAFA', minHeight: '100vh' }}>
+      <Header user={user} />
+      <Container style={{ marginTop: 30, marginBottom: 30 }}>
+        {user && (
+          <a href="/projects" style={{ display: 'block', float: 'right' }}>
+            <span>
+              <Icon name="map outline" />
+              Manage My Maps
+            </span>
+          </a>
+        )}
+        <Heading as="h1" style={{ margin: '50px 0' }}>
+          Map Gallery
+        </Heading>
         <Card.Group itemsPerRow={3}>
           {data.allProjects.map(proj => (
             <Card key={proj.id} href={`/view/${proj.id}`}>
@@ -47,16 +56,37 @@ const Projects = () => {
                 <Card.Description>{proj.user.name}</Card.Description>
               </Card.Content>
               <Card.Content extra>
-                <Popup content={proj.description} trigger={<Icon name="info circle" />} />
-                Map description
+                <Popup
+                  content={proj.description && parse(proj.description)}
+                  // eslint-disable-next-line prettier/prettier, react/jsx-one-expression-per-line
+                  trigger={<span><Icon name="info circle" />Map description</span>}
+                />
               </Card.Content>
             </Card>
           ))}
         </Card.Group>
-        <Image src="img/hrc-logo.png" />
+        <Image src="img/hrc-logo.png" style={{ margin: '50px 0' }} />
       </Container>
-    </>
+    </div>
   );
 };
 
-export default withApollo(Projects);
+Home.propTypes = {
+  user: PropTypes.shape(),
+};
+
+Home.defaultProps = {
+  user: null,
+};
+
+export default withApollo(Home);
+
+export async function getServerSideProps({ req }) {
+  let user = null;
+  if (req.user) user = req.user.id;
+  return {
+    props: {
+      user,
+    },
+  };
+}
