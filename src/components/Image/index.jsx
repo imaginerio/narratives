@@ -1,8 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import { pick } from 'lodash';
 import { Segment, Image as Img, Form, Input, Button } from 'semantic-ui-react';
 
 import styles from './Image.module.css';
@@ -12,13 +11,15 @@ const Image = ({ image, addHandler, updateHandler }) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [imageMeta, setImageMeta] = useState({
-    title: '',
-    creator: '',
-    source: '',
-    date: '',
+    title: image.title,
+    creator: image.creator,
+    source: image.source,
+    date: image.date,
   });
 
-  useEffect(() => setImageMeta(pick(image, Object.keys(imageMeta))), [image]);
+  useEffect(() => {
+    updateHandler(image.id, imageMeta);
+  }, [imageMeta]);
 
   const getSignedUrl = e => {
     const [file] = e.target.files;
@@ -58,7 +59,7 @@ const Image = ({ image, addHandler, updateHandler }) => {
                 labelPosition="left"
                 icon="file"
                 onClick={() => fileInputRef.current.click()}
-                  loading={isLoading}
+                loading={isLoading}
               />
               <input ref={fileInputRef} type="file" hidden onChange={getSignedUrl} />
             </>
@@ -68,10 +69,7 @@ const Image = ({ image, addHandler, updateHandler }) => {
             <Input
               className={styles.inlineInput}
               value={imageMeta.title}
-              onChange={(e, { value }) => {
-                setImageMeta({ ...imageMeta, title: value });
-                updateHandler(image.id, imageMeta);
-              }}
+              onChange={(e, { value }) => setImageMeta({ ...imageMeta, title: value })}
             />
           </Form.Field>
           <Form.Field inline>
@@ -79,10 +77,7 @@ const Image = ({ image, addHandler, updateHandler }) => {
             <Input
               className={styles.inlineInput}
               value={imageMeta.creator}
-              onChange={(e, { value }) => {
-                setImageMeta({ ...imageMeta, creator: value });
-                updateHandler(image.id, imageMeta);
-              }}
+              onChange={(e, { value }) => setImageMeta({ ...imageMeta, creator: value })}
             />
           </Form.Field>
           <Form.Field inline>
@@ -90,10 +85,7 @@ const Image = ({ image, addHandler, updateHandler }) => {
             <Input
               className={styles.inlineInput}
               value={imageMeta.source}
-              onChange={(e, { value }) => {
-                setImageMeta({ ...imageMeta, source: value });
-                updateHandler(image.id, imageMeta);
-              }}
+              onChange={(e, { value }) => setImageMeta({ ...imageMeta, source: value })}
             />
           </Form.Field>
           <Form.Field inline>
@@ -103,7 +95,6 @@ const Image = ({ image, addHandler, updateHandler }) => {
               value={imageMeta.date}
               onChange={(e, { value }) => {
                 setImageMeta({ ...imageMeta, date: value });
-                updateHandler(image.id, imageMeta);
               }}
             />
           </Form.Field>
