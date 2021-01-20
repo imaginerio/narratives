@@ -14,6 +14,8 @@ import {
   Button,
   Divider,
   Image as Img,
+  Modal,
+  Icon,
 } from 'semantic-ui-react';
 import withApollo from '../../lib/withApollo';
 
@@ -96,6 +98,14 @@ const UPDATE_PROJECT = gql`
   }
 `;
 
+const DELETE_PROJECT = gql`
+  mutation DeleteProject($id: ID!) {
+    deleteProject(id: $id) {
+      id
+    }
+  }
+`;
+
 const Create = ({ user }) => {
   const router = useRouter();
   const { project } = router.query;
@@ -103,6 +113,7 @@ const Create = ({ user }) => {
   const { loading, error, data } = useQuery(GET_PROJECT, { variables: { project } });
   const [addTag] = useMutation(ADD_TAG);
   const [updateProject] = useMutation(UPDATE_PROJECT);
+  const [deleteProject] = useMutation(DELETE_PROJECT);
 
   const [tags, setTags] = useState([]);
   const [category, setCategory] = useState(null);
@@ -111,6 +122,7 @@ const Create = ({ user }) => {
   const [imageMeta, setImageMeta] = useState(null);
   const [published, setPublished] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     setTags(loading ? [] : map(data.Project.tags, 'id'));
@@ -149,6 +161,15 @@ const Create = ({ user }) => {
         },
         category,
         published,
+      },
+    }).then(() => window.location.replace('/projects'));
+  };
+
+  const removeProject = id => {
+    setLoading(true);
+    deleteProject({
+      variables: {
+        id,
       },
     }).then(() => window.location.replace('/projects'));
   };
@@ -256,6 +277,52 @@ const Create = ({ user }) => {
             Cancel
           </Button>
         </Form>
+        <div style={{ clear: 'both', margin: 100 }} />
+        <Modal
+          basic
+          onClose={() => setOpen(false)}
+          onOpen={() => setOpen(true)}
+          open={open}
+          size="small"
+          trigger={(
+            <Button
+              negative
+              fluid
+              labelPosition="left"
+              icon="trash"
+              content="Delete Project"
+              disabled={isLoading}
+            />
+          )}
+        >
+          <Heading icon>
+            <Icon name="trash" />
+            Delete this narrative?
+          </Heading>
+          <Modal.Content>
+            <p>
+              Are you sure you want to delete this narrative? This action is permanent and cannot be
+              undone.
+            </p>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button basic color="red" inverted onClick={() => setOpen(false)}>
+              <Icon name="remove" />
+              <span>No</span>
+            </Button>
+            <Button
+              negative
+              inverted
+              onClick={() => {
+                setOpen(false);
+                removeProject(project);
+              }}
+            >
+              <Icon name="trash" />
+              <span>Yes</span>
+            </Button>
+          </Modal.Actions>
+        </Modal>
         <div style={{ clear: 'both', margin: 40 }} />
         <Img src="/img/hrc-logo.png" />
       </Container>
