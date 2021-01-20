@@ -6,6 +6,9 @@ import styles from './EditorHeader.module.css';
 
 const EditorHeader = ({ handler, title, project }) => (
   <div className={styles.header}>
+    <a className={styles.projectLink} href="/projects">
+      My Narratives
+    </a>
     <Button
       className={styles.headerButton}
       onClick={handler}

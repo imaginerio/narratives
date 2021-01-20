@@ -5,8 +5,8 @@
 }
 
 .headerButton{
-  height: 40px;
-  margin: 10px !important;
+  margin: 0 10px !important;
+  top: -2px;
 }
 
 .title{
@@ -14,4 +14,11 @@
   font-size: 18px;
   font-weight: bold;
   margin-left: 10px;
+  line-height: 60px;
+}
+
+.projectLink{
+  float: right;
+  line-height: 60px;
+  margin-right: 10px;
 }
