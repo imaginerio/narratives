@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery, useMutation, gql } from '@apollo/client';
 import { Container, Header as Heading, Segment, Button, Image, Icon } from 'semantic-ui-react';
 import withApollo from '../lib/withApollo';
 
@@ -24,8 +24,49 @@ const GET_PROJECTS = gql`
   }
 `;
 
+const CREATE_PROJECT = gql`
+  mutation AddProject(
+    $title: String
+    $description: String
+    $imageTitle: String
+    $creator: String
+    $source: String
+    $date: String
+    $url: String
+    $tags: TagRelateToManyInput
+    $category: ProjectCategoryType
+  ) {
+    createProject(
+      data: {
+        title: $title
+        description: $description
+        tags: $tags
+        category: $category
+        imageTitle: $imageTitle
+        creator: $creator
+        source: $source
+        date: $date
+        url: $url
+      }
+    ) {
+      id
+    }
+  }
+`;
+
 const Projects = ({ user }) => {
+  const [isLoading, setLoading] = useState(false);
   const { loading, error, data } = useQuery(GET_PROJECTS, { variables: { user } });
+  const [createProject] = useMutation(CREATE_PROJECT);
+
+  const newProject = () => {
+    setLoading(true);
+    createProject({
+      variables: {
+        title: 'Untitled project',
+      },
+    }).then(({ data: { createProject: { id } } }) => window.location.replace(`/project/${id}`));
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
@@ -45,20 +86,21 @@ const Projects = ({ user }) => {
         </Heading>
         <Button
           content="Add Narrative / Nova narrativa"
+          loading={isLoading}
           icon="plus"
           size="large"
           color="blue"
           as="a"
-          href="/create"
+          onClick={newProject}
           style={{ margin: '10px 0 20px' }}
         />
         <Segment.Group>
           {data.allProjects.map(proj => (
             <Segment key={proj.id} style={{ padding: 20 }}>
               {proj.url && <Image src={proj.url} floated="left" style={{ height: 55 }} />}
-              <span style={{ fontWeight: 'bold', fontSize: '1.25em' }}>
+              <a href={`/project/${proj.id}`} style={{ fontWeight: 'bold', fontSize: '1.25em' }}>
                 {`${proj.title}${proj.category ? ` - ${proj.category}` : ''}`}
-              </span>
+              </a>
               <Button
                 floated="right"
                 content="Editor"

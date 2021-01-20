@@ -10,15 +10,17 @@ const Image = ({ image, addHandler, updateHandler }) => {
   const fileInputRef = useRef(null);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [imageMeta, setImageMeta] = useState({
-    title: image.title,
-    creator: image.creator,
-    source: image.source,
-    date: image.date,
-  });
+  const [imageMeta, setImageMeta] = useState(
+    image && {
+      title: image.title,
+      creator: image.creator,
+      source: image.source,
+      date: image.date,
+    }
+  );
 
   useEffect(() => {
-    updateHandler(image.id, imageMeta);
+    if (image) updateHandler(image.id, imageMeta);
   }, [imageMeta]);
 
   const getSignedUrl = e => {
@@ -64,7 +66,7 @@ const Image = ({ image, addHandler, updateHandler }) => {
               <input ref={fileInputRef} type="file" hidden onChange={getSignedUrl} />
             </>
           )}
-          <Form.Field inline style={{ marginTop: 15 }}>
+          <Form.Field inline style={{ marginTop: 15 }} disabled={!image.url}>
             <label className={styles.inlineLabel}>Title</label>
             <Input
               className={styles.inlineInput}
@@ -72,7 +74,7 @@ const Image = ({ image, addHandler, updateHandler }) => {
               onChange={(e, { value }) => setImageMeta({ ...imageMeta, title: value })}
             />
           </Form.Field>
-          <Form.Field inline>
+          <Form.Field inline disabled={!image.url}>
             <label className={styles.inlineLabel}>Creator</label>
             <Input
               className={styles.inlineInput}
@@ -80,7 +82,7 @@ const Image = ({ image, addHandler, updateHandler }) => {
               onChange={(e, { value }) => setImageMeta({ ...imageMeta, creator: value })}
             />
           </Form.Field>
-          <Form.Field inline>
+          <Form.Field inline disabled={!image.url}>
             <label className={styles.inlineLabel}>Source</label>
             <Input
               className={styles.inlineInput}
@@ -88,7 +90,7 @@ const Image = ({ image, addHandler, updateHandler }) => {
               onChange={(e, { value }) => setImageMeta({ ...imageMeta, source: value })}
             />
           </Form.Field>
-          <Form.Field inline>
+          <Form.Field inline disabled={!image.url}>
             <label className={styles.inlineLabel}>Date</label>
             <Input
               className={styles.inlineInput}

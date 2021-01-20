@@ -72,7 +72,7 @@ const Home = ({ user }) => {
 };
 
 Home.propTypes = {
-  user: PropTypes.shape(),
+  user: PropTypes.string,
 };
 
 Home.defaultProps = {
