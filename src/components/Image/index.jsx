@@ -23,6 +23,17 @@ const Image = ({ image, addHandler, updateHandler }) => {
     if (image) updateHandler(image.id, imageMeta);
   }, [imageMeta]);
 
+  useEffect(() => {
+    if (!imageMeta && image) {
+      setImageMeta({
+        title: image.title,
+        creator: image.creator,
+        source: image.source,
+        date: image.date,
+      });
+    }
+  }, [image]);
+
   const getSignedUrl = e => {
     const [file] = e.target.files;
     if (file) {
@@ -70,7 +81,7 @@ const Image = ({ image, addHandler, updateHandler }) => {
             <label className={styles.inlineLabel}>Title</label>
             <Input
               className={styles.inlineInput}
-              value={imageMeta.title}
+              value={imageMeta ? imageMeta.title || '' : ''}
               onChange={(e, { value }) => setImageMeta({ ...imageMeta, title: value })}
             />
           </Form.Field>
@@ -78,7 +89,7 @@ const Image = ({ image, addHandler, updateHandler }) => {
             <label className={styles.inlineLabel}>Creator</label>
             <Input
               className={styles.inlineInput}
-              value={imageMeta.creator}
+              value={imageMeta ? imageMeta.creator || '' : ''}
               onChange={(e, { value }) => setImageMeta({ ...imageMeta, creator: value })}
             />
           </Form.Field>
@@ -86,7 +97,7 @@ const Image = ({ image, addHandler, updateHandler }) => {
             <label className={styles.inlineLabel}>Source</label>
             <Input
               className={styles.inlineInput}
-              value={imageMeta.source}
+              value={imageMeta ? imageMeta.source || '' : ''}
               onChange={(e, { value }) => setImageMeta({ ...imageMeta, source: value })}
             />
           </Form.Field>
@@ -94,7 +105,7 @@ const Image = ({ image, addHandler, updateHandler }) => {
             <label className={styles.inlineLabel}>Date</label>
             <Input
               className={styles.inlineInput}
-              value={imageMeta.date}
+              value={imageMeta ? imageMeta.date || '' : ''}
               onChange={(e, { value }) => {
                 setImageMeta({ ...imageMeta, date: value });
               }}

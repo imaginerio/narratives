@@ -198,6 +198,7 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
   const [disabledLayers, setDisabledLayers] = useState({});
   const [activeBasemap, setActiveBasemap] = useState({});
   const [opacity, setOpacity] = useState(0);
+  const [imageMeta, setImageMeta] = useState(null);
   const [year, setYear] = useState(1900);
   const [size, setSize] = useState('Small');
   const [open, setOpen] = useState(false);
@@ -214,6 +215,7 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
     setDisabledLayers(loading ? [] : data.Slide.disabledLayers);
     setActiveBasemap(loading ? null : data.Slide.basemap);
     setOpacity(loading ? 0 : data.Slide.opacity);
+    setImageMeta(loading === false || data ? data.Slide.image : null);
     setSelectedFeature(loading ? null : data.Slide.selectedFeature);
     setViewport(
       loading ? {} : pick(data.Slide, ['longitude', 'latitude', 'zoom', 'bearing', 'pitch'])
@@ -516,7 +518,7 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
             <Form.Field>
               <label>Image</label>
               <Image
-                image={data.Slide.image}
+                image={imageMeta}
                 addHandler={() =>
                   addImage({
                     variables: {
@@ -529,7 +531,10 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
                     refetchQueries: [{ query: GET_SLIDES, variables: { slide } }],
                   })
                 }
-                updateHandler={onImageChange}
+                updateHandler={(id, value) => {
+                  setImageMeta({ ...imageMeta, ...value });
+                  onImageChange(id, value);
+                }}
               />
             </Form.Field>
             <Form.Field>

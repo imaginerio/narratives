@@ -122,11 +122,11 @@ const Create = ({ user }) => {
       loading
         ? null
         : {
-            title: data.Project.imageTitle || '',
-            creator: data.Project.creator || '',
-            source: data.Project.source || '',
-            date: data.Project.date || '',
-            url: data.Project.url || '',
+            title: data.Project.imageTitle,
+            creator: data.Project.creator,
+            source: data.Project.source,
+            date: data.Project.date,
+            url: data.Project.url,
           }
     );
   }, [loading, data]);
@@ -188,7 +188,10 @@ const Create = ({ user }) => {
           </Form.Field>
           <Form.Field>
             <label>Description</label>
-            <Form.TextArea value={description} onChange={(e, { value }) => setDescription(value)} />
+            <Form.TextArea
+              value={description || ''}
+              onChange={(e, { value }) => setDescription(value)}
+            />
           </Form.Field>
           {imageMeta && (
             <Form.Field>
