@@ -41,7 +41,9 @@ const Search = ({ year, handler, selectedFeature }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await axios.get(`https://search.imaginerio.org/feature/${selectedFeature}`);
+      const { data } = await axios.get(
+        `https://search.imaginerio.org/feature/${selectedFeature}?year=${year}`
+      );
       setFeatureName(data.properties.name);
     };
     if (selectedFeature) fetchData();

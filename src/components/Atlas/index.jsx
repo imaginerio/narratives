@@ -81,7 +81,9 @@ const Atlas = ({
 
   useEffect(() => {
     const loadGeoJSON = async () => {
-      const { data } = await axios.get(`https://search.imaginerio.org/feature/${selectedFeature}`);
+      const { data } = await axios.get(
+        `https://search.imaginerio.org/feature/${selectedFeature}?year=${year}`
+      );
       setFeatureData(data);
     };
     if (selectedFeature) {
