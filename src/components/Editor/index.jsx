@@ -208,17 +208,19 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
   });
 
   useEffect(() => {
-    setTitle(loading ? '' : data.Slide.title || '');
-    setDescription(loading ? '' : data.Slide.description || '');
-    setYear(loading ? 1900 : data.Slide.year);
-    setSize(loading ? 'Small' : data.Slide.size);
-    setDisabledLayers(loading ? [] : data.Slide.disabledLayers);
-    setActiveBasemap(loading ? null : data.Slide.basemap);
-    setOpacity(loading ? 0 : data.Slide.opacity);
-    setImageMeta(loading === false || data ? data.Slide.image : null);
-    setSelectedFeature(loading ? null : data.Slide.selectedFeature);
+    setTitle(loading && !data ? '' : data.Slide.title || '');
+    setDescription(loading && !data ? '' : data.Slide.description || '');
+    setYear(loading && !data ? 1900 : data.Slide.year);
+    setSize(loading && !data ? 'Small' : data.Slide.size);
+    setDisabledLayers(loading && !data ? [] : data.Slide.disabledLayers);
+    setActiveBasemap(loading && !data ? null : data.Slide.basemap);
+    setOpacity(loading && !data ? 0 : data.Slide.opacity);
+    setImageMeta(loading && !data ? null : data.Slide.image);
+    setSelectedFeature(loading && !data ? null : data.Slide.selectedFeature);
     setViewport(
-      loading ? {} : pick(data.Slide, ['longitude', 'latitude', 'zoom', 'bearing', 'pitch'])
+      loading && !data
+        ? {}
+        : pick(data.Slide, ['longitude', 'latitude', 'zoom', 'bearing', 'pitch'])
     );
   }, [loading, data]);
 

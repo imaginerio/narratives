@@ -20,11 +20,7 @@ const Image = ({ image, addHandler, updateHandler }) => {
   );
 
   useEffect(() => {
-    if (image) updateHandler(image.id, imageMeta);
-  }, [imageMeta]);
-
-  useEffect(() => {
-    if (!imageMeta && image) {
+    if (image) {
       setImageMeta({
         title: image.title,
         creator: image.creator,
@@ -82,7 +78,10 @@ const Image = ({ image, addHandler, updateHandler }) => {
             <Input
               className={styles.inlineInput}
               value={imageMeta ? imageMeta.title || '' : ''}
-              onChange={(e, { value }) => setImageMeta({ ...imageMeta, title: value })}
+              onChange={(e, { value }) => {
+                setImageMeta({ ...imageMeta, title: value });
+                updateHandler(image.id, { title: value });
+              }}
             />
           </Form.Field>
           <Form.Field inline disabled={!image.url}>
@@ -90,7 +89,10 @@ const Image = ({ image, addHandler, updateHandler }) => {
             <Input
               className={styles.inlineInput}
               value={imageMeta ? imageMeta.creator || '' : ''}
-              onChange={(e, { value }) => setImageMeta({ ...imageMeta, creator: value })}
+              onChange={(e, { value }) => {
+                setImageMeta({ ...imageMeta, creator: value });
+                updateHandler(image.id, { creator: value });
+              }}
             />
           </Form.Field>
           <Form.Field inline disabled={!image.url}>
@@ -98,7 +100,10 @@ const Image = ({ image, addHandler, updateHandler }) => {
             <Input
               className={styles.inlineInput}
               value={imageMeta ? imageMeta.source || '' : ''}
-              onChange={(e, { value }) => setImageMeta({ ...imageMeta, source: value })}
+              onChange={(e, { value }) => {
+                setImageMeta({ ...imageMeta, source: value });
+                updateHandler(image.id, { source: value });
+              }}
             />
           </Form.Field>
           <Form.Field inline disabled={!image.url}>
@@ -108,6 +113,7 @@ const Image = ({ image, addHandler, updateHandler }) => {
               value={imageMeta ? imageMeta.date || '' : ''}
               onChange={(e, { value }) => {
                 setImageMeta({ ...imageMeta, date: value });
+                updateHandler(image.id, { date: value });
               }}
             />
           </Form.Field>
