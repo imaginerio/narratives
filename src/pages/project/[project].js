@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { omit, map } from 'lodash';
+import { Editor as Wysiwyg } from '@tinymce/tinymce-react';
 import {
   Container,
   Header as Heading,
@@ -209,9 +210,21 @@ const Create = ({ user }) => {
           </Form.Field>
           <Form.Field>
             <label>Description</label>
-            <Form.TextArea
+            <Wysiwyg
+              apiKey="t0o761fz7mpxbpfouwngyrmyh89mhclnprer8e3bdkch7slf"
               value={description || ''}
-              onChange={(e, { value }) => setDescription(value)}
+              init={{
+                height: 400,
+                menubar: false,
+                plugins: ['link lists paste'],
+                toolbar: 'bold italic superscript bullist numlist | link unlink | undo redo',
+                branding: false,
+                statusbar: false,
+                paste_as_text: true,
+              }}
+              onEditorChange={value => {
+                setDescription(value);
+              }}
             />
           </Form.Field>
           {imageMeta && (
