@@ -276,8 +276,8 @@ const Create = ({ user }) => {
           >
             Cancel
           </Button>
+          <div style={{ clear: 'left', margin: 100 }} />
         </Form>
-        <div style={{ clear: 'both', margin: 100 }} />
         <Modal
           basic
           onClose={() => setOpen(false)}
@@ -323,8 +323,7 @@ const Create = ({ user }) => {
             </Button>
           </Modal.Actions>
         </Modal>
-        <div style={{ clear: 'both', margin: 40 }} />
-        <Img src="/img/hrc-logo.png" />
+        <Img src="/img/hrc-logo.png" style={{ marginTop: 60 }} />
       </Container>
     </div>
   );
