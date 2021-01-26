@@ -65,15 +65,6 @@ const UPDATE_SLIDE_DESCRIPTION = gql`
   }
 `;
 
-const UPDATE_SLIDE_YEAR = gql`
-  mutation UpdateSlideYear($slide: ID!, $value: Int) {
-    updateSlide(id: $slide, data: { year: $value }) {
-      id
-      year
-    }
-  }
-`;
-
 const UPDATE_SLIDE_SIZE = gql`
   mutation UpdateSlideSize($slide: ID!, $value: SlideSizeType) {
     updateSlide(id: $slide, data: { size: $value }) {
@@ -227,7 +218,6 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
   const [updateTitle] = useMutation(UPDATE_SLIDE_TITLE);
   const [updateDescription] = useMutation(UPDATE_SLIDE_DESCRIPTION);
   const [updateViewport] = useMutation(UPDATE_VIEWPORT);
-  const [updateYear] = useMutation(UPDATE_SLIDE_YEAR);
   const [updateSize] = useMutation(UPDATE_SLIDE_SIZE);
   const [updateLayers] = useMutation(UPDATE_LAYERS);
   const [updateBasemap] = useMutation(UPDATE_BASEMAP);
@@ -272,27 +262,6 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
             __typename: 'Slide',
             id: slide,
             description: newDescription,
-          },
-        },
-      });
-    }, 500);
-  };
-
-  const yearTimer = useRef();
-  const onYearChange = newYear => {
-    clearTimeout(yearTimer.current);
-    yearTimer.current = setTimeout(() => {
-      updateYear({
-        variables: {
-          slide,
-          value: newYear,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          updateSlide: {
-            __typename: 'Slide',
-            id: slide,
-            year: newYear,
           },
         },
       });
@@ -598,10 +567,7 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
               />
               <MapControl
                 year={year}
-                yearHandler={newYear => {
-                  setYear(newYear);
-                  onYearChange(newYear);
-                }}
+                slide={slide}
                 layers={layers}
                 basemaps={basemaps}
                 disabledLayers={disabledLayers}

@@ -10,7 +10,6 @@ import styles from './MapControl.module.css';
 
 const MapControl = ({
   year,
-  yearHandler,
   layers,
   basemaps,
   disabledLayers,
@@ -19,6 +18,7 @@ const MapControl = ({
   basemapHandler,
   opacityHandler,
   opacity,
+  slide,
   featureHandler,
   selectedFeature,
 }) => (
@@ -42,20 +42,13 @@ const MapControl = ({
         selectedFeature={selectedFeature}
       />
     </div>
-    <Year
-      year={year}
-      handler={yearHandler}
-      selectedFeature={selectedFeature}
-      activeBasemap={activeBasemap}
-      basemapHandler={basemapHandler}
-      featureHandler={featureHandler}
-    />
+    <Year slide={slide} />
   </Segment>
 );
 
 MapControl.propTypes = {
+  slide: PropTypes.string.isRequired,
   year: PropTypes.number.isRequired,
-  yearHandler: PropTypes.func.isRequired,
   layers: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   basemaps: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   disabledLayers: PropTypes.arrayOf(PropTypes.string),
