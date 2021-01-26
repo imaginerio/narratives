@@ -6,7 +6,7 @@ import { pick } from 'lodash';
 import { Grid, Form, Input, Dropdown, Button, Icon, Modal, Header } from 'semantic-ui-react';
 import { Editor as Wysiwyg } from '@tinymce/tinymce-react';
 
-import Atlas from '../Atlas';
+import AtlasContext from '../Atlas/Context';
 import Image from '../Image';
 import MapControl from '../MapControl';
 
@@ -83,35 +83,6 @@ const UPDATE_SLIDE_FEATURE = gql`
   }
 `;
 
-const UPDATE_VIEWPORT = gql`
-  mutation UpdateViewport(
-    $slide: ID!
-    $longitude: Float
-    $latitude: Float
-    $zoom: Float
-    $bearing: Float
-    $pitch: Float
-  ) {
-    updateSlide(
-      id: $slide
-      data: {
-        longitude: $longitude
-        latitude: $latitude
-        zoom: $zoom
-        bearing: $bearing
-        pitch: $pitch
-      }
-    ) {
-      id
-      longitude
-      latitude
-      zoom
-      bearing
-      pitch
-    }
-  }
-`;
-
 const UPDATE_LAYERS = gql`
   mutation UpdateLayers($slide: ID!, $layers: LayerRelateToManyInput) {
     updateSlide(id: $slide, data: { layers: $layers }) {
@@ -184,7 +155,6 @@ const UPDATE_IMAGE = gql`
 const Editor = ({ slide, layers, basemaps, removeSlide }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [viewport, setViewport] = useState({});
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [disabledLayers, setDisabledLayers] = useState({});
   const [activeBasemap, setActiveBasemap] = useState({});
@@ -208,16 +178,10 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
     setOpacity(loading && !data ? 0 : data.Slide.opacity);
     setImageMeta(loading && !data ? null : data.Slide.image);
     setSelectedFeature(loading && !data ? null : data.Slide.selectedFeature);
-    setViewport(
-      loading && !data
-        ? {}
-        : pick(data.Slide, ['longitude', 'latitude', 'zoom', 'bearing', 'pitch'])
-    );
   }, [loading, data]);
 
   const [updateTitle] = useMutation(UPDATE_SLIDE_TITLE);
   const [updateDescription] = useMutation(UPDATE_SLIDE_DESCRIPTION);
-  const [updateViewport] = useMutation(UPDATE_VIEWPORT);
   const [updateSize] = useMutation(UPDATE_SLIDE_SIZE);
   const [updateLayers] = useMutation(UPDATE_LAYERS);
   const [updateBasemap] = useMutation(UPDATE_BASEMAP);
@@ -304,27 +268,6 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
             __typename: 'Slide',
             id: slide,
             selectedFeature: newFeature,
-          },
-        },
-      });
-    }, 500);
-  };
-
-  const viewportTimer = useRef();
-  const onViewportChange = newViewport => {
-    clearTimeout(viewportTimer.current);
-    viewportTimer.current = setTimeout(() => {
-      updateViewport({
-        variables: {
-          slide,
-          ...newViewport,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          updateSlide: {
-            __typename: 'Slide',
-            id: slide,
-            ...newViewport,
           },
         },
       });
@@ -551,48 +494,33 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
           </Form>
         </Grid.Column>
         <Grid.Column width={10} style={{ padding: 0 }}>
-          {viewport.latitude && viewport.longitude && (
-            <>
-              <Atlas
-                handler={newViewport => {
-                  setViewport(newViewport);
-                  onViewportChange(newViewport);
-                }}
-                viewport={viewport}
-                year={year}
-                disabledLayers={disabledLayers}
-                activeBasemap={activeBasemap}
-                opacity={opacity}
-                selectedFeature={selectedFeature}
-              />
-              <MapControl
-                year={year}
-                slide={slide}
-                layers={layers}
-                basemaps={basemaps}
-                disabledLayers={disabledLayers}
-                activeBasemap={activeBasemap}
-                layerHandler={newLayers => {
-                  setDisabledLayers(newLayers);
-                  onLayersChange(newLayers);
-                }}
-                basemapHandler={newBasemap => {
-                  setActiveBasemap(newBasemap);
-                  onBasemapChange(newBasemap);
-                }}
-                opacityHandler={newOpacity => {
-                  setOpacity(newOpacity);
-                  onOpacityChange(newOpacity);
-                }}
-                opacity={opacity}
-                featureHandler={newFeature => {
-                  setSelectedFeature(newFeature);
-                  onFeatureChange(newFeature);
-                }}
-                selectedFeature={selectedFeature}
-              />
-            </>
-          )}
+          <AtlasContext slide={slide} />
+          <MapControl
+            year={year}
+            slide={slide}
+            layers={layers}
+            basemaps={basemaps}
+            disabledLayers={disabledLayers}
+            activeBasemap={activeBasemap}
+            layerHandler={newLayers => {
+              setDisabledLayers(newLayers);
+              onLayersChange(newLayers);
+            }}
+            basemapHandler={newBasemap => {
+              setActiveBasemap(newBasemap);
+              onBasemapChange(newBasemap);
+            }}
+            opacityHandler={newOpacity => {
+              setOpacity(newOpacity);
+              onOpacityChange(newOpacity);
+            }}
+            opacity={opacity}
+            featureHandler={newFeature => {
+              setSelectedFeature(newFeature);
+              onFeatureChange(newFeature);
+            }}
+            selectedFeature={selectedFeature}
+          />
         </Grid.Column>
       </Grid.Row>
     </Grid>
