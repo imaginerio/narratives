@@ -17,6 +17,8 @@ import {
   Image as Img,
   Modal,
   Icon,
+  Dimmer,
+  Loader,
 } from 'semantic-ui-react';
 import withApollo from '../../lib/withApollo';
 
@@ -175,7 +177,12 @@ const Create = ({ user }) => {
     }).then(() => window.location.replace('/projects'));
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading)
+    return (
+      <Dimmer active>
+        <Loader size="huge">Loading</Loader>
+      </Dimmer>
+    );
   if (error) return <p>ERROR</p>;
 
   return (

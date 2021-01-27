@@ -3,7 +3,18 @@ import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { pick } from 'lodash';
-import { Grid, Form, Input, Dropdown, Button, Icon, Modal, Header } from 'semantic-ui-react';
+import {
+  Grid,
+  Form,
+  Input,
+  Dropdown,
+  Button,
+  Icon,
+  Modal,
+  Header,
+  Dimmer,
+  Loader,
+} from 'semantic-ui-react';
 import { Editor as Wysiwyg } from '@tinymce/tinymce-react';
 
 import AtlasContext from '../Atlas/Context';
@@ -373,7 +384,12 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
     }, 500);
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading)
+    return (
+      <Dimmer active>
+        <Loader size="huge">Loading</Loader>
+      </Dimmer>
+    );
   if (error) return <p>Error :(</p>;
 
   return (

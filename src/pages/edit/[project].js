@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { getDataFromTree } from '@apollo/react-ssr';
-import { Container, Grid } from 'semantic-ui-react';
+import { Container, Grid, Dimmer, Loader } from 'semantic-ui-react';
 import withApollo from '../../lib/withApollo';
 
 import Slides from '../../components/Slides';
@@ -127,7 +127,12 @@ const EditPage = () => {
       refetchQueries: [{ query: GET_SLIDES, variables: { project } }],
     });
 
-  if (loading || !project || meta.loading) return <p>Loading...</p>;
+  if (loading || !project || meta.loading)
+    return (
+      <Dimmer active>
+        <Loader size="huge">Loading</Loader>
+      </Dimmer>
+    );
   if (error) return <p>Error :(</p>;
 
   return (
