@@ -24,7 +24,7 @@ const GET_PROJECT = gql`
       user {
         name
       }
-      slides {
+      slides(sortBy: order_ASC) {
         id
         title
         description
