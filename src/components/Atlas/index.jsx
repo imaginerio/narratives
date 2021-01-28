@@ -4,6 +4,8 @@ import ReactMapGL, { Source, Layer, NavigationControl } from 'react-map-gl';
 import axios from 'axios';
 import { map as mapProp } from 'lodash';
 
+import { minZoom, maxZoom } from '../../config/map';
+
 const Atlas = ({
   handler,
   viewport,
@@ -112,6 +114,8 @@ const Atlas = ({
       width: '100%',
       height: '100%',
       onLoad: onMapLoad,
+      minZoom,
+      maxZoom,
     };
     if (viewer) {
       props = {

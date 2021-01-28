@@ -4,6 +4,7 @@ import { useQuery, useMutation, gql } from '@apollo/client';
 import { pick } from 'lodash';
 
 import Atlas from './index';
+import { minZoom, maxZoom, minLon, maxLon, minLat, maxLat } from '../../config/map';
 
 const GET_SLIDE_ATLAS = gql`
   query GetSlideYear($slide: ID!) {
@@ -94,8 +95,14 @@ const AtlasContext = ({ slide }) => {
 
   const onViewportChange = nextViewport => {
     if (nextViewport) {
-      setMapViewport(nextViewport);
-      updateViewport(nextViewport);
+      const clampedPort = {
+        ...nextViewport,
+        longitude: Math.max(minLon, Math.min(maxLon, nextViewport.longitude)),
+        latitude: Math.max(minLat, Math.min(maxLat, nextViewport.latitude)),
+        zoom: Math.max(minZoom, Math.min(maxZoom, nextViewport.zoom)),
+      };
+      setMapViewport(clampedPort);
+      updateViewport(clampedPort);
     }
   };
 
