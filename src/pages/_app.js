@@ -5,7 +5,6 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import 'semantic-ui-css/semantic.min.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import './view/view.css';
 
 // import App from 'next/app'
 

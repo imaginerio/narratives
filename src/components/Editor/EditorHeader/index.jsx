@@ -23,7 +23,7 @@ const EditorHeader = ({ handler, title, project }) => (
       icon="play"
       labelPosition="left"
       as="a"
-      href={`/view/${project}`}
+      href={`/preview/${project}`}
       target="_blank"
     />
     <div className={styles.title}>{title}</div>
