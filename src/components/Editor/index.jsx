@@ -106,27 +106,6 @@ const UPDATE_LAYERS = gql`
   }
 `;
 
-const UPDATE_BASEMAP = gql`
-  mutation UpdateBasemap($slide: ID!, $basemap: BasemapRelateToOneInput) {
-    updateSlide(id: $slide, data: { basemap: $basemap }) {
-      id
-      basemap {
-        id
-        ssid
-      }
-    }
-  }
-`;
-
-const UPDATE_SLIDE_OPACITY = gql`
-  mutation UpdateSlideTitle($slide: ID!, $value: Float) {
-    updateSlide(id: $slide, data: { opacity: $value }) {
-      id
-      opacity
-    }
-  }
-`;
-
 const ADD_IMAGE = gql`
   mutation AddImage($slide: SlideRelateToOneInput) {
     createImage(data: { slide: $slide }) {
@@ -168,8 +147,6 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
   const [description, setDescription] = useState('');
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [disabledLayers, setDisabledLayers] = useState({});
-  const [activeBasemap, setActiveBasemap] = useState({});
-  const [opacity, setOpacity] = useState(0);
   const [imageMeta, setImageMeta] = useState(null);
   const [year, setYear] = useState(1900);
   const [size, setSize] = useState('Small');
@@ -185,8 +162,6 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
     setYear(loading && !data ? 1900 : data.Slide.year);
     setSize(loading && !data ? 'Small' : data.Slide.size);
     setDisabledLayers(loading && !data ? [] : data.Slide.disabledLayers);
-    setActiveBasemap(loading && !data ? null : data.Slide.basemap);
-    setOpacity(loading && !data ? 0 : data.Slide.opacity);
     setImageMeta(loading && !data ? null : data.Slide.image);
     setSelectedFeature(loading && !data ? null : data.Slide.selectedFeature);
   }, [loading, data]);
@@ -195,8 +170,6 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
   const [updateDescription] = useMutation(UPDATE_SLIDE_DESCRIPTION);
   const [updateSize] = useMutation(UPDATE_SLIDE_SIZE);
   const [updateLayers] = useMutation(UPDATE_LAYERS);
-  const [updateBasemap] = useMutation(UPDATE_BASEMAP);
-  const [updateOpacity] = useMutation(UPDATE_SLIDE_OPACITY);
   const [updateFeature] = useMutation(UPDATE_SLIDE_FEATURE);
   const [addImage] = useMutation(ADD_IMAGE);
   const [updateImage] = useMutation(UPDATE_IMAGE);
@@ -306,57 +279,6 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
               __typename: 'Layer',
               ...pick(l, 'id', 'layerId'),
             })),
-          },
-        },
-      });
-    }, 500);
-  };
-
-  const basemapTimer = useRef();
-  const onBasemapChange = newBasemap => {
-    clearTimeout(basemapTimer.current);
-    basemapTimer.current = setTimeout(() => {
-      let basemap = { disconnectAll: true };
-      if (newBasemap) {
-        basemap = {
-          connect: { id: newBasemap.id },
-        };
-      }
-      updateBasemap({
-        variables: {
-          slide,
-          basemap,
-          optimisticResponse: {
-            __typename: 'Mutation',
-            updateSlide: {
-              __typename: 'Slide',
-              id: slide,
-              basemap: {
-                __typename: 'Basemap',
-                ...pick(newBasemap, 'id', 'ssid'),
-              },
-            },
-          },
-        },
-      });
-    }, 500);
-  };
-
-  const opacityTimer = useRef();
-  const onOpacityChange = newOpacity => {
-    clearTimeout(opacityTimer.current);
-    opacityTimer.current = setTimeout(() => {
-      updateOpacity({
-        variables: {
-          slide,
-          value: newOpacity,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          updateSlide: {
-            __typename: 'Slide',
-            id: slide,
-            opacity: newOpacity,
           },
         },
       });
@@ -517,20 +439,10 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
             layers={layers}
             basemaps={basemaps}
             disabledLayers={disabledLayers}
-            activeBasemap={activeBasemap}
             layerHandler={newLayers => {
               setDisabledLayers(newLayers);
               onLayersChange(newLayers);
             }}
-            basemapHandler={newBasemap => {
-              setActiveBasemap(newBasemap);
-              onBasemapChange(newBasemap);
-            }}
-            opacityHandler={newOpacity => {
-              setOpacity(newOpacity);
-              onOpacityChange(newOpacity);
-            }}
-            opacity={opacity}
             featureHandler={newFeature => {
               setSelectedFeature(newFeature);
               onFeatureChange(newFeature);

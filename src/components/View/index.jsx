@@ -49,7 +49,6 @@ const GET_PROJECT = gql`
           layerId
         }
         basemap {
-          id
           ssid
         }
       }
@@ -104,7 +103,7 @@ const View = ({ project, preview }) => {
           year={year}
           viewport={viewport}
           viewer
-          activeBasemap={activeBasemap}
+          activeBasemap={activeBasemap ? activeBasemap.ssid : null}
           opacity={opacity}
           selectedFeature={selectedFeature}
         />

@@ -140,7 +140,7 @@ const Atlas = ({
         <Source
           type="raster"
           tiles={[
-            `https://imaginerio-rasters.s3.us-east-1.amazonaws.com/${activeBasemap.ssid}/{z}/{x}/{y}.png`,
+            `https://imaginerio-rasters.s3.us-east-1.amazonaws.com/${activeBasemap}/{z}/{x}/{y}.png`,
           ]}
           scheme="tms"
         >

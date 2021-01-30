@@ -23,7 +23,6 @@ const GET_SLIDE_ATLAS = gql`
         layerId
       }
       basemap {
-        id
         ssid
       }
     }
@@ -115,7 +114,7 @@ const AtlasContext = ({ slide }) => {
       viewport={mapViewport}
       year={data.Slide.year}
       disabledLayers={data.Slide.disabledLayers}
-      activeBasemap={data.Slide.activeBasemap}
+      activeBasemap={data.Slide.basemap ? data.Slide.basemap.ssid : null}
       selectedFeature={data.Slide.selectedFeature}
       opacity={data.Slide.opacity}
     />

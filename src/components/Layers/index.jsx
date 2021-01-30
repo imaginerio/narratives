@@ -7,17 +7,7 @@ import Basemaps from '../Basemaps';
 
 import styles from './Layers.module.css';
 
-const Layers = ({
-  layers,
-  year,
-  basemaps,
-  disabledLayers,
-  activeBasemap,
-  layerHandler,
-  basemapHandler,
-  opacityHandler,
-  opacity,
-}) => {
+const Layers = ({ slide, layers, disabledLayers, layerHandler }) => {
   const [open, setOpen] = useState(false);
   const [newLayers, setNewLayers] = useState(disabledLayers);
 
@@ -37,14 +27,7 @@ const Layers = ({
             name="close"
             onClick={() => setOpen(false)}
           />
-          <Basemaps
-            basemaps={basemaps}
-            basemapHandler={basemapHandler}
-            activeBasemap={activeBasemap}
-            opacityHandler={opacityHandler}
-            opacity={opacity}
-            year={year}
-          />
+          <Basemaps slide={slide} />
           <Form.Group style={{ borderTop: '1px solid #ccc', marginTop: 15, paddingTop: 15 }}>
             <h3 style={{ marginTop: 0 }}>Layers</h3>
             {layers.map(layer => (
@@ -73,21 +56,14 @@ const Layers = ({
 };
 
 Layers.propTypes = {
+  slide: PropTypes.string.isRequired,
   layers: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  basemaps: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   disabledLayers: PropTypes.arrayOf(PropTypes.string),
-  activeBasemap: PropTypes.shape(),
   layerHandler: PropTypes.func.isRequired,
-  basemapHandler: PropTypes.func.isRequired,
-  opacityHandler: PropTypes.func.isRequired,
-  opacity: PropTypes.number,
-  year: PropTypes.number.isRequired,
 };
 
 Layers.defaultProps = {
   disabledLayers: [],
-  activeBasemap: null,
-  opacity: 1,
 };
 
 export default Layers;

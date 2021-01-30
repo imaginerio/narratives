@@ -15,9 +15,6 @@ const MapControl = ({
   disabledLayers,
   activeBasemap,
   layerHandler,
-  basemapHandler,
-  opacityHandler,
-  opacity,
   slide,
   featureHandler,
   selectedFeature,
@@ -25,15 +22,13 @@ const MapControl = ({
   <Segment className={styles.control}>
     <div style={{ float: 'right', width: 85 }}>
       <Layers
+        slide={slide}
         year={year}
         layers={layers}
         basemaps={basemaps}
         disabledLayers={disabledLayers}
         activeBasemap={activeBasemap}
         layerHandler={layerHandler}
-        basemapHandler={basemapHandler}
-        opacityHandler={opacityHandler}
-        opacity={opacity}
       />
       <Search
         year={year}
@@ -54,17 +49,13 @@ MapControl.propTypes = {
   disabledLayers: PropTypes.arrayOf(PropTypes.string),
   activeBasemap: PropTypes.shape(),
   layerHandler: PropTypes.func.isRequired,
-  basemapHandler: PropTypes.func.isRequired,
   featureHandler: PropTypes.func.isRequired,
-  opacityHandler: PropTypes.func.isRequired,
-  opacity: PropTypes.number,
   selectedFeature: PropTypes.string,
 };
 
 MapControl.defaultProps = {
   disabledLayers: [],
   activeBasemap: null,
-  opacity: 1,
   selectedFeature: null,
 };
 
