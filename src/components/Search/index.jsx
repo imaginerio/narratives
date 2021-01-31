@@ -1,12 +1,55 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useQuery, useMutation, gql } from '@apollo/client';
 import axios from 'axios';
 import { debounce } from 'lodash';
 import { Segment, Search as SeachBar, Button, Header, Label, Icon } from 'semantic-ui-react';
 
 import styles from './Search.module.css';
 
-const Search = ({ year, handler, selectedFeature }) => {
+const GET_SLIDE = gql`
+  query GetSlide($slide: ID!) {
+    Slide(where: { id: $slide }) {
+      id
+      year
+      selectedFeature
+    }
+  }
+`;
+
+const UPDATE_SLIDE_FEATURE = gql`
+  mutation UpdateSlideFeature($slide: ID!, $value: String) {
+    updateSlide(id: $slide, data: { selectedFeature: $value }) {
+      id
+      selectedFeature
+    }
+  }
+`;
+
+const Search = ({ slide }) => {
+  const { data } = useQuery(GET_SLIDE, {
+    variables: { slide },
+  });
+  const [updateFeature] = useMutation(UPDATE_SLIDE_FEATURE);
+  const onFeatureChange = newFeature => {
+    updateFeature({
+      variables: {
+        slide,
+        value: newFeature,
+      },
+      optimisticResponse: {
+        __typename: 'Mutation',
+        updateSlide: {
+          __typename: 'Slide',
+          id: slide,
+          selectedFeature: newFeature,
+        },
+      },
+    });
+  };
+
+  const [year, setYear] = useState(1900);
+  const [selectedFeature, setSelectedFeature] = useState(null);
   const [open, setOpen] = useState(false);
   const [string, setString] = useState('');
   const [results, setResults] = useState([]);
@@ -14,15 +57,26 @@ const Search = ({ year, handler, selectedFeature }) => {
   const [featureName, setFeatureName] = useState(null);
 
   useEffect(() => {
+    if (data) {
+      setYear(data.Slide.year);
+      setSelectedFeature(data.Slide.selectedFeature);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    onFeatureChange(selectedFeature);
+  }, [selectedFeature]);
+
+  useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       const layerResults = {};
       if (string && string.length > 1 && year) {
-        const { data } = await axios.get(
+        const res = await axios.get(
           `https://search.imaginerio.org/search?text=${string}&year=${year}`
         );
-        if (data.length) {
-          data.forEach(d => {
+        if (res.data.length) {
+          res.data.forEach(d => {
             layerResults[d.id] = {
               name: d.title,
               results: d.Features.map(f => ({
@@ -41,10 +95,10 @@ const Search = ({ year, handler, selectedFeature }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await axios.get(
+      const res = await axios.get(
         `https://search.imaginerio.org/feature/${selectedFeature}?year=${year}`
       );
-      setFeatureName(data.properties.name);
+      setFeatureName(res.data.properties.name);
     };
     if (selectedFeature) fetchData();
   }, [selectedFeature]);
@@ -69,7 +123,7 @@ const Search = ({ year, handler, selectedFeature }) => {
             value={string}
             results={results}
             onSearchChange={debounce((e, { value }) => setString(value), 500, { leading: true })}
-            onResultSelect={(e, { result }) => handler(result.id)}
+            onResultSelect={(e, { result }) => setSelectedFeature(result.id)}
           />
           {selectedFeature && featureName && (
             <>
@@ -82,7 +136,7 @@ const Search = ({ year, handler, selectedFeature }) => {
                   name="delete"
                   style={{ float: 'right' }}
                   onClick={() => {
-                    handler(null);
+                    setSelectedFeature(null);
                   }}
                 />
               </Label>
@@ -95,13 +149,7 @@ const Search = ({ year, handler, selectedFeature }) => {
 };
 
 Search.propTypes = {
-  year: PropTypes.number.isRequired,
-  handler: PropTypes.func.isRequired,
-  selectedFeature: PropTypes.string,
-};
-
-Search.defaultProps = {
-  selectedFeature: null,
+  slide: PropTypes.string.isRequired,
 };
 
 export default Search;

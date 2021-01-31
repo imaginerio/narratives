@@ -29,15 +29,7 @@ const GET_SLIDES = gql`
       id
       title
       description
-      year
       size
-      longitude
-      latitude
-      zoom
-      bearing
-      pitch
-      selectedFeature
-      opacity
       image {
         id
         title
@@ -81,15 +73,6 @@ const UPDATE_SLIDE_SIZE = gql`
     updateSlide(id: $slide, data: { size: $value }) {
       id
       size
-    }
-  }
-`;
-
-const UPDATE_SLIDE_FEATURE = gql`
-  mutation UpdateSlideFeature($slide: ID!, $value: String) {
-    updateSlide(id: $slide, data: { selectedFeature: $value }) {
-      id
-      selectedFeature
     }
   }
 `;
@@ -145,7 +128,6 @@ const UPDATE_IMAGE = gql`
 const Editor = ({ slide, layers, basemaps, removeSlide }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [selectedFeature, setSelectedFeature] = useState(null);
   const [disabledLayers, setDisabledLayers] = useState({});
   const [imageMeta, setImageMeta] = useState(null);
   const [year, setYear] = useState(1900);
@@ -163,14 +145,12 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
     setSize(loading && !data ? 'Small' : data.Slide.size);
     setDisabledLayers(loading && !data ? [] : data.Slide.disabledLayers);
     setImageMeta(loading && !data ? null : data.Slide.image);
-    setSelectedFeature(loading && !data ? null : data.Slide.selectedFeature);
   }, [loading, data]);
 
   const [updateTitle] = useMutation(UPDATE_SLIDE_TITLE);
   const [updateDescription] = useMutation(UPDATE_SLIDE_DESCRIPTION);
   const [updateSize] = useMutation(UPDATE_SLIDE_SIZE);
   const [updateLayers] = useMutation(UPDATE_LAYERS);
-  const [updateFeature] = useMutation(UPDATE_SLIDE_FEATURE);
   const [addImage] = useMutation(ADD_IMAGE);
   const [updateImage] = useMutation(UPDATE_IMAGE);
 
@@ -231,27 +211,6 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
             __typename: 'Slide',
             id: slide,
             size: newSize,
-          },
-        },
-      });
-    }, 500);
-  };
-
-  const featureTimer = useRef();
-  const onFeatureChange = newFeature => {
-    clearTimeout(featureTimer.current);
-    featureTimer.current = setTimeout(() => {
-      updateFeature({
-        variables: {
-          slide,
-          value: newFeature,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          updateSlide: {
-            __typename: 'Slide',
-            id: slide,
-            selectedFeature: newFeature,
           },
         },
       });
@@ -443,11 +402,6 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
               setDisabledLayers(newLayers);
               onLayersChange(newLayers);
             }}
-            featureHandler={newFeature => {
-              setSelectedFeature(newFeature);
-              onFeatureChange(newFeature);
-            }}
-            selectedFeature={selectedFeature}
           />
         </Grid.Column>
       </Grid.Row>
