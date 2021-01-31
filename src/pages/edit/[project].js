@@ -22,24 +22,6 @@ const GET_SLIDES = gql`
   }
 `;
 
-const GET_META = gql`
-  query {
-    allLayers {
-      id
-      layerId
-      title
-      remoteId
-    }
-    allBasemaps {
-      id
-      ssid
-      title
-      firstYear
-      lastYear
-    }
-  }
-`;
-
 const ADD_SLIDE = gql`
   mutation AddSlide($project: ProjectRelateToOneInput) {
     createSlide(data: { project: $project }) {
@@ -88,7 +70,6 @@ const EditPage = () => {
       }
     },
   });
-  const meta = useQuery(GET_META);
 
   const newSlide = () =>
     addSlide({
@@ -127,7 +108,7 @@ const EditPage = () => {
       refetchQueries: [{ query: GET_SLIDES, variables: { project } }],
     });
 
-  if (loading || !project || meta.loading)
+  if (loading || !project)
     return (
       <Dimmer active>
         <Loader size="huge">Loading</Loader>
@@ -153,14 +134,7 @@ const EditPage = () => {
             />
           </Grid.Column>
           <Grid.Column width={13} style={{ padding: 0 }}>
-            {activeSlide && (
-              <Editor
-                slide={activeSlide}
-                layers={meta.data.allLayers}
-                basemaps={meta.data.allBasemaps}
-                removeSlide={removeSlide}
-              />
-            )}
+            {activeSlide && <Editor slide={activeSlide} removeSlide={removeSlide} />}
           </Grid.Column>
         </Grid.Row>
       </Grid>

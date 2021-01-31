@@ -2,9 +2,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation, gql } from '@apollo/client';
-import { pick } from 'lodash';
 import {
   Grid,
+  Segment,
   Form,
   Input,
   Dropdown,
@@ -19,7 +19,9 @@ import { Editor as Wysiwyg } from '@tinymce/tinymce-react';
 
 import AtlasContext from '../Atlas/Context';
 import Image from '../Image';
-import MapControl from '../MapControl';
+import Year from '../Year';
+import Layers from '../Layers';
+import Search from '../Search';
 
 import styles from './Editor.module.css';
 
@@ -37,14 +39,6 @@ const GET_SLIDES = gql`
         source
         date
         url
-      }
-      disabledLayers: layers {
-        id
-        layerId
-      }
-      basemap {
-        id
-        ssid
       }
     }
   }
@@ -73,18 +67,6 @@ const UPDATE_SLIDE_SIZE = gql`
     updateSlide(id: $slide, data: { size: $value }) {
       id
       size
-    }
-  }
-`;
-
-const UPDATE_LAYERS = gql`
-  mutation UpdateLayers($slide: ID!, $layers: LayerRelateToManyInput) {
-    updateSlide(id: $slide, data: { layers: $layers }) {
-      id
-      layers {
-        id
-        layerId
-      }
     }
   }
 `;
@@ -125,12 +107,10 @@ const UPDATE_IMAGE = gql`
   }
 `;
 
-const Editor = ({ slide, layers, basemaps, removeSlide }) => {
+const Editor = ({ slide, removeSlide }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [disabledLayers, setDisabledLayers] = useState({});
   const [imageMeta, setImageMeta] = useState(null);
-  const [year, setYear] = useState(1900);
   const [size, setSize] = useState('Small');
   const [open, setOpen] = useState(false);
 
@@ -141,16 +121,13 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
   useEffect(() => {
     setTitle(loading && !data ? '' : data.Slide.title || '');
     setDescription(loading && !data ? '' : data.Slide.description || '');
-    setYear(loading && !data ? 1900 : data.Slide.year);
     setSize(loading && !data ? 'Small' : data.Slide.size);
-    setDisabledLayers(loading && !data ? [] : data.Slide.disabledLayers);
     setImageMeta(loading && !data ? null : data.Slide.image);
   }, [loading, data]);
 
   const [updateTitle] = useMutation(UPDATE_SLIDE_TITLE);
   const [updateDescription] = useMutation(UPDATE_SLIDE_DESCRIPTION);
   const [updateSize] = useMutation(UPDATE_SLIDE_SIZE);
-  const [updateLayers] = useMutation(UPDATE_LAYERS);
   const [addImage] = useMutation(ADD_IMAGE);
   const [updateImage] = useMutation(UPDATE_IMAGE);
 
@@ -211,33 +188,6 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
             __typename: 'Slide',
             id: slide,
             size: newSize,
-          },
-        },
-      });
-    }, 500);
-  };
-
-  const layersTimer = useRef();
-  const onLayersChange = newLayers => {
-    clearTimeout(layersTimer.current);
-    layersTimer.current = setTimeout(() => {
-      updateLayers({
-        variables: {
-          slide,
-          layers: {
-            connect: newLayers.map(nl => ({ id: nl.id })),
-            disconnectAll: true,
-          },
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          updateSlide: {
-            __typename: 'Slide',
-            id: slide,
-            layers: newLayers.map(l => ({
-              __typename: 'Layer',
-              ...pick(l, 'id', 'layerId'),
-            })),
           },
         },
       });
@@ -392,17 +342,13 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
         </Grid.Column>
         <Grid.Column width={10} style={{ padding: 0 }}>
           <AtlasContext slide={slide} />
-          <MapControl
-            year={year}
-            slide={slide}
-            layers={layers}
-            basemaps={basemaps}
-            disabledLayers={disabledLayers}
-            layerHandler={newLayers => {
-              setDisabledLayers(newLayers);
-              onLayersChange(newLayers);
-            }}
-          />
+          <Segment className={styles.control}>
+            <div style={{ float: 'right', width: 85 }}>
+              <Layers slide={slide} />
+              <Search slide={slide} />
+            </div>
+            <Year slide={slide} />
+          </Segment>
         </Grid.Column>
       </Grid.Row>
     </Grid>
@@ -411,8 +357,6 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
 
 Editor.propTypes = {
   slide: PropTypes.string.isRequired,
-  layers: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  basemaps: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   removeSlide: PropTypes.func.isRequired,
 };
 

@@ -54,10 +54,7 @@ const Basemaps = ({ slide }) => {
   const { data } = useQuery(GET_SLIDE, {
     variables: { slide },
   });
-  const {
-    loading,
-    data: { basemaps },
-  } = useQuery(GET_BASEMAPS);
+  const allBasemaps = useQuery(GET_BASEMAPS);
   const [updateBasemap] = useMutation(UPDATE_BASEMAP);
   const [updateOpacity] = useMutation(UPDATE_SLIDE_OPACITY);
 
@@ -114,12 +111,14 @@ const Basemaps = ({ slide }) => {
   const [opacity, setOpacity] = useState(1);
 
   useEffect(() => {
-    setOptions(
-      basemaps
-        .filter(b => b.firstYear <= year && b.lastYear >= year)
-        .map(b => ({ value: b.id, text: b.title }))
-    );
-  }, [year, basemaps]);
+    if (allBasemaps && allBasemaps.data) {
+      setOptions(
+        allBasemaps.data.basemaps
+          .filter(b => b.firstYear <= year && b.lastYear >= year)
+          .map(b => ({ value: b.id, text: b.title }))
+      );
+    }
+  }, [year, allBasemaps]);
 
   useEffect(() => {
     onBasemapChange(activeBasemap);
@@ -127,7 +126,7 @@ const Basemaps = ({ slide }) => {
 
   useEffect(() => {
     onOpacityChange(opacity);
-  }, [opacity]);
+  }, [opacity, activeBasemap]);
 
   useEffect(() => {
     if (data) {
@@ -135,13 +134,13 @@ const Basemaps = ({ slide }) => {
       if (data.Slide.basemap) setActiveBasemap(data.Slide.basemap.id);
       setOpacity(data.Slide.opacity);
     }
-  }, [loading, data]);
+  }, [allBasemaps.loading, data]);
 
   return (
     <div>
       <h3 style={{ marginTop: 0 }}>Maps / Plans / Aerials</h3>
       <Dropdown
-        loading={loading}
+        loading={allBasemaps.loading}
         placeholder="Select overlay"
         fluid
         selection
