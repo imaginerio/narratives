@@ -12,10 +12,6 @@ const GET_SLIDE_YEAR = gql`
     Slide(where: { id: $slide }) {
       id
       year
-      selectedFeature
-      basemap {
-        id
-      }
     }
   }
 `;
@@ -60,16 +56,16 @@ const Year = ({ slide }) => {
   const [rangeError, setRangeError] = useState(false);
 
   useEffect(() => {
-    updateYear(tempYear);
+    if (tempYear && data && tempYear !== data.Slide.year) updateYear(tempYear);
   }, [tempYear]);
 
   useEffect(() => {
-    setTempYear(data ? data.Slide.year : null);
+    if (data) setTempYear(data.Slide.year);
   }, [loading, data]);
 
   return (
     <>
-      <Form.Field inline error={error}>
+      <Form.Field id="yearInput" inline error={error} disabled={loading}>
         <label className={styles.yearLabel}>Year: </label>
         <Input
           className={styles.yearInput}

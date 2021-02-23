@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation, gql } from '@apollo/client';
-import { pick } from 'lodash';
+import { pick, isEqual } from 'lodash';
+import { Dimmer, Loader } from 'semantic-ui-react';
 
 import Atlas from './index';
 import { minZoom, maxZoom, minLon, maxLon, minLat, maxLat } from '../../config/map';
@@ -87,9 +88,9 @@ const AtlasContext = ({ slide }) => {
   const [mapViewport, setMapViewport] = useState(null);
 
   useEffect(() => {
-    setMapViewport(
-      data ? pick(data.Slide, ['longitude', 'latitude', 'zoom', 'bearing', 'pitch']) : null
-    );
+    if (data) {
+      setMapViewport(pick(data.Slide, ['longitude', 'latitude', 'zoom', 'bearing', 'pitch']));
+    }
   }, [loading, data]);
 
   const onViewportChange = nextViewport => {
@@ -101,11 +102,23 @@ const AtlasContext = ({ slide }) => {
         zoom: Math.max(minZoom, Math.min(maxZoom, nextViewport.zoom)),
       };
       setMapViewport(clampedPort);
-      updateViewport(clampedPort);
+      if (
+        !isEqual(
+          clampedPort,
+          pick(data.Slide, ['longitude', 'latitude', 'zoom', 'bearing', 'pitch'])
+        )
+      ) {
+        updateViewport(clampedPort);
+      }
     }
   };
 
-  if (loading || !mapViewport) return <p>Loading...</p>;
+  if (loading || !mapViewport || !data)
+    return (
+      <Dimmer active>
+        <Loader size="huge">Loading</Loader>
+      </Dimmer>
+    );
   if (error) return <p>Error :(</p>;
 
   return (

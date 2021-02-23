@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation, gql } from '@apollo/client';
-import { some, pick } from 'lodash';
+import { some, pick, isEqual } from 'lodash';
 import { Segment, Form, Button, Icon } from 'semantic-ui-react';
 
 import Basemaps from '../Basemaps';
@@ -83,7 +83,7 @@ const Layers = ({ slide }) => {
   }, [data]);
 
   useEffect(() => {
-    onLayersChange(disabledLayers);
+    if (data && !isEqual(disabledLayers, data.Slide.disabledLayers)) onLayersChange(disabledLayers);
   }, [disabledLayers]);
 
   return (

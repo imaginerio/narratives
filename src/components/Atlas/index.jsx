@@ -138,6 +138,7 @@ const Atlas = ({
     <ReactMapGL {...getMapProps()}>
       {activeBasemap && (
         <Source
+          key={activeBasemap}
           type="raster"
           tiles={[
             `https://imaginerio-rasters.s3.us-east-1.amazonaws.com/${activeBasemap}/{z}/{x}/{y}.png`,
@@ -153,7 +154,7 @@ const Atlas = ({
         </Source>
       )}
       {selectedFeature && (
-        <Source type="geojson" data={featureData}>
+        <Source key={selectedFeature} type="geojson" data={featureData}>
           <Layer
             id="selected-case"
             type="line"
