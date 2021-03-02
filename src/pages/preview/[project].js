@@ -9,7 +9,7 @@ const Preview = () => {
   const router = useRouter();
   const { project } = router.query;
 
-  return <View project={project} />;
+  return <View project={project} preview />;
 };
 
 export default withApollo(Preview, { getDataFromTree });

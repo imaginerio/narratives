@@ -1,70 +1,94 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
+import { useQuery, useMutation, gql } from '@apollo/client';
 import { Form, Input, Modal, Header, Icon, Button } from 'semantic-ui-react';
 import { Slider } from 'react-semantic-ui-range';
 
 import styles from './Year.module.css';
 
-const Year = ({
-  year,
-  handler,
-  activeBasemap,
-  selectedFeature,
-  basemapHandler,
-  featureHandler,
-}) => {
-  const [inputYear, setInputYear] = useState(year);
-  const [sliderYear, setSliderYear] = useState(year);
+const GET_SLIDE_YEAR = gql`
+  query GetSlideYear($slide: ID!) {
+    Slide(where: { id: $slide }) {
+      id
+      year
+    }
+  }
+`;
+
+const UPDATE_SLIDE_YEAR = gql`
+  mutation UpdateSlideYear($slide: ID!, $value: Int) {
+    updateSlide(id: $slide, data: { year: $value }) {
+      id
+      year
+    }
+  }
+`;
+
+const Year = ({ slide }) => {
+  const { loading, error, data } = useQuery(GET_SLIDE_YEAR, {
+    variables: { slide },
+  });
+  const [onUpdateYear] = useMutation(UPDATE_SLIDE_YEAR);
+  const yearTimer = useRef();
+  const updateYear = newYear => {
+    clearTimeout(yearTimer.current);
+    yearTimer.current = setTimeout(() => {
+      onUpdateYear({
+        variables: {
+          slide,
+          value: newYear,
+        },
+        optimisticResponse: {
+          __typename: 'Mutation',
+          updateSlide: {
+            __typename: 'Slide',
+            id: slide,
+            year: newYear,
+          },
+        },
+      });
+    }, 500);
+  };
+
   const [tempYear, setTempYear] = useState(null);
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState(false);
+  const [rangeError, setRangeError] = useState(false);
 
   useEffect(() => {
-    setInputYear(year);
-    setSliderYear(year);
-    setTempYear(null);
-  }, [year]);
-
-  useEffect(() => {
-    if (tempYear && tempYear !== year) {
-      if (activeBasemap || selectedFeature) {
-        setOpen(true);
-      } else {
-        handler(tempYear);
-      }
-    }
+    if (tempYear && data && tempYear !== data.Slide.year) updateYear(tempYear);
   }, [tempYear]);
+
+  useEffect(() => {
+    if (data) setTempYear(data.Slide.year);
+  }, [loading, data]);
 
   return (
     <>
-      <Form.Field inline>
+      <Form.Field id="yearInput" inline error={error} disabled={loading}>
         <label className={styles.yearLabel}>Year: </label>
         <Input
           className={styles.yearInput}
           type="number"
-          value={inputYear}
-          error={error}
+          value={tempYear}
+          error={rangeError}
           onChange={(e, { value }) => {
             const newYear = parseInt(value, 10);
-            setInputYear(newYear);
             if (newYear && newYear >= 1502 && newYear <= 2021) {
-              setError(false);
-              if (activeBasemap && selectedFeature) {
-                setTempYear(newYear);
-              }
+              setRangeError(false);
+              setTempYear(newYear);
             } else {
-              setError(true);
+              setRangeError(true);
             }
           }}
         />
         <div className={styles.yearSlider}>
           <Slider
-            value={sliderYear}
+            value={tempYear}
             discrete
             inverted={false}
             settings={{
-              value: sliderYear,
+              value: tempYear,
               min: 1502,
               max: 2021,
               step: 1,
@@ -85,21 +109,18 @@ const Year = ({
           Are you sure you want to change the year?
         </Header>
         <Modal.Content>
-          <p>{`You have a selected feature or basemap selected that is tied to ${year}. Changing the year will remove these selections.`}</p>
+          <p>{`You have a selected feature or basemap selected that is tied to ${tempYear}. Changing the year will remove these selections.`}</p>
         </Modal.Content>
         <Modal.Actions>
           <Button basic color="red" inverted onClick={() => setOpen(false)}>
             <Icon name="remove" />
-            <span>{`Keep ${year}`}</span>
+            <span>{`Keep ${tempYear}`}</span>
           </Button>
           <Button
             negative
             inverted
             onClick={() => {
               setOpen(false);
-              handler(tempYear);
-              featureHandler(null);
-              basemapHandler(null);
             }}
           >
             <Icon name="trash" />
@@ -112,17 +133,7 @@ const Year = ({
 };
 
 Year.propTypes = {
-  year: PropTypes.number.isRequired,
-  handler: PropTypes.func.isRequired,
-  selectedFeature: PropTypes.string,
-  featureHandler: PropTypes.func.isRequired,
-  activeBasemap: PropTypes.shape(),
-  basemapHandler: PropTypes.func.isRequired,
-};
-
-Year.defaultProps = {
-  selectedFeature: null,
-  activeBasemap: null,
+  slide: PropTypes.string.isRequired,
 };
 
 export default Year;

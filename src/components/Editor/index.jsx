@@ -2,13 +2,26 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation, gql } from '@apollo/client';
-import { pick } from 'lodash';
-import { Grid, Form, Input, Dropdown, Button, Icon, Modal, Header } from 'semantic-ui-react';
+import {
+  Grid,
+  Segment,
+  Form,
+  Input,
+  Dropdown,
+  Button,
+  Icon,
+  Modal,
+  Header,
+  Dimmer,
+  Loader,
+} from 'semantic-ui-react';
 import { Editor as Wysiwyg } from '@tinymce/tinymce-react';
 
-import Atlas from '../Atlas';
+import AtlasContext from '../Atlas/Context';
 import Image from '../Image';
-import MapControl from '../MapControl';
+import Year from '../Year';
+import Layers from '../Layers';
+import Search from '../Search';
 
 import styles from './Editor.module.css';
 
@@ -18,15 +31,7 @@ const GET_SLIDES = gql`
       id
       title
       description
-      year
       size
-      longitude
-      latitude
-      zoom
-      bearing
-      pitch
-      selectedFeature
-      opacity
       image {
         id
         title
@@ -34,14 +39,6 @@ const GET_SLIDES = gql`
         source
         date
         url
-      }
-      disabledLayers: layers {
-        id
-        layerId
-      }
-      basemap {
-        id
-        ssid
       }
     }
   }
@@ -65,91 +62,11 @@ const UPDATE_SLIDE_DESCRIPTION = gql`
   }
 `;
 
-const UPDATE_SLIDE_YEAR = gql`
-  mutation UpdateSlideYear($slide: ID!, $value: Int) {
-    updateSlide(id: $slide, data: { year: $value }) {
-      id
-      year
-    }
-  }
-`;
-
 const UPDATE_SLIDE_SIZE = gql`
   mutation UpdateSlideSize($slide: ID!, $value: SlideSizeType) {
     updateSlide(id: $slide, data: { size: $value }) {
       id
       size
-    }
-  }
-`;
-
-const UPDATE_SLIDE_FEATURE = gql`
-  mutation UpdateSlideFeature($slide: ID!, $value: String) {
-    updateSlide(id: $slide, data: { selectedFeature: $value }) {
-      id
-      selectedFeature
-    }
-  }
-`;
-
-const UPDATE_VIEWPORT = gql`
-  mutation UpdateViewport(
-    $slide: ID!
-    $longitude: Float
-    $latitude: Float
-    $zoom: Float
-    $bearing: Float
-    $pitch: Float
-  ) {
-    updateSlide(
-      id: $slide
-      data: {
-        longitude: $longitude
-        latitude: $latitude
-        zoom: $zoom
-        bearing: $bearing
-        pitch: $pitch
-      }
-    ) {
-      id
-      longitude
-      latitude
-      zoom
-      bearing
-      pitch
-    }
-  }
-`;
-
-const UPDATE_LAYERS = gql`
-  mutation UpdateLayers($slide: ID!, $layers: LayerRelateToManyInput) {
-    updateSlide(id: $slide, data: { layers: $layers }) {
-      id
-      layers {
-        id
-        layerId
-      }
-    }
-  }
-`;
-
-const UPDATE_BASEMAP = gql`
-  mutation UpdateBasemap($slide: ID!, $basemap: BasemapRelateToOneInput) {
-    updateSlide(id: $slide, data: { basemap: $basemap }) {
-      id
-      basemap {
-        id
-        ssid
-      }
-    }
-  }
-`;
-
-const UPDATE_SLIDE_OPACITY = gql`
-  mutation UpdateSlideTitle($slide: ID!, $value: Float) {
-    updateSlide(id: $slide, data: { opacity: $value }) {
-      id
-      opacity
     }
   }
 `;
@@ -190,16 +107,10 @@ const UPDATE_IMAGE = gql`
   }
 `;
 
-const Editor = ({ slide, layers, basemaps, removeSlide }) => {
+const Editor = ({ slide, removeSlide }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [viewport, setViewport] = useState({});
-  const [selectedFeature, setSelectedFeature] = useState(null);
-  const [disabledLayers, setDisabledLayers] = useState({});
-  const [activeBasemap, setActiveBasemap] = useState({});
-  const [opacity, setOpacity] = useState(0);
   const [imageMeta, setImageMeta] = useState(null);
-  const [year, setYear] = useState(1900);
   const [size, setSize] = useState('Small');
   const [open, setOpen] = useState(false);
 
@@ -210,29 +121,13 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
   useEffect(() => {
     setTitle(loading && !data ? '' : data.Slide.title || '');
     setDescription(loading && !data ? '' : data.Slide.description || '');
-    setYear(loading && !data ? 1900 : data.Slide.year);
     setSize(loading && !data ? 'Small' : data.Slide.size);
-    setDisabledLayers(loading && !data ? [] : data.Slide.disabledLayers);
-    setActiveBasemap(loading && !data ? null : data.Slide.basemap);
-    setOpacity(loading && !data ? 0 : data.Slide.opacity);
     setImageMeta(loading && !data ? null : data.Slide.image);
-    setSelectedFeature(loading && !data ? null : data.Slide.selectedFeature);
-    setViewport(
-      loading && !data
-        ? {}
-        : pick(data.Slide, ['longitude', 'latitude', 'zoom', 'bearing', 'pitch'])
-    );
   }, [loading, data]);
 
   const [updateTitle] = useMutation(UPDATE_SLIDE_TITLE);
   const [updateDescription] = useMutation(UPDATE_SLIDE_DESCRIPTION);
-  const [updateViewport] = useMutation(UPDATE_VIEWPORT);
-  const [updateYear] = useMutation(UPDATE_SLIDE_YEAR);
   const [updateSize] = useMutation(UPDATE_SLIDE_SIZE);
-  const [updateLayers] = useMutation(UPDATE_LAYERS);
-  const [updateBasemap] = useMutation(UPDATE_BASEMAP);
-  const [updateOpacity] = useMutation(UPDATE_SLIDE_OPACITY);
-  const [updateFeature] = useMutation(UPDATE_SLIDE_FEATURE);
   const [addImage] = useMutation(ADD_IMAGE);
   const [updateImage] = useMutation(UPDATE_IMAGE);
 
@@ -278,27 +173,6 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
     }, 500);
   };
 
-  const yearTimer = useRef();
-  const onYearChange = newYear => {
-    clearTimeout(yearTimer.current);
-    yearTimer.current = setTimeout(() => {
-      updateYear({
-        variables: {
-          slide,
-          value: newYear,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          updateSlide: {
-            __typename: 'Slide',
-            id: slide,
-            year: newYear,
-          },
-        },
-      });
-    }, 500);
-  };
-
   const sizeTimer = useRef();
   const onSizeChange = newSize => {
     clearTimeout(sizeTimer.current);
@@ -314,126 +188,6 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
             __typename: 'Slide',
             id: slide,
             size: newSize,
-          },
-        },
-      });
-    }, 500);
-  };
-
-  const featureTimer = useRef();
-  const onFeatureChange = newFeature => {
-    clearTimeout(featureTimer.current);
-    featureTimer.current = setTimeout(() => {
-      updateFeature({
-        variables: {
-          slide,
-          value: newFeature,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          updateSlide: {
-            __typename: 'Slide',
-            id: slide,
-            selectedFeature: newFeature,
-          },
-        },
-      });
-    }, 500);
-  };
-
-  const viewportTimer = useRef();
-  const onViewportChange = newViewport => {
-    clearTimeout(viewportTimer.current);
-    viewportTimer.current = setTimeout(() => {
-      updateViewport({
-        variables: {
-          slide,
-          ...newViewport,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          updateSlide: {
-            __typename: 'Slide',
-            id: slide,
-            ...newViewport,
-          },
-        },
-      });
-    }, 500);
-  };
-
-  const layersTimer = useRef();
-  const onLayersChange = newLayers => {
-    clearTimeout(layersTimer.current);
-    layersTimer.current = setTimeout(() => {
-      updateLayers({
-        variables: {
-          slide,
-          layers: {
-            connect: newLayers.map(nl => ({ id: nl.id })),
-            disconnectAll: true,
-          },
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          updateSlide: {
-            __typename: 'Slide',
-            id: slide,
-            layers: newLayers.map(l => ({
-              __typename: 'Layer',
-              ...pick(l, 'id', 'layerId'),
-            })),
-          },
-        },
-      });
-    }, 500);
-  };
-
-  const basemapTimer = useRef();
-  const onBasemapChange = newBasemap => {
-    clearTimeout(basemapTimer.current);
-    basemapTimer.current = setTimeout(() => {
-      let basemap = { disconnectAll: true };
-      if (newBasemap) {
-        basemap = {
-          connect: { id: newBasemap.id },
-        };
-      }
-      updateBasemap({
-        variables: {
-          slide,
-          basemap,
-          optimisticResponse: {
-            __typename: 'Mutation',
-            updateSlide: {
-              __typename: 'Slide',
-              id: slide,
-              basemap: {
-                __typename: 'Basemap',
-                ...pick(newBasemap, 'id', 'ssid'),
-              },
-            },
-          },
-        },
-      });
-    }, 500);
-  };
-
-  const opacityTimer = useRef();
-  const onOpacityChange = newOpacity => {
-    clearTimeout(opacityTimer.current);
-    opacityTimer.current = setTimeout(() => {
-      updateOpacity({
-        variables: {
-          slide,
-          value: newOpacity,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          updateSlide: {
-            __typename: 'Slide',
-            id: slide,
-            opacity: newOpacity,
           },
         },
       });
@@ -461,7 +215,12 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
     }, 500);
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading)
+    return (
+      <Dimmer active>
+        <Loader size="huge">Loading</Loader>
+      </Dimmer>
+    );
   if (error) return <p>Error :(</p>;
 
   return (
@@ -582,51 +341,14 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
           </Form>
         </Grid.Column>
         <Grid.Column width={10} style={{ padding: 0 }}>
-          {viewport.latitude && viewport.longitude && (
-            <>
-              <Atlas
-                handler={newViewport => {
-                  setViewport(newViewport);
-                  onViewportChange(newViewport);
-                }}
-                viewport={viewport}
-                year={year}
-                disabledLayers={disabledLayers}
-                activeBasemap={activeBasemap}
-                opacity={opacity}
-                selectedFeature={selectedFeature}
-              />
-              <MapControl
-                year={year}
-                yearHandler={newYear => {
-                  setYear(newYear);
-                  onYearChange(newYear);
-                }}
-                layers={layers}
-                basemaps={basemaps}
-                disabledLayers={disabledLayers}
-                activeBasemap={activeBasemap}
-                layerHandler={newLayers => {
-                  setDisabledLayers(newLayers);
-                  onLayersChange(newLayers);
-                }}
-                basemapHandler={newBasemap => {
-                  setActiveBasemap(newBasemap);
-                  onBasemapChange(newBasemap);
-                }}
-                opacityHandler={newOpacity => {
-                  setOpacity(newOpacity);
-                  onOpacityChange(newOpacity);
-                }}
-                opacity={opacity}
-                featureHandler={newFeature => {
-                  setSelectedFeature(newFeature);
-                  onFeatureChange(newFeature);
-                }}
-                selectedFeature={selectedFeature}
-              />
-            </>
-          )}
+          <AtlasContext slide={slide} />
+          <Segment className={styles.control}>
+            <div style={{ float: 'right', width: 85 }}>
+              <Layers slide={slide} />
+              <Search slide={slide} />
+            </div>
+            <Year slide={slide} />
+          </Segment>
         </Grid.Column>
       </Grid.Row>
     </Grid>
@@ -635,8 +357,6 @@ const Editor = ({ slide, layers, basemaps, removeSlide }) => {
 
 Editor.propTypes = {
   slide: PropTypes.string.isRequired,
-  layers: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  basemaps: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   removeSlide: PropTypes.func.isRequired,
 };
 

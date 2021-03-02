@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { getDataFromTree } from '@apollo/react-ssr';
-import { Container, Grid } from 'semantic-ui-react';
+import { Container, Grid, Dimmer, Loader } from 'semantic-ui-react';
 import withApollo from '../../lib/withApollo';
 
 import Slides from '../../components/Slides';
@@ -18,24 +18,6 @@ const GET_SLIDES = gql`
         title
         order
       }
-    }
-  }
-`;
-
-const GET_META = gql`
-  query {
-    allLayers {
-      id
-      layerId
-      title
-      remoteId
-    }
-    allBasemaps {
-      id
-      ssid
-      title
-      firstYear
-      lastYear
     }
   }
 `;
@@ -88,7 +70,6 @@ const EditPage = () => {
       }
     },
   });
-  const meta = useQuery(GET_META);
 
   const newSlide = () =>
     addSlide({
@@ -127,7 +108,12 @@ const EditPage = () => {
       refetchQueries: [{ query: GET_SLIDES, variables: { project } }],
     });
 
-  if (loading || !project || meta.loading) return <p>Loading...</p>;
+  if (loading || !project)
+    return (
+      <Dimmer active>
+        <Loader size="huge">Loading</Loader>
+      </Dimmer>
+    );
   if (error) return <p>Error :(</p>;
 
   return (
@@ -148,14 +134,7 @@ const EditPage = () => {
             />
           </Grid.Column>
           <Grid.Column width={13} style={{ padding: 0 }}>
-            {activeSlide && (
-              <Editor
-                slide={activeSlide}
-                layers={meta.data.allLayers}
-                basemaps={meta.data.allBasemaps}
-                removeSlide={removeSlide}
-              />
-            )}
+            {activeSlide && <Editor slide={activeSlide} removeSlide={removeSlide} />}
           </Grid.Column>
         </Grid.Row>
       </Grid>

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { omit, map } from 'lodash';
+import { Editor as Wysiwyg } from '@tinymce/tinymce-react';
 import {
   Container,
   Header as Heading,
@@ -16,6 +17,8 @@ import {
   Image as Img,
   Modal,
   Icon,
+  Dimmer,
+  Loader,
 } from 'semantic-ui-react';
 import withApollo from '../../lib/withApollo';
 
@@ -174,7 +177,12 @@ const Create = ({ user }) => {
     }).then(() => window.location.replace('/projects'));
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading)
+    return (
+      <Dimmer active>
+        <Loader size="huge">Loading</Loader>
+      </Dimmer>
+    );
   if (error) return <p>ERROR</p>;
 
   return (
@@ -209,9 +217,21 @@ const Create = ({ user }) => {
           </Form.Field>
           <Form.Field>
             <label>Description</label>
-            <Form.TextArea
+            <Wysiwyg
+              apiKey="t0o761fz7mpxbpfouwngyrmyh89mhclnprer8e3bdkch7slf"
               value={description || ''}
-              onChange={(e, { value }) => setDescription(value)}
+              init={{
+                height: 400,
+                menubar: false,
+                plugins: ['link lists paste'],
+                toolbar: 'bold italic superscript bullist numlist | link unlink | undo redo',
+                branding: false,
+                statusbar: false,
+                paste_as_text: true,
+              }}
+              onEditorChange={value => {
+                setDescription(value);
+              }}
             />
           </Form.Field>
           {imageMeta && (
@@ -276,8 +296,8 @@ const Create = ({ user }) => {
           >
             Cancel
           </Button>
+          <div style={{ clear: 'left', margin: 100 }} />
         </Form>
-        <div style={{ clear: 'both', margin: 100 }} />
         <Modal
           basic
           onClose={() => setOpen(false)}
@@ -323,8 +343,7 @@ const Create = ({ user }) => {
             </Button>
           </Modal.Actions>
         </Modal>
-        <div style={{ clear: 'both', margin: 40 }} />
-        <Img src="/img/hrc-logo.png" />
+        <Img src="/img/hrc-logo.png" style={{ marginTop: 60 }} />
       </Container>
     </div>
   );

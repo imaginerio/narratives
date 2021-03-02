@@ -4,6 +4,8 @@ import ReactMapGL, { Source, Layer, NavigationControl } from 'react-map-gl';
 import axios from 'axios';
 import { map as mapProp } from 'lodash';
 
+import { minZoom, maxZoom } from '../../config/map';
+
 const Atlas = ({
   handler,
   viewport,
@@ -112,6 +114,8 @@ const Atlas = ({
       width: '100%',
       height: '100%',
       onLoad: onMapLoad,
+      minZoom,
+      maxZoom,
     };
     if (viewer) {
       props = {
@@ -134,9 +138,10 @@ const Atlas = ({
     <ReactMapGL {...getMapProps()}>
       {activeBasemap && (
         <Source
+          key={activeBasemap}
           type="raster"
           tiles={[
-            `https://imaginerio-rasters.s3.us-east-1.amazonaws.com/${activeBasemap.ssid}/{z}/{x}/{y}.png`,
+            `https://imaginerio-rasters.s3.us-east-1.amazonaws.com/${activeBasemap}/{z}/{x}/{y}.png`,
           ]}
           scheme="tms"
         >
@@ -149,7 +154,7 @@ const Atlas = ({
         </Source>
       )}
       {selectedFeature && (
-        <Source type="geojson" data={featureData}>
+        <Source key={selectedFeature} type="geojson" data={featureData}>
           <Layer
             id="selected-case"
             type="line"
