@@ -52,16 +52,31 @@ const Year = ({ slide }) => {
   };
 
   const [tempYear, setTempYear] = useState(null);
+  const [inputYear, setInputYear] = useState(1900);
   const [open, setOpen] = useState(false);
   const [rangeError, setRangeError] = useState(false);
 
   useEffect(() => {
     if (tempYear && data && tempYear !== data.Slide.year) updateYear(tempYear);
+    setInputYear(tempYear);
   }, [tempYear]);
 
   useEffect(() => {
-    if (data) setTempYear(data.Slide.year);
+    if (data) {
+      setTempYear(data.Slide.year);
+      setInputYear(data.Slide.year);
+    }
   }, [loading, data]);
+
+  const syncYear = () => {
+    const newYear = parseInt(inputYear, 10);
+    if (newYear && newYear >= 1502 && newYear <= 2021) {
+      setRangeError(false);
+      setTempYear(newYear);
+    } else {
+      setRangeError(true);
+    }
+  };
 
   return (
     <>
@@ -70,17 +85,13 @@ const Year = ({ slide }) => {
         <Input
           className={styles.yearInput}
           type="number"
-          value={tempYear}
+          value={inputYear}
           error={rangeError}
-          onChange={(e, { value }) => {
-            const newYear = parseInt(value, 10);
-            if (newYear && newYear >= 1502 && newYear <= 2021) {
-              setRangeError(false);
-              setTempYear(newYear);
-            } else {
-              setRangeError(true);
-            }
+          onKeyPress={({ key }) => {
+            if (key === 'Enter') syncYear();
           }}
+          onChange={(e, { value }) => setInputYear(value)}
+          onBlur={syncYear}
         />
         <div className={styles.yearSlider}>
           <Slider
