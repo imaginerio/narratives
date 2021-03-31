@@ -141,7 +141,7 @@ const View = ({ project, preview }) => {
           }}
         >
           <Step data={{ ...data.Project.slides[0], index: 0 }}>
-            <div style={{ padding: '25vh 80px 25vh 80px' }}>
+            <div className={styles.scrollContainer}>
               <Card fluid className={styles.Medium}>
                 <Card.Content>
                   <Card.Header style={{ fontSize: '1.5em', textAlign: 'center' }}>
@@ -168,11 +168,9 @@ const View = ({ project, preview }) => {
           {data.Project.slides.map((slide, i) => (
             <Step key={slide.id} data={{ ...slide, index: i + 1 }}>
               <div
+                className={styles.scrollContainer}
                 style={{
-                  paddingTop: '25vh',
-                  paddingRight: 80,
                   paddingBottom: i + 1 === data.Project.slides.length ? '75vh' : '25vh',
-                  paddingLeft: 80,
                 }}
               >
                 <Card fluid className={styles[slide.size]}>

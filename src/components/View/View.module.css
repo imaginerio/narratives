@@ -1,3 +1,7 @@
+.scrollContainer{
+  padding: '25vh 80px 25vh 80px';
+}
+
 .Fullscreen{
   width: 100% !important;
   font-size: 1.25em;
@@ -11,4 +15,15 @@
 .Small{
   width: 400px !important;
   font-size: 1.25em;
+}
+
+@media only screen and (max-width: 600px) {
+  .scrollContainer{
+    padding: 25vh 5vw 25vh 5vw;
+  }
+
+  .Fullscreen, .Medium, .Small {
+    min-width: 90vw;
+    max-width: 100%;
+  }
 }
