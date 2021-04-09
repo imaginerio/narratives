@@ -1,7 +1,6 @@
 const { Text, Relationship, Float, Integer, Select } = require('@keystonejs/fields');
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 const { gql } = require('apollo-server-express');
-const { last } = require('lodash');
 
 const defaultAuth = ({ authentication: { item } }) => {
   if (item) {
@@ -95,7 +94,7 @@ module.exports = {
   hooks: {
     resolveInput: async ({ operation, resolvedData, context }) => {
       if (operation === 'create') {
-        const { project } = resolvedData;
+        const { project, order } = resolvedData;
         const {
           data: {
             Project: { slides },
@@ -118,8 +117,7 @@ module.exports = {
           variables: { project },
         });
 
-        const slide = last(slides);
-        const order = slides.length;
+        const slide = slides[(order || slides.length) - 1];
         return { ...resolvedData, ...slide, order };
       }
       return resolvedData;

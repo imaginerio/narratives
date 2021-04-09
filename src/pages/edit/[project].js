@@ -23,8 +23,8 @@ const GET_SLIDES = gql`
 `;
 
 const ADD_SLIDE = gql`
-  mutation AddSlide($project: ProjectRelateToOneInput) {
-    createSlide(data: { project: $project }) {
+  mutation AddSlide($project: ProjectRelateToOneInput, $order: Int) {
+    createSlide(data: { project: $project, order: $order }) {
       id
       title
     }
@@ -71,17 +71,20 @@ const EditPage = () => {
     },
   });
 
-  const newSlide = () =>
-    addSlide({
+  const newSlide = () => {
+    const { order } = data.Project.slides.find(s => s.id === activeSlide);
+    return addSlide({
       variables: {
         project: {
           connect: { id: project },
         },
+        order,
       },
     }).then(async ({ data: { createSlide } }) => {
       await refetch({ variables: { project } });
       setActiveSlide(createSlide.id);
     });
+  };
 
   const removeSlide = id =>
     deleteSlide({
