@@ -115,7 +115,7 @@ const Basemaps = ({ slide }) => {
       setOptions(
         allBasemaps.data.basemaps
           .filter(b => b.firstYear <= year && b.lastYear >= year)
-          .map(b => ({ value: b.id, text: b.title }))
+          .map(b => ({ value: b.id, text: b.title, ssid: encodeURIComponent(b.ssid) }))
       );
     }
   }, [year, allBasemaps]);
@@ -146,9 +146,18 @@ const Basemaps = ({ slide }) => {
         selection
         clearable
         value={activeBasemap}
-        options={options}
         onChange={(e, { value }) => setActiveBasemap(value)}
-      />
+      >
+        <Dropdown.Menu>
+          {options.map(option => (
+            <Dropdown.Item
+              key={option.value}
+              {...option}
+              image={`https://images.imaginerio.org/iiif-img/2/${option.ssid}/full/800,639/0/default.jpg`}
+            />
+          ))}
+        </Dropdown.Menu>
+      </Dropdown>
       <h3>Overlay Opacity</h3>
       <Slider
         discrete
