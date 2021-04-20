@@ -1,0 +1,95 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`home page matches snapshot 1`] = `
+<div
+  style={
+    Object {
+      "backgroundColor": "#FAFAFA",
+      "minHeight": "100vh",
+    }
+  }
+>
+  <div
+    className="header"
+  >
+    <div
+      className="ui header title"
+    >
+      Rio Story Maps
+    </div>
+    <a
+      className="logout"
+      href="/projects"
+    >
+      Login
+    </a>
+  </div>
+  <div
+    className="ui container"
+    style={
+      Object {
+        "marginBottom": 30,
+        "marginTop": 30,
+      }
+    }
+  >
+    <h1
+      className="ui header"
+      style={
+        Object {
+          "margin": "50px 0",
+        }
+      }
+    >
+      Map Gallery
+    </h1>
+    <div
+      className="ui three cards"
+    >
+      <a
+        className="ui card"
+        href="/view/1"
+        onClick={[Function]}
+      >
+        <img
+          className="ui image"
+          src="https://rio-narrative-files.s3.amazonaws.com/"
+        />
+        <div
+          className="content"
+        >
+          <div
+            className="header"
+          >
+            Test Map
+          </div>
+          <div
+            className="meta"
+          >
+            Literature
+          </div>
+          <div
+            className="description"
+          >
+            David Heyman
+          </div>
+        </div>
+        <div
+          className="extra content"
+        >
+          Popup
+        </div>
+      </a>
+    </div>
+    <img
+      className="ui image"
+      src="img/hrc-logo.png"
+      style={
+        Object {
+          "margin": "50px 0",
+        }
+      }
+    />
+  </div>
+</div>
+`;

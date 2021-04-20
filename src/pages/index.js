@@ -7,7 +7,7 @@ import withApollo from '../lib/withApollo';
 
 import Header from '../components/Header';
 
-const GET_PROJECTS = gql`
+export const GET_PROJECTS = gql`
   query GetPublished {
     allProjects(where: { published: true }) {
       id
@@ -25,7 +25,7 @@ const GET_PROJECTS = gql`
   }
 `;
 
-const Home = ({ user }) => {
+export const Home = ({ user }) => {
   const { loading, error, data } = useQuery(GET_PROJECTS);
 
   if (loading) return <p>Loading...</p>;
