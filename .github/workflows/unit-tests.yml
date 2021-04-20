@@ -5,9 +5,9 @@ name: Unit Tests
 
 on:
   push:
-    branches: [ main, dev ]
+    branches: [ master, development ]
   pull_request:
-    branches: [ main, dev ]
+    branches: [ master, development ]
 jobs:
   # install dependencies and run test command
   test:
