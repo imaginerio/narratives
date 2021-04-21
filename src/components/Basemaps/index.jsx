@@ -4,6 +4,8 @@ import { useQuery, useMutation, gql } from '@apollo/client';
 import { Dropdown } from 'semantic-ui-react';
 import { Slider } from 'react-semantic-ui-range';
 
+import debouncedMutation from '../../lib/debouncedMutation';
+
 const GET_SLIDE = gql`
   query GetBasemap($slide: ID!) {
     Slide(where: { id: $slide }) {
@@ -42,8 +44,8 @@ const UPDATE_BASEMAP = gql`
 `;
 
 const UPDATE_SLIDE_OPACITY = gql`
-  mutation UpdateSlideTitle($slide: ID!, $value: Float) {
-    updateSlide(id: $slide, data: { opacity: $value }) {
+  mutation UpdateSlideTitle($slide: ID!, $opacity: Float) {
+    updateSlide(id: $slide, data: { opacity: $opacity }) {
       id
       opacity
     }
@@ -85,25 +87,6 @@ const Basemaps = ({ slide }) => {
   };
 
   const opacityTimer = useRef();
-  const onOpacityChange = newOpacity => {
-    clearTimeout(opacityTimer.current);
-    opacityTimer.current = setTimeout(() => {
-      updateOpacity({
-        variables: {
-          slide,
-          value: newOpacity,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          updateSlide: {
-            __typename: 'Slide',
-            id: slide,
-            opacity: newOpacity,
-          },
-        },
-      });
-    }, 500);
-  };
 
   const [year, setYear] = useState(1900);
   const [activeBasemap, setActiveBasemap] = useState(null);
@@ -125,7 +108,12 @@ const Basemaps = ({ slide }) => {
   }, [activeBasemap]);
 
   useEffect(() => {
-    onOpacityChange(opacity);
+    opacityTimer.current = debouncedMutation({
+      slide,
+      timerRef: opacityTimer,
+      mutation: updateOpacity,
+      values: { opacity },
+    });
   }, [opacity, activeBasemap]);
 
   useEffect(() => {
