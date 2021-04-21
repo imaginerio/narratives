@@ -1,10 +1,18 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { useQuery, useMutation, gql } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import { Grid, Segment, Form, Input, Dropdown, Dimmer, Loader } from 'semantic-ui-react';
 import { Editor as Wysiwyg } from '@tinymce/tinymce-react';
 
+import {
+  GET_SLIDES,
+  UPDATE_SLIDE_TITLE,
+  UPDATE_SLIDE_DESCRIPTION,
+  UPDATE_SLIDE_SIZE,
+  ADD_IMAGE,
+  UPDATE_IMAGE,
+} from './graphql';
 import AtlasContext from '../Atlas/Context';
 import Image from '../Image';
 import Year from '../Year';
@@ -13,88 +21,6 @@ import Search from '../Search';
 import Confirm from '../Confirm';
 
 import styles from './Editor.module.css';
-
-const GET_SLIDES = gql`
-  query GetSlide($slide: ID!) {
-    Slide(where: { id: $slide }) {
-      id
-      title
-      description
-      size
-      image {
-        id
-        title
-        creator
-        source
-        date
-        url
-      }
-    }
-  }
-`;
-
-const UPDATE_SLIDE_TITLE = gql`
-  mutation UpdateSlideTitle($slide: ID!, $value: String) {
-    updateSlide(id: $slide, data: { title: $value }) {
-      id
-      title
-    }
-  }
-`;
-
-const UPDATE_SLIDE_DESCRIPTION = gql`
-  mutation UpdateSlideDescription($slide: ID!, $value: String) {
-    updateSlide(id: $slide, data: { description: $value }) {
-      id
-      description
-    }
-  }
-`;
-
-const UPDATE_SLIDE_SIZE = gql`
-  mutation UpdateSlideSize($slide: ID!, $value: SlideSizeType) {
-    updateSlide(id: $slide, data: { size: $value }) {
-      id
-      size
-    }
-  }
-`;
-
-const ADD_IMAGE = gql`
-  mutation AddImage($slide: SlideRelateToOneInput) {
-    createImage(data: { slide: $slide }) {
-      id
-      title
-      creator
-      source
-      date
-      url
-    }
-  }
-`;
-
-const UPDATE_IMAGE = gql`
-  mutation UpdateImage(
-    $image: ID!
-    $title: String
-    $creator: String
-    $source: String
-    $date: String
-    $url: String
-  ) {
-    updateImage(
-      id: $image
-      data: { title: $title, creator: $creator, source: $source, date: $date, url: $url }
-    ) {
-      id
-      title
-      creator
-      source
-      date
-      url
-    }
-  }
-`;
 
 const Editor = ({ slide, removeSlide }) => {
   const [title, setTitle] = useState('');
