@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation } from '@apollo/client';
 import { Grid, Segment, Form, Input, Dropdown, Dimmer, Loader } from 'semantic-ui-react';
-import { Editor as Wysiwyg } from '@tinymce/tinymce-react';
 
 import {
   GET_SLIDES,
@@ -21,6 +20,7 @@ import Year from '../Year';
 import Layers from '../Layers';
 import Search from '../Search';
 import Confirm from '../Confirm';
+import Wysiwyg from '../Wysiwyg';
 
 import styles from './Editor.module.css';
 
@@ -100,31 +100,19 @@ const Editor = ({ slide, removeSlide }) => {
                 }}
               />
             </Form.Field>
-            <Form.Field>
-              <label>Card Description</label>
-              <Wysiwyg
-                apiKey="t0o761fz7mpxbpfouwngyrmyh89mhclnprer8e3bdkch7slf"
-                value={description}
-                init={{
-                  height: 400,
-                  menubar: false,
-                  plugins: ['link lists paste'],
-                  toolbar: 'bold italic superscript bullist numlist | link unlink | undo redo',
-                  branding: false,
-                  statusbar: false,
-                  paste_as_text: true,
-                }}
-                onEditorChange={value => {
-                  setDescription(value);
-                  descriptionTimer.current = debouncedMutation({
-                    slide,
-                    timerRef: descriptionTimer,
-                    mutation: updateDescription,
-                    values: { description: value },
-                  });
-                }}
-              />
-            </Form.Field>
+            <Wysiwyg
+              label="Card Description"
+              value={description}
+              onEditorChange={value => {
+                setDescription(value);
+                descriptionTimer.current = debouncedMutation({
+                  slide,
+                  timerRef: descriptionTimer,
+                  mutation: updateDescription,
+                  values: { description: value },
+                });
+              }}
+            />
             <Form.Field>
               <label>Size</label>
               <Dropdown

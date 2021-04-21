@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { omit, map } from 'lodash';
-import { Editor as Wysiwyg } from '@tinymce/tinymce-react';
 import {
   Container,
   Header as Heading,
@@ -23,6 +22,7 @@ import withApollo from '../../lib/withApollo';
 import Image from '../../components/Image';
 import Header from '../../components/Header';
 import Confirm from '../../components/Confirm';
+import Wysiwyg from '../../components/Wysiwyg';
 
 const GET_PROJECT = gql`
   query GetTags($project: ID!) {
@@ -213,25 +213,7 @@ const Create = ({ user }) => {
             <label>Title</label>
             <Input value={title} onChange={(e, { value }) => setTitle(value)} />
           </Form.Field>
-          <Form.Field>
-            <label>Description</label>
-            <Wysiwyg
-              apiKey="t0o761fz7mpxbpfouwngyrmyh89mhclnprer8e3bdkch7slf"
-              value={description || ''}
-              init={{
-                height: 400,
-                menubar: false,
-                plugins: ['link lists paste'],
-                toolbar: 'bold italic superscript bullist numlist | link unlink | undo redo',
-                branding: false,
-                statusbar: false,
-                paste_as_text: true,
-              }}
-              onEditorChange={value => {
-                setDescription(value);
-              }}
-            />
-          </Form.Field>
+          <Wysiwyg label="Description" value={description || ''} onEditorChange={setDescription} />
           {imageMeta && (
             <Form.Field>
               <label>Image</label>
