@@ -6,6 +6,7 @@ import { Dimmer, Loader } from 'semantic-ui-react';
 
 import Atlas from './index';
 import { minZoom, maxZoom, minLon, maxLon, minLat, maxLat } from '../../config/map';
+import debouncedMutation from '../../lib/debouncedMutation';
 
 const GET_SLIDE_ATLAS = gql`
   query GetSlideYear($slide: ID!) {
@@ -65,25 +66,6 @@ const AtlasContext = ({ slide }) => {
   });
   const [onUpdateViewport] = useMutation(UPDATE_VIEWPORT);
   const viewportTimer = useRef();
-  const updateViewport = newViewport => {
-    clearTimeout(viewportTimer.current);
-    viewportTimer.current = setTimeout(() => {
-      onUpdateViewport({
-        variables: {
-          slide,
-          ...newViewport,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          updateSlide: {
-            __typename: 'Slide',
-            id: slide,
-            ...newViewport,
-          },
-        },
-      });
-    }, 500);
-  };
 
   const [mapViewport, setMapViewport] = useState(null);
 
@@ -108,7 +90,12 @@ const AtlasContext = ({ slide }) => {
           pick(data.Slide, ['longitude', 'latitude', 'zoom', 'bearing', 'pitch'])
         )
       ) {
-        updateViewport(clampedPort);
+        viewportTimer.current = debouncedMutation({
+          slide,
+          timerRef: viewportTimer,
+          mutation: onUpdateViewport,
+          values: clampedPort,
+        });
       }
     }
   };

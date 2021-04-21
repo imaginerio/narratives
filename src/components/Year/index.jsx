@@ -5,6 +5,8 @@ import { useQuery, useMutation, gql } from '@apollo/client';
 import { Form, Input, Modal, Header, Icon, Button } from 'semantic-ui-react';
 import { Slider } from 'react-semantic-ui-range';
 
+import debouncedMutation from '../../lib/debouncedMutation';
+
 import styles from './Year.module.css';
 
 const GET_SLIDE_YEAR = gql`
@@ -17,8 +19,8 @@ const GET_SLIDE_YEAR = gql`
 `;
 
 const UPDATE_SLIDE_YEAR = gql`
-  mutation UpdateSlideYear($slide: ID!, $value: Int) {
-    updateSlide(id: $slide, data: { year: $value }) {
+  mutation UpdateSlideYear($slide: ID!, $year: Int) {
+    updateSlide(id: $slide, data: { year: $year }) {
       id
       year
     }
@@ -31,25 +33,6 @@ const Year = ({ slide }) => {
   });
   const [onUpdateYear] = useMutation(UPDATE_SLIDE_YEAR);
   const yearTimer = useRef();
-  const updateYear = newYear => {
-    clearTimeout(yearTimer.current);
-    yearTimer.current = setTimeout(() => {
-      onUpdateYear({
-        variables: {
-          slide,
-          value: newYear,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          updateSlide: {
-            __typename: 'Slide',
-            id: slide,
-            year: newYear,
-          },
-        },
-      });
-    }, 500);
-  };
 
   const [tempYear, setTempYear] = useState(null);
   const [inputYear, setInputYear] = useState(1900);
@@ -57,7 +40,14 @@ const Year = ({ slide }) => {
   const [rangeError, setRangeError] = useState(false);
 
   useEffect(() => {
-    if (tempYear && data && tempYear !== data.Slide.year) updateYear(tempYear);
+    if (tempYear && data && tempYear !== data.Slide.year) {
+      yearTimer.current = debouncedMutation({
+        slide,
+        timerRef: yearTimer,
+        mutation: onUpdateYear,
+        values: { year: tempYear },
+      });
+    }
     setInputYear(tempYear);
   }, [tempYear]);
 

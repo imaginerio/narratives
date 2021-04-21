@@ -13,6 +13,8 @@ import {
   ADD_IMAGE,
   UPDATE_IMAGE,
 } from './graphql';
+import debouncedMutation from '../../lib/debouncedMutation';
+
 import AtlasContext from '../Atlas/Context';
 import Image from '../Image';
 import Year from '../Year';
@@ -46,67 +48,8 @@ const Editor = ({ slide, removeSlide }) => {
   const [updateImage] = useMutation(UPDATE_IMAGE);
 
   const titleTimer = useRef();
-  const onTitleChange = newTitle => {
-    clearTimeout(titleTimer.current);
-    titleTimer.current = setTimeout(() => {
-      updateTitle({
-        variables: {
-          slide,
-          value: newTitle,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          updateSlide: {
-            __typename: 'Slide',
-            id: slide,
-            title: newTitle,
-          },
-        },
-      });
-    }, 500);
-  };
-
   const descriptionTimer = useRef();
-  const onDescriptionChange = newDescription => {
-    clearTimeout(descriptionTimer.current);
-    descriptionTimer.current = setTimeout(() => {
-      updateDescription({
-        variables: {
-          slide,
-          value: newDescription,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          updateSlide: {
-            __typename: 'Slide',
-            id: slide,
-            description: newDescription,
-          },
-        },
-      });
-    }, 500);
-  };
-
   const sizeTimer = useRef();
-  const onSizeChange = newSize => {
-    clearTimeout(sizeTimer.current);
-    sizeTimer.current = setTimeout(() => {
-      updateSize({
-        variables: {
-          slide,
-          value: newSize,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          updateSlide: {
-            __typename: 'Slide',
-            id: slide,
-            size: newSize,
-          },
-        },
-      });
-    }, 500);
-  };
 
   const imageTimer = useRef();
   const onImageChange = (image, imageValues) => {
@@ -148,7 +91,12 @@ const Editor = ({ slide, removeSlide }) => {
                 value={title}
                 onChange={(e, { value }) => {
                   setTitle(value);
-                  onTitleChange(value);
+                  titleTimer.current = debouncedMutation({
+                    slide,
+                    timerRef: titleTimer,
+                    mutation: updateTitle,
+                    values: { title: value },
+                  });
                 }}
               />
             </Form.Field>
@@ -168,7 +116,12 @@ const Editor = ({ slide, removeSlide }) => {
                 }}
                 onEditorChange={value => {
                   setDescription(value);
-                  onDescriptionChange(value);
+                  descriptionTimer.current = debouncedMutation({
+                    slide,
+                    timerRef: descriptionTimer,
+                    mutation: updateDescription,
+                    values: { description: value },
+                  });
                 }}
               />
             </Form.Field>
@@ -186,7 +139,12 @@ const Editor = ({ slide, removeSlide }) => {
                 ]}
                 onChange={(e, { value }) => {
                   setSize(value);
-                  onSizeChange(value);
+                  sizeTimer.current = debouncedMutation({
+                    slide,
+                    timerRef: sizeTimer,
+                    mutation: updateSize,
+                    values: { size: value },
+                  });
                 }}
               />
             </Form.Field>
