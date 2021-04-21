@@ -2,19 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation, gql } from '@apollo/client';
-import {
-  Grid,
-  Segment,
-  Form,
-  Input,
-  Dropdown,
-  Button,
-  Icon,
-  Modal,
-  Header,
-  Dimmer,
-  Loader,
-} from 'semantic-ui-react';
+import { Grid, Segment, Form, Input, Dropdown, Dimmer, Loader } from 'semantic-ui-react';
 import { Editor as Wysiwyg } from '@tinymce/tinymce-react';
 
 import AtlasContext from '../Atlas/Context';
@@ -22,6 +10,7 @@ import Image from '../Image';
 import Year from '../Year';
 import Layers from '../Layers';
 import Search from '../Search';
+import Confirm from '../Confirm';
 
 import styles from './Editor.module.css';
 
@@ -112,7 +101,6 @@ const Editor = ({ slide, removeSlide }) => {
   const [description, setDescription] = useState('');
   const [imageMeta, setImageMeta] = useState(null);
   const [size, setSize] = useState('Small');
-  const [open, setOpen] = useState(false);
 
   const { loading, error, data } = useQuery(GET_SLIDES, {
     variables: { slide },
@@ -299,44 +287,17 @@ const Editor = ({ slide, removeSlide }) => {
               />
             </Form.Field>
             <Form.Field>
-              <Modal
-                basic
-                onClose={() => setOpen(false)}
-                onOpen={() => setOpen(true)}
-                open={open}
-                size="small"
-                trigger={
-                  <Button negative fluid labelPosition="left" icon="trash" content="Delete Slide" />
-                }
+              <Confirm
+                buttonIcon="trash"
+                buttonTitle="Delete Slide"
+                confirmTitle="Delete this slide?"
+                confirmHandler={() => removeSlide(slide)}
               >
-                <Header icon>
-                  <Icon name="trash" />
-                  Delete this slide?
-                </Header>
-                <Modal.Content>
-                  <p>
-                    Are you sure you want to delete this slide? This action is permanent and cannot
-                    be undone.
-                  </p>
-                </Modal.Content>
-                <Modal.Actions>
-                  <Button basic color="red" inverted onClick={() => setOpen(false)}>
-                    <Icon name="remove" />
-                    <span>No</span>
-                  </Button>
-                  <Button
-                    negative
-                    inverted
-                    onClick={() => {
-                      setOpen(false);
-                      removeSlide(slide);
-                    }}
-                  >
-                    <Icon name="trash" />
-                    <span>Yes</span>
-                  </Button>
-                </Modal.Actions>
-              </Modal>
+                <p>
+                  Are you sure you want to delete this slide? This action is permanent and cannot be
+                  undone.
+                </p>
+              </Confirm>
             </Form.Field>
           </Form>
         </Grid.Column>

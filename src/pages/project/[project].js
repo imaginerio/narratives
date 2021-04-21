@@ -15,8 +15,6 @@ import {
   Button,
   Divider,
   Image as Img,
-  Modal,
-  Icon,
   Dimmer,
   Loader,
 } from 'semantic-ui-react';
@@ -24,6 +22,7 @@ import withApollo from '../../lib/withApollo';
 
 import Image from '../../components/Image';
 import Header from '../../components/Header';
+import Confirm from '../../components/Confirm';
 
 const GET_PROJECT = gql`
   query GetTags($project: ID!) {
@@ -125,7 +124,6 @@ const Create = ({ user }) => {
   const [imageMeta, setImageMeta] = useState(null);
   const [published, setPublished] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     setTags(loading ? [] : map(data.Project.tags, 'id'));
@@ -298,51 +296,18 @@ const Create = ({ user }) => {
           </Button>
           <div style={{ clear: 'left', margin: 100 }} />
         </Form>
-        <Modal
-          basic
-          onClose={() => setOpen(false)}
-          onOpen={() => setOpen(true)}
-          open={open}
-          size="small"
-          trigger={(
-            <Button
-              negative
-              fluid
-              labelPosition="left"
-              icon="trash"
-              content="Delete Project"
-              disabled={isLoading}
-            />
-          )}
+        <Confirm
+          disabled={isLoading}
+          buttonIcon="trash"
+          buttonTitle="Delete Project"
+          confirmHandler={() => removeProject(project)}
+          confirmTitle="Delete this narrative?"
         >
-          <Heading icon>
-            <Icon name="trash" />
-            Delete this narrative?
-          </Heading>
-          <Modal.Content>
-            <p>
-              Are you sure you want to delete this narrative? This action is permanent and cannot be
-              undone.
-            </p>
-          </Modal.Content>
-          <Modal.Actions>
-            <Button basic color="red" inverted onClick={() => setOpen(false)}>
-              <Icon name="remove" />
-              <span>No</span>
-            </Button>
-            <Button
-              negative
-              inverted
-              onClick={() => {
-                setOpen(false);
-                removeProject(project);
-              }}
-            >
-              <Icon name="trash" />
-              <span>Yes</span>
-            </Button>
-          </Modal.Actions>
-        </Modal>
+          <p>
+            Are you sure you want to delete this narrative? This action is permanent and cannot be
+            undone.
+          </p>
+        </Confirm>
         <Img src="/img/hrc-logo.png" style={{ marginTop: 60 }} />
       </Container>
     </div>
