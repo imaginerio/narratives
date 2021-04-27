@@ -1,56 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { useQuery, useMutation, gql } from '@apollo/client';
-import { Dropdown } from 'semantic-ui-react';
+import { useQuery, useMutation } from '@apollo/client';
+import { Modal, Button, Item, Icon, Label } from 'semantic-ui-react';
 import { Slider } from 'react-semantic-ui-range';
 
 import debouncedMutation from '../../lib/debouncedMutation';
-
-const GET_SLIDE = gql`
-  query GetBasemap($slide: ID!) {
-    Slide(where: { id: $slide }) {
-      id
-      year
-      opacity
-      basemap {
-        id
-        ssid
-      }
-    }
-  }
-`;
-
-const GET_BASEMAPS = gql`
-  query {
-    basemaps: allBasemaps {
-      id
-      ssid
-      title
-      firstYear
-      lastYear
-    }
-  }
-`;
-
-const UPDATE_BASEMAP = gql`
-  mutation UpdateBasemap($slide: ID!, $basemap: BasemapRelateToOneInput) {
-    updateSlide(id: $slide, data: { basemap: $basemap }) {
-      id
-      basemap {
-        id
-      }
-    }
-  }
-`;
-
-const UPDATE_SLIDE_OPACITY = gql`
-  mutation UpdateSlideTitle($slide: ID!, $opacity: Float) {
-    updateSlide(id: $slide, data: { opacity: $opacity }) {
-      id
-      opacity
-    }
-  }
-`;
+import { GET_SLIDE, GET_BASEMAPS, UPDATE_BASEMAP, UPDATE_SLIDE_OPACITY } from './graphql';
 
 const Basemaps = ({ slide }) => {
   const { data } = useQuery(GET_SLIDE, {
@@ -64,7 +19,7 @@ const Basemaps = ({ slide }) => {
     let basemap = { disconnectAll: true };
     if (newBasemap) {
       basemap = {
-        connect: { id: newBasemap },
+        connect: { id: newBasemap.id },
       };
     }
     updateBasemap({
@@ -78,7 +33,7 @@ const Basemaps = ({ slide }) => {
             id: slide,
             basemap: {
               __typename: 'Basemap',
-              id: newBasemap,
+              ...newBasemap,
             },
           },
         },
@@ -92,19 +47,17 @@ const Basemaps = ({ slide }) => {
   const [activeBasemap, setActiveBasemap] = useState(null);
   const [options, setOptions] = useState([]);
   const [opacity, setOpacity] = useState(1);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (allBasemaps && allBasemaps.data) {
-      setOptions(
-        allBasemaps.data.basemaps
-          .filter(b => b.firstYear <= year && b.lastYear >= year)
-          .map(b => ({ value: b.id, text: b.title, ssid: encodeURIComponent(b.ssid) }))
-      );
+      setOptions(allBasemaps.data.basemaps.filter(b => b.firstYear <= year && b.lastYear >= year));
     }
   }, [year, allBasemaps]);
 
   useEffect(() => {
     onBasemapChange(activeBasemap);
+    setOpen(false);
   }, [activeBasemap]);
 
   useEffect(() => {
@@ -119,7 +72,7 @@ const Basemaps = ({ slide }) => {
   useEffect(() => {
     if (data) {
       if (data.Slide.year !== year) setYear(data.Slide.year);
-      if (data.Slide.basemap) setActiveBasemap(data.Slide.basemap.id);
+      if (data.Slide.basemap) setActiveBasemap(data.Slide.basemap);
       setOpacity(data.Slide.opacity);
     }
   }, [allBasemaps.loading, data]);
@@ -127,25 +80,58 @@ const Basemaps = ({ slide }) => {
   return (
     <div>
       <h3 style={{ marginTop: 0 }}>Maps / Plans / Aerials</h3>
-      <Dropdown
-        loading={allBasemaps.loading}
-        placeholder="Select overlay"
-        fluid
-        selection
-        clearable
-        value={activeBasemap}
-        onChange={(e, { value }) => setActiveBasemap(value)}
+      <Modal
+        onClose={() => setOpen(false)}
+        onOpen={() => setOpen(true)}
+        open={open}
+        trigger={<Button>Show Modal</Button>}
       >
-        <Dropdown.Menu>
-          {options.map(option => (
-            <Dropdown.Item
-              key={option.value}
-              {...option}
-              image={`https://images.imaginerio.org/iiif-img/2/${option.ssid}/full/800,639/0/default.jpg`}
-            />
-          ))}
-        </Dropdown.Menu>
-      </Dropdown>
+        <Modal.Header>Select a Basemap</Modal.Header>
+        <Modal.Content scrolling>
+          <Item.Group divided>
+            {options.map(basemap => (
+              <Item key={basemap.ssid} onClick={() => setActiveBasemap(basemap)}>
+                <Item.Image size="small" src={basemap.thumbnail} />
+                <Item.Content>
+                  <Item.Header>{basemap.title}</Item.Header>
+                  <Item.Description>
+                    {basemap.creator && (
+                      <p>
+                        <b>Creator: </b>
+                        {basemap.creator}
+                      </p>
+                    )}
+                    <p>
+                      <b>First year: </b>
+                      {basemap.firstYear}
+                    </p>
+                    <p>
+                      <b>Last year: </b>
+                      {basemap.lastYear}
+                    </p>
+                  </Item.Description>
+                </Item.Content>
+              </Item>
+            ))}
+          </Item.Group>
+        </Modal.Content>
+      </Modal>
+      {activeBasemap && (
+        <Label style={{ maxWidth: '100%' }}>
+          <div
+            style={{
+              display: 'inline-block',
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+              width: 'calc(100% - 20px)',
+            }}
+          >
+            {activeBasemap.title}
+          </div>
+          <Icon name="delete" />
+        </Label>
+      )}
       <h3>Overlay Opacity</h3>
       <Slider
         discrete
