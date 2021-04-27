@@ -1,0 +1,124 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Basemaps matches snapshot 1`] = `
+Array [
+  <div
+    style={
+      Object {
+        "height": "100vh",
+        "position": "fixed",
+        "top": 0,
+        "width": "100vw",
+      }
+    }
+  >
+    <div
+      style={
+        Object {
+          "cursor": "grab",
+          "height": "100%",
+          "position": "relative",
+          "width": "100%",
+        }
+      }
+    >
+      <div
+        style={
+          Object {
+            "height": "100%",
+            "position": "relative",
+            "width": "100%",
+          }
+        }
+      >
+        <div
+          className=""
+          style={
+            Object {
+              "height": "100%",
+              "overflow": "hidden",
+              "position": "absolute",
+              "visibility": "inherit",
+              "width": "100%",
+            }
+          }
+        />
+      </div>
+    </div>
+  </div>,
+  <div>
+    <div
+      className="scrollContainer"
+    >
+      <div
+        className="ui fluid card Medium"
+        onClick={[Function]}
+      >
+        <div
+          className="content"
+        >
+          <div
+            className="header"
+            style={
+              Object {
+                "fontSize": "1.5em",
+                "textAlign": "center",
+              }
+            }
+          >
+            Test Project
+          </div>
+          <h3
+            className="ui header"
+            style={
+              Object {
+                "textAlign": "center",
+              }
+            }
+          >
+            Author: Test User
+          </h3>
+          <div
+            className="description"
+            style={
+              Object {
+                "marginTop": 20,
+              }
+            }
+          >
+            Test Project
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      className="scrollContainer"
+      style={
+        Object {
+          "paddingBottom": "75vh",
+        }
+      }
+    >
+      <div
+        className="ui fluid card Medium"
+        onClick={[Function]}
+      >
+        <div
+          className="content"
+        >
+          <div
+            className="header"
+          >
+            Test Slide
+          </div>
+          <div
+            className="description"
+          >
+            Test description
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>,
+]
+`;

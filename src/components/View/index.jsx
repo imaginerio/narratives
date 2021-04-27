@@ -11,7 +11,7 @@ import Atlas from '../Atlas';
 
 import styles from './View.module.css';
 
-const GET_PROJECT = gql`
+export const GET_PROJECT = gql`
   query GetFullProject($project: ID!) {
     Project(where: { id: $project }) {
       title
