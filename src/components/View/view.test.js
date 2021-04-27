@@ -56,7 +56,7 @@ jest.mock('react-scrollama', () => {
   return { Scrollama, Step };
 });
 
-describe('Basemaps', () => {
+describe('View', () => {
   it('matches snapshot', async () => {
     const component = renderer.create(
       <MockedProvider mocks={mocks} addTypename={false}>
