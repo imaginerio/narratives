@@ -1,7 +1,7 @@
 import React from 'react';
 import renderer, { act } from 'react-test-renderer';
 import { MockedProvider } from '@apollo/client/testing';
-import { GET_BASEMAPS, GET_SLIDE, UPDATE_BASEMAP, UPDATE_SLIDE_OPACITY } from './graphql';
+import { GET_BASEMAPS, GET_SLIDE } from './graphql';
 
 import Basemaps from './index';
 
@@ -43,29 +43,6 @@ const mocks = [
             lastYear: 2000,
           },
         ],
-      },
-    },
-  },
-  {
-    request: {
-      query: UPDATE_BASEMAP,
-      variables: { slide: '2', basemap: { connect: { id: '2' } } },
-    },
-    result: {
-      data: {
-        id: '2',
-        basemap: {},
-      },
-    },
-  },
-  {
-    request: {
-      query: UPDATE_SLIDE_OPACITY,
-    },
-    result: {
-      data: {
-        id: '6',
-        opacity: 0.5,
       },
     },
   },
