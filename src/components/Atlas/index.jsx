@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import ReactMapGL, { Source, Layer, NavigationControl } from 'react-map-gl';
+import ReactMapGL, { Source, Layer, NavigationControl, AttributionControl } from 'react-map-gl';
 import axios from 'axios';
 import { map as mapProp } from 'lodash';
 
@@ -137,21 +137,27 @@ const Atlas = ({
   return (
     <ReactMapGL {...getMapProps()}>
       {activeBasemap && (
-        <Source
-          key={activeBasemap}
-          type="raster"
-          tiles={[
-            `https://imaginerio-rasters.s3.us-east-1.amazonaws.com/${activeBasemap}/{z}/{x}/{y}.png`,
-          ]}
-          scheme="tms"
-        >
-          <Layer
-            id="overlay"
-            type="raster"
-            paint={{ 'raster-opacity': opacity }}
-            beforeId="expressway-label"
+        <>
+          <AttributionControl
+            style={{ right: 0, bottom: 0 }}
+            customAttribution={`${activeBasemap.title} - ${activeBasemap.creator}`}
           />
-        </Source>
+          <Source
+            key={activeBasemap.ssid}
+            type="raster"
+            tiles={[
+              `https://imaginerio-rasters.s3.us-east-1.amazonaws.com/${activeBasemap.ssid}/{z}/{x}/{y}.png`,
+            ]}
+            scheme="tms"
+          >
+            <Layer
+              id="overlay"
+              type="raster"
+              paint={{ 'raster-opacity': opacity }}
+              beforeId="expressway-label"
+            />
+          </Source>
+        </>
       )}
       {selectedFeature && (
         <Source key={selectedFeature} type="geojson" data={featureData}>
