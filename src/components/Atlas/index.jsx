@@ -1,10 +1,18 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import ReactMapGL, { Source, Layer, NavigationControl, AttributionControl } from 'react-map-gl';
+import ReactMapGL, {
+  Source,
+  Layer,
+  NavigationControl,
+  AttributionControl,
+  LinearInterpolator,
+} from 'react-map-gl';
 import axios from 'axios';
 import { map as mapProp } from 'lodash';
 
 import { minZoom, maxZoom } from '../../config/map';
+import styles from './Atlas.module.css';
 
 const Atlas = ({
   handler,
@@ -20,6 +28,7 @@ const Atlas = ({
 
   const [mapViewport, setMapViewport] = useState(viewport);
   const [featureData, setFeatureData] = useState(null);
+  const [is2D, setIs2D] = useState(true);
 
   const setMapYear = () => {
     const map = mapRef.current.getMap();
@@ -177,7 +186,24 @@ const Atlas = ({
       )}
       {!viewer && (
         <div style={{ position: 'absolute', left: 15, top: 100 }}>
-          <NavigationControl />
+          <NavigationControl showCompass={false} />
+          <div
+            className={styles.button2D}
+            role="button"
+            tabIndex={-1}
+            onClick={() => {
+              const pitch = is2D ? 60 : 0;
+              setIs2D(!is2D);
+              onViewportChange({
+                ...viewport,
+                pitch,
+                transitionInterpolator: new LinearInterpolator(['pitch']),
+                transitionDuration: 500,
+              });
+            }}
+          >
+            {is2D ? '3D' : '2D'}
+          </div>
         </div>
       )}
     </ReactMapGL>
