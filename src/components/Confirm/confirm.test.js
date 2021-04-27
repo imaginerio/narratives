@@ -5,7 +5,7 @@ import Confirm from './index';
 
 jest.mock('semantic-ui-react/dist/commonjs/addons/Portal/Portal', () => ({ children }) => children);
 
-describe('Legend', () => {
+describe('Confirm', () => {
   const confirmProps = {
     buttonIcon: 'trash',
     buttonTitle: 'Test Button',
