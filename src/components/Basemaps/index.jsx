@@ -99,33 +99,42 @@ const Basemaps = ({ slide }) => {
           />
         </Segment>
       ) : (
-        <Modal
-          closeIcon
-          onClose={() => setOpen(false)}
-          onOpen={() => setOpen(true)}
-          open={open}
-          trigger={
-            <Button fluid content="Select Basemap" icon="map outline" labelPosition="left" />
-          }
-        >
-          <Modal.Header>Select a Basemap</Modal.Header>
-          <Modal.Content scrolling>
-            <Item.Group divided link>
-              {options.map(basemap => (
-                <Item key={basemap.ssid} onClick={() => setActiveBasemap(basemap)}>
-                  <Item.Image size="tiny" src={basemap.thumbnail} />
-                  <Item.Content>
-                    <Item.Header style={{ fontSize: 16 }}>{basemap.title}</Item.Header>
-                    <Item.Description style={{ marginTop: 0 }}>{basemap.creator}</Item.Description>
-                  </Item.Content>
-                </Item>
-              ))}
-            </Item.Group>
-          </Modal.Content>
-        </Modal>
+        <>
+          {options.length ? (
+            <Modal
+              closeIcon
+              onClose={() => setOpen(false)}
+              onOpen={() => setOpen(true)}
+              open={open}
+              trigger={
+                <Button fluid content="Select Basemap" icon="map outline" labelPosition="left" />
+              }
+            >
+              <Modal.Header>Select a Basemap</Modal.Header>
+              <Modal.Content scrolling>
+                <Item.Group divided link>
+                  {options.map(basemap => (
+                    <Item key={basemap.ssid} onClick={() => setActiveBasemap(basemap)}>
+                      <Item.Image size="tiny" src={basemap.thumbnail} />
+                      <Item.Content>
+                        <Item.Header style={{ fontSize: 16 }}>{basemap.title}</Item.Header>
+                        <Item.Description style={{ marginTop: 0 }}>
+                          {basemap.creator}
+                        </Item.Description>
+                      </Item.Content>
+                    </Item>
+                  ))}
+                </Item.Group>
+              </Modal.Content>
+            </Modal>
+          ) : (
+            <i>No basemaps available for the selected year</i>
+          )}
+        </>
       )}
       <h4>Overlay Opacity</h4>
       <Slider
+        disabled={!activeBasemap}
         discrete
         inverted={false}
         value={opacity}
