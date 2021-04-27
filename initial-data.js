@@ -124,12 +124,12 @@ const populateBasemaps = async (keystone, context) => {
       firstYear: m.firstyear,
       lastYear: m.lastyear,
     };
-    if (!allBasemapIds.includes(m.ssid) || !allBasemapIds.includes(`SSID${m.ssid}`)) {
+    if (!allBasemapIds.includes(`${m.ssid}`) && !allBasemapIds.includes(`SSID${m.ssid}`)) {
       return keystone.executeGraphQL({
         context,
         query: `
-          mutation InitBasemap($ssid: String, $title: String, $firstYear: Int, $lastYear: Int, $longitude: Float, $latitude: Float) {
-            createBasemap(data: { ssid: $ssid, title: $title, firstYear: $firstYear, lastYear: $lastYear, longitude: $longitude, latitude: $latitude }) {
+          mutation InitBasemap($ssid: String, $title: String, $firstYear: Int, $lastYear: Int, $longitude: Float, $latitude: Float, $thumbnail: String, $creator: String) {
+            createBasemap(data: { ssid: $ssid, title: $title, firstYear: $firstYear, lastYear: $lastYear, longitude: $longitude, latitude: $latitude, thumbnail: $thumbnail, creator: $creator }) {
               id
             }
           }`,
@@ -144,8 +144,8 @@ const populateBasemaps = async (keystone, context) => {
     return keystone.executeGraphQL({
       context,
       query: `
-        mutation UpdateBasemap($id: ID!, $ssid: String, $title: String, $firstYear: Int, $lastYear: Int, $longitude: Float, $latitude: Float) {
-          updateBasemap(id: $id, data: { ssid: $ssid, title: $title, firstYear: $firstYear, lastYear: $lastYear, longitude: $longitude, latitude: $latitude }) {
+        mutation UpdateBasemap($id: ID!, $ssid: String, $title: String, $firstYear: Int, $lastYear: Int, $longitude: Float, $latitude: Float, $thumbnail: String, $creator: String) {
+          updateBasemap(id: $id, data: { ssid: $ssid, title: $title, firstYear: $firstYear, lastYear: $lastYear, longitude: $longitude, latitude: $latitude, thumbnail: $thumbnail, creator: $creator }) {
             id
           }
         }`,
