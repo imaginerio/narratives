@@ -44,22 +44,16 @@ const Basemaps = ({ slide }) => {
 
   const opacityTimer = useRef();
 
-  const [year, setYear] = useState(1900);
-  const [activeBasemap, setActiveBasemap] = useState(null);
   const [options, setOptions] = useState([]);
   const [opacity, setOpacity] = useState(1);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (allBasemaps && allBasemaps.data) {
+      const { year } = data.Slide;
       setOptions(allBasemaps.data.basemaps.filter(b => b.firstYear <= year && b.lastYear >= year));
     }
-  }, [year, allBasemaps]);
-
-  useEffect(() => {
-    onBasemapChange(activeBasemap);
-    setOpen(false);
-  }, [activeBasemap]);
+  }, [allBasemaps, data]);
 
   useEffect(() => {
     opacityTimer.current = debouncedMutation({
@@ -68,12 +62,10 @@ const Basemaps = ({ slide }) => {
       mutation: updateOpacity,
       values: { opacity },
     });
-  }, [opacity, activeBasemap]);
+  }, [opacity]);
 
   useEffect(() => {
     if (data) {
-      if (data.Slide.year !== year) setYear(data.Slide.year);
-      if (data.Slide.basemap) setActiveBasemap(data.Slide.basemap);
       setOpacity(data.Slide.opacity);
     }
   }, [allBasemaps.loading, data]);
@@ -81,21 +73,21 @@ const Basemaps = ({ slide }) => {
   return (
     <div>
       <h3 style={{ marginTop: 0 }}>Maps / Plans / Aerials</h3>
-      {activeBasemap ? (
+      {data && data.Slide.basemap ? (
         <Segment style={{ padding: '0.5em', display: 'flex', alignItems: 'center' }}>
           <div
             className={styles.thumbnail}
             style={{
-              backgroundImage: `url(${activeBasemap.thumbnail})`,
+              backgroundImage: `url(${data.Slide.basemap.thumbnail})`,
             }}
           />
-          <div style={{ width: 'calc(100% - 60px)' }}>{activeBasemap.title}</div>
+          <div style={{ width: 'calc(100% - 60px)' }}>{data.Slide.basemap.title}</div>
           <Button
             className={styles.closeButton}
             circular
             icon="close"
             size="mini"
-            onClick={() => setActiveBasemap(null)}
+            onClick={() => onBasemapChange(null)}
           />
         </Segment>
       ) : (
@@ -114,7 +106,13 @@ const Basemaps = ({ slide }) => {
               <Modal.Content scrolling>
                 <Item.Group divided link>
                   {options.map(basemap => (
-                    <Item key={basemap.ssid} onClick={() => setActiveBasemap(basemap)}>
+                    <Item
+                      key={basemap.ssid}
+                      onClick={() => {
+                        onBasemapChange(basemap);
+                        setOpen(false);
+                      }}
+                    >
                       <Item.Image size="tiny" src={basemap.thumbnail} />
                       <Item.Content>
                         <Item.Header style={{ fontSize: 16 }}>{basemap.title}</Item.Header>
@@ -134,7 +132,7 @@ const Basemaps = ({ slide }) => {
       )}
       <h4>Overlay Opacity</h4>
       <Slider
-        disabled={!activeBasemap}
+        disabled={!data || !data.Slide.basemap}
         discrete
         inverted={false}
         value={opacity}
