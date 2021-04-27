@@ -1,10 +1,19 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import ReactMapGL, { Source, Layer, NavigationControl } from 'react-map-gl';
+import ReactMapGL, {
+  Source,
+  Layer,
+  NavigationControl,
+  AttributionControl,
+  LinearInterpolator,
+} from 'react-map-gl';
 import axios from 'axios';
 import { map as mapProp } from 'lodash';
+import { Icon } from 'semantic-ui-react';
 
 import { minZoom, maxZoom } from '../../config/map';
+import styles from './Atlas.module.css';
 
 const Atlas = ({
   handler,
@@ -20,6 +29,8 @@ const Atlas = ({
 
   const [mapViewport, setMapViewport] = useState(viewport);
   const [featureData, setFeatureData] = useState(null);
+  const [is2D, setIs2D] = useState(true);
+  const [locked, setLocked] = useState(false);
 
   const setMapYear = () => {
     const map = mapRef.current.getMap();
@@ -128,8 +139,10 @@ const Atlas = ({
       props = {
         ...props,
         ...viewport,
-        onViewportChange: handler,
       };
+      if (!locked) {
+        props.onViewportChange = handler;
+      }
     }
     return props;
   };
@@ -137,21 +150,27 @@ const Atlas = ({
   return (
     <ReactMapGL {...getMapProps()}>
       {activeBasemap && (
-        <Source
-          key={activeBasemap}
-          type="raster"
-          tiles={[
-            `https://imaginerio-rasters.s3.us-east-1.amazonaws.com/${activeBasemap}/{z}/{x}/{y}.png`,
-          ]}
-          scheme="tms"
-        >
-          <Layer
-            id="overlay"
-            type="raster"
-            paint={{ 'raster-opacity': opacity }}
-            beforeId="expressway-label"
+        <>
+          <AttributionControl
+            style={{ right: 0, bottom: 0 }}
+            customAttribution={`${activeBasemap.title} - ${activeBasemap.creator}`}
           />
-        </Source>
+          <Source
+            key={activeBasemap.ssid}
+            type="raster"
+            tiles={[
+              `https://imaginerio-rasters.s3.us-east-1.amazonaws.com/${activeBasemap.ssid}/{z}/{x}/{y}.png`,
+            ]}
+            scheme="tms"
+          >
+            <Layer
+              id="overlay"
+              type="raster"
+              paint={{ 'raster-opacity': opacity }}
+              beforeId="expressway-label"
+            />
+          </Source>
+        </>
       )}
       {selectedFeature && (
         <Source key={selectedFeature} type="geojson" data={featureData}>
@@ -171,7 +190,32 @@ const Atlas = ({
       )}
       {!viewer && (
         <div style={{ position: 'absolute', left: 15, top: 100 }}>
-          <NavigationControl />
+          <NavigationControl showCompass={false} />
+          <div
+            className={`${styles.button} ${styles.button2D}`}
+            role="button"
+            tabIndex={-1}
+            onClick={() => {
+              const pitch = is2D ? 60 : 0;
+              setIs2D(!is2D);
+              onViewportChange({
+                ...viewport,
+                pitch,
+                transitionInterpolator: new LinearInterpolator(['pitch']),
+                transitionDuration: 500,
+              });
+            }}
+          >
+            {is2D ? '3D' : '2D'}
+          </div>
+          <div
+            className={`${styles.button} ${styles.buttonLock}`}
+            role="button"
+            tabIndex={-1}
+            onClick={() => setLocked(!locked)}
+          >
+            {locked ? <Icon name="lock" /> : <Icon name="lock open" />}
+          </div>
         </div>
       )}
     </ReactMapGL>

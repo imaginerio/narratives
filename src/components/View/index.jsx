@@ -11,7 +11,7 @@ import Atlas from '../Atlas';
 
 import styles from './View.module.css';
 
-const GET_PROJECT = gql`
+export const GET_PROJECT = gql`
   query GetFullProject($project: ID!) {
     Project(where: { id: $project }) {
       title
@@ -50,6 +50,8 @@ const GET_PROJECT = gql`
         }
         basemap {
           ssid
+          title
+          creator
         }
       }
     }
@@ -103,7 +105,7 @@ const View = ({ project, preview }) => {
           year={year}
           viewport={viewport}
           viewer
-          activeBasemap={activeBasemap ? activeBasemap.ssid : null}
+          activeBasemap={activeBasemap}
           opacity={opacity}
           selectedFeature={selectedFeature}
         />

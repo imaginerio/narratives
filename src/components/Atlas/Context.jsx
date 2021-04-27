@@ -29,6 +29,7 @@ const GET_SLIDE_ATLAS = gql`
         ssid
         title
         thumbnail
+        creator
       }
     }
   }
@@ -117,7 +118,7 @@ const AtlasContext = ({ slide }) => {
       viewport={mapViewport}
       year={data.Slide.year}
       disabledLayers={data.Slide.disabledLayers}
-      activeBasemap={data.Slide.basemap ? data.Slide.basemap.ssid : null}
+      activeBasemap={data.Slide.basemap}
       selectedFeature={data.Slide.selectedFeature}
       opacity={data.Slide.opacity}
     />
