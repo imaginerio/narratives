@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation } from '@apollo/client';
-import { Modal, Button, Item, Icon, Label } from 'semantic-ui-react';
+import { Modal, Button, Segment, Item } from 'semantic-ui-react';
 import { Slider } from 'react-semantic-ui-range';
 
 import debouncedMutation from '../../lib/debouncedMutation';
 import { GET_SLIDE, GET_BASEMAPS, UPDATE_BASEMAP, UPDATE_SLIDE_OPACITY } from './graphql';
+import styles from './Basemaps.module.css';
 
 const Basemaps = ({ slide }) => {
   const { data } = useQuery(GET_SLIDE, {
@@ -80,59 +81,50 @@ const Basemaps = ({ slide }) => {
   return (
     <div>
       <h3 style={{ marginTop: 0 }}>Maps / Plans / Aerials</h3>
-      <Modal
-        onClose={() => setOpen(false)}
-        onOpen={() => setOpen(true)}
-        open={open}
-        trigger={<Button>Show Modal</Button>}
-      >
-        <Modal.Header>Select a Basemap</Modal.Header>
-        <Modal.Content scrolling>
-          <Item.Group divided>
-            {options.map(basemap => (
-              <Item key={basemap.ssid} onClick={() => setActiveBasemap(basemap)}>
-                <Item.Image size="small" src={basemap.thumbnail} />
-                <Item.Content>
-                  <Item.Header>{basemap.title}</Item.Header>
-                  <Item.Description>
-                    {basemap.creator && (
-                      <p>
-                        <b>Creator: </b>
-                        {basemap.creator}
-                      </p>
-                    )}
-                    <p>
-                      <b>First year: </b>
-                      {basemap.firstYear}
-                    </p>
-                    <p>
-                      <b>Last year: </b>
-                      {basemap.lastYear}
-                    </p>
-                  </Item.Description>
-                </Item.Content>
-              </Item>
-            ))}
-          </Item.Group>
-        </Modal.Content>
-      </Modal>
-      {activeBasemap && (
-        <Label style={{ maxWidth: '100%' }}>
+      {activeBasemap ? (
+        <Segment style={{ padding: '0.5em', display: 'flex', alignItems: 'center' }}>
           <div
+            className={styles.thumbnail}
             style={{
-              display: 'inline-block',
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis',
-              width: 'calc(100% - 20px)',
+              backgroundImage: `url(${activeBasemap.thumbnail})`,
             }}
-          >
-            {activeBasemap.title}
-          </div>
-          <Icon name="delete" />
-        </Label>
+          />
+          <div style={{ width: 'calc(100% - 60px)' }}>{activeBasemap.title}</div>
+          <Button
+            className={styles.closeButton}
+            circular
+            icon="close"
+            size="mini"
+            onClick={() => setActiveBasemap(null)}
+          />
+        </Segment>
+      ) : (
+        <Modal
+          closeIcon
+          onClose={() => setOpen(false)}
+          onOpen={() => setOpen(true)}
+          open={open}
+          trigger={
+            <Button fluid content="Select Basemap" icon="map outline" labelPosition="left" />
+          }
+        >
+          <Modal.Header>Select a Basemap</Modal.Header>
+          <Modal.Content scrolling>
+            <Item.Group divided link>
+              {options.map(basemap => (
+                <Item key={basemap.ssid} onClick={() => setActiveBasemap(basemap)}>
+                  <Item.Image size="tiny" src={basemap.thumbnail} />
+                  <Item.Content>
+                    <Item.Header style={{ fontSize: 16 }}>{basemap.title}</Item.Header>
+                    <Item.Description style={{ marginTop: 0 }}>{basemap.creator}</Item.Description>
+                  </Item.Content>
+                </Item>
+              ))}
+            </Item.Group>
+          </Modal.Content>
+        </Modal>
       )}
-      <h3>Overlay Opacity</h3>
+      <h4>Overlay Opacity</h4>
       <Slider
         discrete
         inverted={false}

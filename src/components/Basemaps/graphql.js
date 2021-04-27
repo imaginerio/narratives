@@ -10,6 +10,7 @@ export const GET_SLIDE = gql`
         id
         ssid
         title
+        thumbnail
       }
     }
   }
