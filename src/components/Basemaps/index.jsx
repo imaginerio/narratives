@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation } from '@apollo/client';
-import { Modal, Button, Segment, Item } from 'semantic-ui-react';
+import { Button, Segment } from 'semantic-ui-react';
 import { Slider } from 'react-semantic-ui-range';
 
 import debouncedMutation from '../../lib/debouncedMutation';
 import { GET_SLIDE, GET_BASEMAPS, UPDATE_BASEMAP, UPDATE_SLIDE_OPACITY } from './graphql';
+import Chooser from './Chooser';
 import styles from './Basemaps.module.css';
 
 const Basemaps = ({ slide }) => {
@@ -46,7 +47,6 @@ const Basemaps = ({ slide }) => {
 
   const [options, setOptions] = useState([]);
   const [opacity, setOpacity] = useState(1);
-  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (allBasemaps && allBasemaps.data) {
@@ -91,44 +91,7 @@ const Basemaps = ({ slide }) => {
           />
         </Segment>
       ) : (
-        <>
-          {options.length ? (
-            <Modal
-              closeIcon
-              onClose={() => setOpen(false)}
-              onOpen={() => setOpen(true)}
-              open={open}
-              trigger={
-                <Button fluid content="Select Basemap" icon="map outline" labelPosition="left" />
-              }
-            >
-              <Modal.Header>Select a Basemap</Modal.Header>
-              <Modal.Content scrolling>
-                <Item.Group divided link>
-                  {options.map(basemap => (
-                    <Item
-                      key={basemap.ssid}
-                      onClick={() => {
-                        onBasemapChange(basemap);
-                        setOpen(false);
-                      }}
-                    >
-                      <Item.Image size="tiny" src={basemap.thumbnail} />
-                      <Item.Content>
-                        <Item.Header style={{ fontSize: 16 }}>{basemap.title}</Item.Header>
-                        <Item.Description style={{ marginTop: 0 }}>
-                          {basemap.creator}
-                        </Item.Description>
-                      </Item.Content>
-                    </Item>
-                  ))}
-                </Item.Group>
-              </Modal.Content>
-            </Modal>
-          ) : (
-            <i>No basemaps available for the selected year</i>
-          )}
-        </>
+        <Chooser options={options} handler={onBasemapChange} />
       )}
       <h4>Overlay Opacity</h4>
       <Slider
