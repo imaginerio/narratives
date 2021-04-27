@@ -5,8 +5,7 @@ const { map, flatten } = require('lodash');
 
 const randomString = () => crypto.randomBytes(6).hexSlice();
 
-module.exports = async keystone => {
-  const context = keystone.createContext({ skipAccessControl: true });
+const addInitialUser = async (keystone, context) => {
   // Count existing users
   const {
     data: {
@@ -28,10 +27,10 @@ module.exports = async keystone => {
     const { errors } = await keystone.executeGraphQL({
       context,
       query: `mutation initialUser($password: String, $email: String) {
-            createUser(data: {name: "Admin", email: $email, isAdmin: true, password: $password}) {
-              id
-            }
-          }`,
+        createUser(data: {name: "Admin", email: $email, isAdmin: true, password: $password}) {
+          id
+        }
+      }`,
       variables: { password, email },
     });
 
@@ -44,10 +43,12 @@ module.exports = async keystone => {
         email: ${email}
         password: ${password}
       Please change these details after initial login.
-      `);
+    `);
     }
   }
+};
 
+const populateLayers = async (keystone, context) => {
   // Populate layers
   const {
     data: { allLayers },
@@ -98,18 +99,20 @@ module.exports = async keystone => {
       });
     })
   );
+};
 
+const populateBasemaps = async (keystone, context) => {
   // Populate basemaps
   const {
     data: { allBasemaps },
   } = await keystone.executeGraphQL({
     context,
     query: `query{
-        allBasemaps{
-          id
-          ssid
-        }
-      }`,
+      allBasemaps{
+        id
+        ssid
+      }
+    }`,
   });
   const allBasemapIds = map(allBasemaps, 'ssid');
   let { data } = await axios.get(`${process.env.NEXT_PUBLIC_SEARCH_API}/documents`);
@@ -125,11 +128,11 @@ module.exports = async keystone => {
       return keystone.executeGraphQL({
         context,
         query: `
-        mutation InitBasemap($ssid: String, $title: String, $firstYear: Int, $lastYear: Int, $longitude: Float, $latitude: Float) {
-          createBasemap(data: { ssid: $ssid, title: $title, firstYear: $firstYear, lastYear: $lastYear, longitude: $longitude, latitude: $latitude }) {
-            id
-          }
-        }`,
+          mutation InitBasemap($ssid: String, $title: String, $firstYear: Int, $lastYear: Int, $longitude: Float, $latitude: Float) {
+            createBasemap(data: { ssid: $ssid, title: $title, firstYear: $firstYear, lastYear: $lastYear, longitude: $longitude, latitude: $latitude }) {
+              id
+            }
+          }`,
         variables,
       });
     }
@@ -141,13 +144,20 @@ module.exports = async keystone => {
     return keystone.executeGraphQL({
       context,
       query: `
-      mutation UpdateBasemap($id: ID!, $ssid: String, $title: String, $firstYear: Int, $lastYear: Int, $longitude: Float, $latitude: Float) {
-        updateBasemap(id: $id, data: { ssid: $ssid, title: $title, firstYear: $firstYear, lastYear: $lastYear, longitude: $longitude, latitude: $latitude }) {
-          id
-        }
-      }`,
+        mutation UpdateBasemap($id: ID!, $ssid: String, $title: String, $firstYear: Int, $lastYear: Int, $longitude: Float, $latitude: Float) {
+          updateBasemap(id: $id, data: { ssid: $ssid, title: $title, firstYear: $firstYear, lastYear: $lastYear, longitude: $longitude, latitude: $latitude }) {
+            id
+          }
+        }`,
       variables,
     });
   });
   return Promise.all(documentReqs);
+};
+
+module.exports = async keystone => {
+  const context = keystone.createContext({ skipAccessControl: true });
+  await addInitialUser(keystone, context);
+  await populateLayers(keystone, context);
+  await populateBasemaps(keystone, context);
 };
