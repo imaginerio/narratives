@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Basemaps matches snapshot 1`] = `
+<div>
+  <h3
+    style={
+      Object {
+        "marginTop": 0,
+      }
+    }
+  >
+    Maps / Plans / Aerials
+  </h3>
+  <div
+    className="segment"
+    style={
+      Object {
+        "alignItems": "center",
+        "display": "flex",
+        "padding": "0.5em",
+      }
+    }
+  >
+    <div
+      className="thumbnail"
+      style={
+        Object {
+          "backgroundImage": "url(http://images.imaginerio.org/test.jpg)",
+        }
+      }
+    />
+    <div
+      style={
+        Object {
+          "width": "calc(100% - 60px)",
+        }
+      }
+    >
+      Test
+    </div>
+    <div
+      circular={true}
+      className="button"
+      icon="close"
+      onClick={[Function]}
+      size="mini"
+    />
+  </div>
+  <h4>
+    Overlay Opacity
+  </h4>
+  <div
+    className="slider"
+  />
+</div>
+`;

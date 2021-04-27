@@ -25,7 +25,10 @@ const GET_SLIDE_ATLAS = gql`
         layerId
       }
       basemap {
+        id
         ssid
+        title
+        thumbnail
       }
     }
   }

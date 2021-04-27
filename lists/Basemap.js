@@ -1,4 +1,4 @@
-const { Text, Integer, Float } = require('@keystonejs/fields');
+const { Text, Integer, Float, Url } = require('@keystonejs/fields');
 
 module.exports = {
   fields: {
@@ -22,6 +22,12 @@ module.exports = {
     },
     latitude: {
       type: Float,
+    },
+    thumbnail: {
+      type: Url,
+    },
+    creator: {
+      type: Text,
     },
   },
   labelField: 'title',
