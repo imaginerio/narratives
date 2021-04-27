@@ -49,72 +49,100 @@ module.exports = async keystone => {
   }
 
   // Populate layers
-  let {
+  const {
     data: { allLayers },
   } = await keystone.executeGraphQL({
     context,
     query: `query{
       allLayers{
+        id
         layerId
       }
     }`,
   });
-  allLayers = map(allLayers, 'layerId');
+  const allLayerNames = map(allLayers, 'layerId');
 
-  let {
-    data: { layers },
-  } = await axios.get(
-    'https://arcgis.rice.edu/arcgis/rest/services/imagineRio_Data/FeatureServer/layers?f=json'
-  );
-  layers = layers
-    .filter(l => !l.name.match(/^ir_rio/))
-    .filter(l => !allLayers.includes(l.name.toLowerCase()))
-    .map(layer => ({
-      layerId: layer.name.toLowerCase(),
-      title: layer.name.replace(/(Poly|Line)$/, '').replace(/([A-Z])/g, ' $1'),
-      remoteId: layer.id,
-    }));
+  let { data: layers } = await axios.get(`${process.env.NEXT_PUBLIC_SEARCH_API}/layers`);
+  layers = layers.map(layer => ({
+    layerId: layer.name.toLowerCase(),
+    title: layer.title,
+    remoteId: layer.id,
+  }));
 
   await Promise.all(
-    layers.map(layer =>
-      keystone.executeGraphQL({
-        context,
-        query: `mutation InitLayer($layerId: String, $title: String, $remoteId: Int) {
-      createLayer(data: { layerId: $layerId, title: $title, remoteId: $remoteId }) {
-        id
+    layers.map(layer => {
+      if (!allLayerNames.includes(layer.layerId)) {
+        return keystone.executeGraphQL({
+          context,
+          query: `
+            mutation InitLayer($layerId: String, $title: String, $remoteId: Int) {
+              createLayer(data: { layerId: $layerId, title: $title, remoteId: $remoteId }) {
+                id
+              }
+            }`,
+          variables: layer,
+        });
       }
-    }`,
-        variables: layer,
-      })
-    )
+      const existingLayer = allLayers.find(l => l.layerId === layer.layerId);
+      if (!existingLayer) return Promise.resolve();
+      const { id } = existingLayer;
+      return keystone.executeGraphQL({
+        context,
+        query: `
+          mutation UpdateLayer($id: ID!, $layerId: String, $title: String, $remoteId: Int) {
+            updateLayer(id: $id, data: { layerId: $layerId, title: $title, remoteId: $remoteId }) {
+              id
+            }
+          }`,
+        variables: { id, ...layer },
+      });
+    })
   );
 
   // Populate basemaps
-  let {
+  const {
     data: { allBasemaps },
   } = await keystone.executeGraphQL({
     context,
     query: `query{
         allBasemaps{
+          id
           ssid
         }
       }`,
   });
-  allBasemaps = map(allBasemaps, 'ssid');
-  let { data } = await axios.get('https://search.imaginerio.org/documents');
+  const allBasemapIds = map(allBasemaps, 'ssid');
+  let { data } = await axios.get(`${process.env.NEXT_PUBLIC_SEARCH_API}/documents`);
   data = data.filter(d => d.title !== 'Views');
-  const documents = flatten(map(data, 'Documents')).filter(d => !allBasemaps.includes(d.ssid));
-  console.log(documents);
+  const documents = flatten(map(data, 'Documents'));
   const documentReqs = documents.map(m => {
     const variables = {
       ...m,
       firstYear: m.firstyear,
       lastYear: m.lastyear,
     };
+    if (!allBasemapIds.includes(m.ssid) || !allBasemapIds.includes(`SSID${m.ssid}`)) {
+      return keystone.executeGraphQL({
+        context,
+        query: `
+        mutation InitBasemap($ssid: String, $title: String, $firstYear: Int, $lastYear: Int, $longitude: Float, $latitude: Float) {
+          createBasemap(data: { ssid: $ssid, title: $title, firstYear: $firstYear, lastYear: $lastYear, longitude: $longitude, latitude: $latitude }) {
+            id
+          }
+        }`,
+        variables,
+      });
+    }
+
+    const existingBasemap = allBasemaps.find(l => l.ssid === m.ssid || l.ssid === `SSID${m.ssid}`);
+    if (!existingBasemap) return Promise.resolve();
+    variables.id = existingBasemap.id;
+
     return keystone.executeGraphQL({
       context,
-      query: `mutation InitBasemap($ssid: String, $title: String, $firstYear: Int, $lastYear: Int, $longitude: Float, $latitude: Float) {
-        createBasemap(data: { ssid: $ssid, title: $title, firstYear: $firstYear, lastYear: $lastYear, longitude: $longitude, latitude: $latitude }) {
+      query: `
+      mutation UpdateBasemap($id: ID!, $ssid: String, $title: String, $firstYear: Int, $lastYear: Int, $longitude: Float, $latitude: Float) {
+        updateBasemap(id: $id, data: { ssid: $ssid, title: $title, firstYear: $firstYear, lastYear: $lastYear, longitude: $longitude, latitude: $latitude }) {
           id
         }
       }`,
