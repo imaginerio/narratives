@@ -5,8 +5,7 @@ const { map, flatten } = require('lodash');
 
 const randomString = () => crypto.randomBytes(6).hexSlice();
 
-module.exports = async keystone => {
-  const context = keystone.createContext({ skipAccessControl: true });
+const addInitialUser = async (keystone, context) => {
   // Count existing users
   const {
     data: {
@@ -28,10 +27,10 @@ module.exports = async keystone => {
     const { errors } = await keystone.executeGraphQL({
       context,
       query: `mutation initialUser($password: String, $email: String) {
-            createUser(data: {name: "Admin", email: $email, isAdmin: true, password: $password}) {
-              id
-            }
-          }`,
+        createUser(data: {name: "Admin", email: $email, isAdmin: true, password: $password}) {
+          id
+        }
+      }`,
       variables: { password, email },
     });
 
@@ -44,82 +43,121 @@ module.exports = async keystone => {
         email: ${email}
         password: ${password}
       Please change these details after initial login.
-      `);
+    `);
     }
   }
+};
 
+const populateLayers = async (keystone, context) => {
   // Populate layers
-  let {
+  const {
     data: { allLayers },
   } = await keystone.executeGraphQL({
     context,
     query: `query{
       allLayers{
+        id
         layerId
       }
     }`,
   });
-  allLayers = map(allLayers, 'layerId');
+  const allLayerNames = map(allLayers, 'layerId');
 
-  let {
-    data: { layers },
-  } = await axios.get(
-    'https://arcgis.rice.edu/arcgis/rest/services/imagineRio_Data/FeatureServer/layers?f=json'
-  );
-  layers = layers
-    .filter(l => !l.name.match(/^ir_rio/))
-    .filter(l => !allLayers.includes(l.name.toLowerCase()))
-    .map(layer => ({
-      layerId: layer.name.toLowerCase(),
-      title: layer.name.replace(/(Poly|Line)$/, '').replace(/([A-Z])/g, ' $1'),
-      remoteId: layer.id,
-    }));
+  let { data: layers } = await axios.get(`${process.env.NEXT_PUBLIC_SEARCH_API}/layers`);
+  layers = layers.map(layer => ({
+    layerId: layer.name.toLowerCase(),
+    title: layer.title,
+    remoteId: layer.id,
+  }));
 
   await Promise.all(
-    layers.map(layer =>
-      keystone.executeGraphQL({
-        context,
-        query: `mutation InitLayer($layerId: String, $title: String, $remoteId: Int) {
-      createLayer(data: { layerId: $layerId, title: $title, remoteId: $remoteId }) {
-        id
+    layers.map(layer => {
+      if (!allLayerNames.includes(layer.layerId)) {
+        return keystone.executeGraphQL({
+          context,
+          query: `
+            mutation InitLayer($layerId: String, $title: String, $remoteId: Int) {
+              createLayer(data: { layerId: $layerId, title: $title, remoteId: $remoteId }) {
+                id
+              }
+            }`,
+          variables: layer,
+        });
       }
-    }`,
-        variables: layer,
-      })
-    )
+      const existingLayer = allLayers.find(l => l.layerId === layer.layerId);
+      if (!existingLayer) return Promise.resolve();
+      const { id } = existingLayer;
+      return keystone.executeGraphQL({
+        context,
+        query: `
+          mutation UpdateLayer($id: ID!, $layerId: String, $title: String, $remoteId: Int) {
+            updateLayer(id: $id, data: { layerId: $layerId, title: $title, remoteId: $remoteId }) {
+              id
+            }
+          }`,
+        variables: { id, ...layer },
+      });
+    })
   );
+};
 
+const populateBasemaps = async (keystone, context) => {
   // Populate basemaps
-  let {
+  const {
     data: { allBasemaps },
   } = await keystone.executeGraphQL({
     context,
     query: `query{
-        allBasemaps{
-          ssid
-        }
-      }`,
+      allBasemaps{
+        id
+        ssid
+      }
+    }`,
   });
-  allBasemaps = map(allBasemaps, 'ssid');
-  let { data } = await axios.get('https://search.imaginerio.org/documents');
+  const allBasemapIds = map(allBasemaps, 'ssid');
+  let { data } = await axios.get(`${process.env.NEXT_PUBLIC_SEARCH_API}/documents`);
   data = data.filter(d => d.title !== 'Views');
-  const documents = flatten(map(data, 'Documents')).filter(d => !allBasemaps.includes(d.ssid));
-  console.log(documents);
+  const documents = flatten(map(data, 'Documents'));
   const documentReqs = documents.map(m => {
     const variables = {
       ...m,
       firstYear: m.firstyear,
       lastYear: m.lastyear,
     };
+    if (!allBasemapIds.includes(`${m.ssid}`) && !allBasemapIds.includes(`SSID${m.ssid}`)) {
+      return keystone.executeGraphQL({
+        context,
+        query: `
+          mutation InitBasemap($ssid: String, $title: String, $firstYear: Int, $lastYear: Int, $longitude: Float, $latitude: Float, $thumbnail: String, $creator: String) {
+            createBasemap(data: { ssid: $ssid, title: $title, firstYear: $firstYear, lastYear: $lastYear, longitude: $longitude, latitude: $latitude, thumbnail: $thumbnail, creator: $creator }) {
+              id
+            }
+          }`,
+        variables,
+      });
+    }
+
+    const existingBasemap = allBasemaps.find(l => l.ssid === m.ssid || l.ssid === `SSID${m.ssid}`);
+    if (!existingBasemap) return Promise.resolve();
+    variables.id = existingBasemap.id;
+
     return keystone.executeGraphQL({
       context,
-      query: `mutation InitBasemap($ssid: String, $title: String, $firstYear: Int, $lastYear: Int, $longitude: Float, $latitude: Float) {
-        createBasemap(data: { ssid: $ssid, title: $title, firstYear: $firstYear, lastYear: $lastYear, longitude: $longitude, latitude: $latitude }) {
-          id
-        }
-      }`,
+      query: `
+        mutation UpdateBasemap($id: ID!, $ssid: String, $title: String, $firstYear: Int, $lastYear: Int, $longitude: Float, $latitude: Float, $thumbnail: String, $creator: String) {
+          updateBasemap(id: $id, data: { ssid: $ssid, title: $title, firstYear: $firstYear, lastYear: $lastYear, longitude: $longitude, latitude: $latitude, thumbnail: $thumbnail, creator: $creator }) {
+            id
+          }
+        }`,
       variables,
     });
   });
   return Promise.all(documentReqs);
+};
+
+module.exports = async keystone => {
+  const context = keystone.createContext({ skipAccessControl: true });
+  await addInitialUser(keystone, context);
+  await populateLayers(keystone, context);
+  await populateBasemaps(keystone, context);
 };

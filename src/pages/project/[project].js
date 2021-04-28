@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { omit, map } from 'lodash';
-import { Editor as Wysiwyg } from '@tinymce/tinymce-react';
 import {
   Container,
   Header as Heading,
@@ -15,8 +14,6 @@ import {
   Button,
   Divider,
   Image as Img,
-  Modal,
-  Icon,
   Dimmer,
   Loader,
 } from 'semantic-ui-react';
@@ -24,6 +21,8 @@ import withApollo from '../../lib/withApollo';
 
 import Image from '../../components/Image';
 import Header from '../../components/Header';
+import Confirm from '../../components/Confirm';
+import Wysiwyg from '../../components/Wysiwyg';
 
 const GET_PROJECT = gql`
   query GetTags($project: ID!) {
@@ -125,7 +124,6 @@ const Create = ({ user }) => {
   const [imageMeta, setImageMeta] = useState(null);
   const [published, setPublished] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     setTags(loading ? [] : map(data.Project.tags, 'id'));
@@ -215,25 +213,7 @@ const Create = ({ user }) => {
             <label>Title</label>
             <Input value={title} onChange={(e, { value }) => setTitle(value)} />
           </Form.Field>
-          <Form.Field>
-            <label>Description</label>
-            <Wysiwyg
-              apiKey="t0o761fz7mpxbpfouwngyrmyh89mhclnprer8e3bdkch7slf"
-              value={description || ''}
-              init={{
-                height: 400,
-                menubar: false,
-                plugins: ['link lists paste'],
-                toolbar: 'bold italic superscript bullist numlist | link unlink | undo redo',
-                branding: false,
-                statusbar: false,
-                paste_as_text: true,
-              }}
-              onEditorChange={value => {
-                setDescription(value);
-              }}
-            />
-          </Form.Field>
+          <Wysiwyg label="Description" value={description || ''} onEditorChange={setDescription} />
           {imageMeta && (
             <Form.Field>
               <label>Image</label>
@@ -298,51 +278,18 @@ const Create = ({ user }) => {
           </Button>
           <div style={{ clear: 'left', margin: 100 }} />
         </Form>
-        <Modal
-          basic
-          onClose={() => setOpen(false)}
-          onOpen={() => setOpen(true)}
-          open={open}
-          size="small"
-          trigger={(
-            <Button
-              negative
-              fluid
-              labelPosition="left"
-              icon="trash"
-              content="Delete Project"
-              disabled={isLoading}
-            />
-          )}
+        <Confirm
+          disabled={isLoading}
+          buttonIcon="trash"
+          buttonTitle="Delete Project"
+          confirmHandler={() => removeProject(project)}
+          confirmTitle="Delete this narrative?"
         >
-          <Heading icon>
-            <Icon name="trash" />
-            Delete this narrative?
-          </Heading>
-          <Modal.Content>
-            <p>
-              Are you sure you want to delete this narrative? This action is permanent and cannot be
-              undone.
-            </p>
-          </Modal.Content>
-          <Modal.Actions>
-            <Button basic color="red" inverted onClick={() => setOpen(false)}>
-              <Icon name="remove" />
-              <span>No</span>
-            </Button>
-            <Button
-              negative
-              inverted
-              onClick={() => {
-                setOpen(false);
-                removeProject(project);
-              }}
-            >
-              <Icon name="trash" />
-              <span>Yes</span>
-            </Button>
-          </Modal.Actions>
-        </Modal>
+          <p>
+            Are you sure you want to delete this narrative? This action is permanent and cannot be
+            undone.
+          </p>
+        </Confirm>
         <Img src="/img/hrc-logo.png" style={{ marginTop: 60 }} />
       </Container>
     </div>

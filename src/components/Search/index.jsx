@@ -73,7 +73,7 @@ const Search = ({ slide }) => {
       const layerResults = {};
       if (string && string.length > 1 && year) {
         const res = await axios.get(
-          `https://search.imaginerio.org/search?text=${string}&year=${year}`
+          `${process.env.NEXT_PUBLIC_SEARCH_API}/search?text=${string}&year=${year}`
         );
         if (res.data.length) {
           res.data.forEach(d => {
@@ -96,7 +96,7 @@ const Search = ({ slide }) => {
   useEffect(() => {
     const fetchData = async () => {
       const res = await axios.get(
-        `https://search.imaginerio.org/feature/${selectedFeature}?year=${year}`
+        `${process.env.NEXT_PUBLIC_SEARCH_API}/feature/${selectedFeature}?year=${year}`
       );
       setFeatureName(res.data.properties.name);
     };

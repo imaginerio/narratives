@@ -1,54 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { useQuery, useMutation, gql } from '@apollo/client';
-import { Dropdown } from 'semantic-ui-react';
+import { useQuery, useMutation } from '@apollo/client';
+import { Button, Segment } from 'semantic-ui-react';
 import { Slider } from 'react-semantic-ui-range';
 
-const GET_SLIDE = gql`
-  query GetBasemap($slide: ID!) {
-    Slide(where: { id: $slide }) {
-      id
-      year
-      opacity
-      basemap {
-        id
-        ssid
-      }
-    }
-  }
-`;
-
-const GET_BASEMAPS = gql`
-  query {
-    basemaps: allBasemaps {
-      id
-      ssid
-      title
-      firstYear
-      lastYear
-    }
-  }
-`;
-
-const UPDATE_BASEMAP = gql`
-  mutation UpdateBasemap($slide: ID!, $basemap: BasemapRelateToOneInput) {
-    updateSlide(id: $slide, data: { basemap: $basemap }) {
-      id
-      basemap {
-        id
-      }
-    }
-  }
-`;
-
-const UPDATE_SLIDE_OPACITY = gql`
-  mutation UpdateSlideTitle($slide: ID!, $value: Float) {
-    updateSlide(id: $slide, data: { opacity: $value }) {
-      id
-      opacity
-    }
-  }
-`;
+import debouncedMutation from '../../lib/debouncedMutation';
+import { GET_SLIDE, GET_BASEMAPS, UPDATE_BASEMAP, UPDATE_SLIDE_OPACITY } from './graphql';
+import Chooser from './Chooser';
+import styles from './Basemaps.module.css';
 
 const Basemaps = ({ slide }) => {
   const { data } = useQuery(GET_SLIDE, {
@@ -62,7 +21,7 @@ const Basemaps = ({ slide }) => {
     let basemap = { disconnectAll: true };
     if (newBasemap) {
       basemap = {
-        connect: { id: newBasemap },
+        connect: { id: newBasemap.id },
       };
     }
     updateBasemap({
@@ -76,7 +35,7 @@ const Basemaps = ({ slide }) => {
             id: slide,
             basemap: {
               __typename: 'Basemap',
-              id: newBasemap,
+              ...newBasemap,
             },
           },
         },
@@ -85,53 +44,28 @@ const Basemaps = ({ slide }) => {
   };
 
   const opacityTimer = useRef();
-  const onOpacityChange = newOpacity => {
-    clearTimeout(opacityTimer.current);
-    opacityTimer.current = setTimeout(() => {
-      updateOpacity({
-        variables: {
-          slide,
-          value: newOpacity,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          updateSlide: {
-            __typename: 'Slide',
-            id: slide,
-            opacity: newOpacity,
-          },
-        },
-      });
-    }, 500);
-  };
 
-  const [year, setYear] = useState(1900);
-  const [activeBasemap, setActiveBasemap] = useState(null);
   const [options, setOptions] = useState([]);
   const [opacity, setOpacity] = useState(1);
 
   useEffect(() => {
     if (allBasemaps && allBasemaps.data) {
-      setOptions(
-        allBasemaps.data.basemaps
-          .filter(b => b.firstYear <= year && b.lastYear >= year)
-          .map(b => ({ value: b.id, text: b.title }))
-      );
+      const { year } = data.Slide;
+      setOptions(allBasemaps.data.basemaps.filter(b => b.firstYear <= year && b.lastYear >= year));
     }
-  }, [year, allBasemaps]);
+  }, [allBasemaps, data]);
 
   useEffect(() => {
-    onBasemapChange(activeBasemap);
-  }, [activeBasemap]);
-
-  useEffect(() => {
-    onOpacityChange(opacity);
-  }, [opacity, activeBasemap]);
+    opacityTimer.current = debouncedMutation({
+      slide,
+      timerRef: opacityTimer,
+      mutation: updateOpacity,
+      values: { opacity },
+    });
+  }, [opacity]);
 
   useEffect(() => {
     if (data) {
-      if (data.Slide.year !== year) setYear(data.Slide.year);
-      if (data.Slide.basemap) setActiveBasemap(data.Slide.basemap.id);
       setOpacity(data.Slide.opacity);
     }
   }, [allBasemaps.loading, data]);
@@ -139,18 +73,29 @@ const Basemaps = ({ slide }) => {
   return (
     <div>
       <h3 style={{ marginTop: 0 }}>Maps / Plans / Aerials</h3>
-      <Dropdown
-        loading={allBasemaps.loading}
-        placeholder="Select overlay"
-        fluid
-        selection
-        clearable
-        value={activeBasemap}
-        options={options}
-        onChange={(e, { value }) => setActiveBasemap(value)}
-      />
-      <h3>Overlay Opacity</h3>
+      {data && data.Slide.basemap ? (
+        <Segment style={{ padding: '0.5em', display: 'flex', alignItems: 'center' }}>
+          <div
+            className={styles.thumbnail}
+            style={{
+              backgroundImage: `url(${data.Slide.basemap.thumbnail})`,
+            }}
+          />
+          <div style={{ width: 'calc(100% - 60px)' }}>{data.Slide.basemap.title}</div>
+          <Button
+            className={styles.closeButton}
+            circular
+            icon="close"
+            size="mini"
+            onClick={() => onBasemapChange(null)}
+          />
+        </Segment>
+      ) : (
+        <Chooser options={options} handler={onBasemapChange} />
+      )}
+      <h4>Overlay Opacity</h4>
       <Slider
+        disabled={!data || !data.Slide.basemap}
         discrete
         inverted={false}
         value={opacity}

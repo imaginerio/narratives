@@ -1,118 +1,34 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { useQuery, useMutation, gql } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
+import { Grid, Segment, Form, Input, Dropdown, Dimmer, Loader } from 'semantic-ui-react';
+
 import {
-  Grid,
-  Segment,
-  Form,
-  Input,
-  Dropdown,
-  Button,
-  Icon,
-  Modal,
-  Header,
-  Dimmer,
-  Loader,
-} from 'semantic-ui-react';
-import { Editor as Wysiwyg } from '@tinymce/tinymce-react';
+  GET_SLIDES,
+  UPDATE_SLIDE_TITLE,
+  UPDATE_SLIDE_DESCRIPTION,
+  UPDATE_SLIDE_SIZE,
+  ADD_IMAGE,
+  UPDATE_IMAGE,
+} from './graphql';
+import debouncedMutation from '../../lib/debouncedMutation';
 
 import AtlasContext from '../Atlas/Context';
 import Image from '../Image';
 import Year from '../Year';
 import Layers from '../Layers';
 import Search from '../Search';
+import Confirm from '../Confirm';
+import Wysiwyg from '../Wysiwyg';
 
 import styles from './Editor.module.css';
-
-const GET_SLIDES = gql`
-  query GetSlide($slide: ID!) {
-    Slide(where: { id: $slide }) {
-      id
-      title
-      description
-      size
-      image {
-        id
-        title
-        creator
-        source
-        date
-        url
-      }
-    }
-  }
-`;
-
-const UPDATE_SLIDE_TITLE = gql`
-  mutation UpdateSlideTitle($slide: ID!, $value: String) {
-    updateSlide(id: $slide, data: { title: $value }) {
-      id
-      title
-    }
-  }
-`;
-
-const UPDATE_SLIDE_DESCRIPTION = gql`
-  mutation UpdateSlideDescription($slide: ID!, $value: String) {
-    updateSlide(id: $slide, data: { description: $value }) {
-      id
-      description
-    }
-  }
-`;
-
-const UPDATE_SLIDE_SIZE = gql`
-  mutation UpdateSlideSize($slide: ID!, $value: SlideSizeType) {
-    updateSlide(id: $slide, data: { size: $value }) {
-      id
-      size
-    }
-  }
-`;
-
-const ADD_IMAGE = gql`
-  mutation AddImage($slide: SlideRelateToOneInput) {
-    createImage(data: { slide: $slide }) {
-      id
-      title
-      creator
-      source
-      date
-      url
-    }
-  }
-`;
-
-const UPDATE_IMAGE = gql`
-  mutation UpdateImage(
-    $image: ID!
-    $title: String
-    $creator: String
-    $source: String
-    $date: String
-    $url: String
-  ) {
-    updateImage(
-      id: $image
-      data: { title: $title, creator: $creator, source: $source, date: $date, url: $url }
-    ) {
-      id
-      title
-      creator
-      source
-      date
-      url
-    }
-  }
-`;
 
 const Editor = ({ slide, removeSlide }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [imageMeta, setImageMeta] = useState(null);
   const [size, setSize] = useState('Small');
-  const [open, setOpen] = useState(false);
 
   const { loading, error, data } = useQuery(GET_SLIDES, {
     variables: { slide },
@@ -132,67 +48,8 @@ const Editor = ({ slide, removeSlide }) => {
   const [updateImage] = useMutation(UPDATE_IMAGE);
 
   const titleTimer = useRef();
-  const onTitleChange = newTitle => {
-    clearTimeout(titleTimer.current);
-    titleTimer.current = setTimeout(() => {
-      updateTitle({
-        variables: {
-          slide,
-          value: newTitle,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          updateSlide: {
-            __typename: 'Slide',
-            id: slide,
-            title: newTitle,
-          },
-        },
-      });
-    }, 500);
-  };
-
   const descriptionTimer = useRef();
-  const onDescriptionChange = newDescription => {
-    clearTimeout(descriptionTimer.current);
-    descriptionTimer.current = setTimeout(() => {
-      updateDescription({
-        variables: {
-          slide,
-          value: newDescription,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          updateSlide: {
-            __typename: 'Slide',
-            id: slide,
-            description: newDescription,
-          },
-        },
-      });
-    }, 500);
-  };
-
   const sizeTimer = useRef();
-  const onSizeChange = newSize => {
-    clearTimeout(sizeTimer.current);
-    sizeTimer.current = setTimeout(() => {
-      updateSize({
-        variables: {
-          slide,
-          value: newSize,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          updateSlide: {
-            __typename: 'Slide',
-            id: slide,
-            size: newSize,
-          },
-        },
-      });
-    }, 500);
-  };
 
   const imageTimer = useRef();
   const onImageChange = (image, imageValues) => {
@@ -234,30 +91,28 @@ const Editor = ({ slide, removeSlide }) => {
                 value={title}
                 onChange={(e, { value }) => {
                   setTitle(value);
-                  onTitleChange(value);
+                  titleTimer.current = debouncedMutation({
+                    slide,
+                    timerRef: titleTimer,
+                    mutation: updateTitle,
+                    values: { title: value },
+                  });
                 }}
               />
             </Form.Field>
-            <Form.Field>
-              <label>Card Description</label>
-              <Wysiwyg
-                apiKey="t0o761fz7mpxbpfouwngyrmyh89mhclnprer8e3bdkch7slf"
-                value={description}
-                init={{
-                  height: 400,
-                  menubar: false,
-                  plugins: ['link lists paste'],
-                  toolbar: 'bold italic superscript bullist numlist | link unlink | undo redo',
-                  branding: false,
-                  statusbar: false,
-                  paste_as_text: true,
-                }}
-                onEditorChange={value => {
-                  setDescription(value);
-                  onDescriptionChange(value);
-                }}
-              />
-            </Form.Field>
+            <Wysiwyg
+              label="Card Description"
+              value={description}
+              onEditorChange={value => {
+                setDescription(value);
+                descriptionTimer.current = debouncedMutation({
+                  slide,
+                  timerRef: descriptionTimer,
+                  mutation: updateDescription,
+                  values: { description: value },
+                });
+              }}
+            />
             <Form.Field>
               <label>Size</label>
               <Dropdown
@@ -272,7 +127,12 @@ const Editor = ({ slide, removeSlide }) => {
                 ]}
                 onChange={(e, { value }) => {
                   setSize(value);
-                  onSizeChange(value);
+                  sizeTimer.current = debouncedMutation({
+                    slide,
+                    timerRef: sizeTimer,
+                    mutation: updateSize,
+                    values: { size: value },
+                  });
                 }}
               />
             </Form.Field>
@@ -299,44 +159,17 @@ const Editor = ({ slide, removeSlide }) => {
               />
             </Form.Field>
             <Form.Field>
-              <Modal
-                basic
-                onClose={() => setOpen(false)}
-                onOpen={() => setOpen(true)}
-                open={open}
-                size="small"
-                trigger={
-                  <Button negative fluid labelPosition="left" icon="trash" content="Delete Slide" />
-                }
+              <Confirm
+                buttonIcon="trash"
+                buttonTitle="Delete Slide"
+                confirmTitle="Delete this slide?"
+                confirmHandler={() => removeSlide(slide)}
               >
-                <Header icon>
-                  <Icon name="trash" />
-                  Delete this slide?
-                </Header>
-                <Modal.Content>
-                  <p>
-                    Are you sure you want to delete this slide? This action is permanent and cannot
-                    be undone.
-                  </p>
-                </Modal.Content>
-                <Modal.Actions>
-                  <Button basic color="red" inverted onClick={() => setOpen(false)}>
-                    <Icon name="remove" />
-                    <span>No</span>
-                  </Button>
-                  <Button
-                    negative
-                    inverted
-                    onClick={() => {
-                      setOpen(false);
-                      removeSlide(slide);
-                    }}
-                  >
-                    <Icon name="trash" />
-                    <span>Yes</span>
-                  </Button>
-                </Modal.Actions>
-              </Modal>
+                <p>
+                  Are you sure you want to delete this slide? This action is permanent and cannot be
+                  undone.
+                </p>
+              </Confirm>
             </Form.Field>
           </Form>
         </Grid.Column>
