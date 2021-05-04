@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Year matches snapshot 1`] = `
+<div
+  className="inline field"
+  id="yearInput"
+>
+  <label
+    className="yearLabel"
+  >
+    Year: 
+  </label>
+  <div
+    className="ui input yearInput"
+  >
+    <input
+      onBlur={[Function]}
+      onChange={[Function]}
+      onKeyPress={[Function]}
+      type="number"
+      value={1900}
+    />
+  </div>
+  <div
+    className="yearSlider"
+  >
+    <div
+      className="slider"
+    />
+  </div>
+</div>
+`;
