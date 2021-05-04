@@ -72,7 +72,12 @@ const EditPage = () => {
   });
 
   const newSlide = () => {
-    const { order } = data.Project.slides.find(s => s.id === activeSlide);
+    let order;
+    try {
+      ({ order } = data.Project.slides.find(s => s.id === activeSlide));
+    } catch {
+      order = 1;
+    }
     return addSlide({
       variables: {
         project: {
