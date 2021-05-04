@@ -2,14 +2,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation, gql } from '@apollo/client';
-import { Form, Input, Modal, Header, Icon, Button } from 'semantic-ui-react';
+import { Form, Input } from 'semantic-ui-react';
 import { Slider } from 'react-semantic-ui-range';
 
 import debouncedMutation from '../../lib/debouncedMutation';
 
 import styles from './Year.module.css';
 
-const GET_SLIDE_YEAR = gql`
+export const GET_SLIDE_YEAR = gql`
   query GetSlideYear($slide: ID!) {
     Slide(where: { id: $slide }) {
       id
@@ -36,7 +36,6 @@ const Year = ({ slide }) => {
 
   const [tempYear, setTempYear] = useState('');
   const [inputYear, setInputYear] = useState(1900);
-  const [open, setOpen] = useState(false);
   const [rangeError, setRangeError] = useState(false);
 
   useEffect(() => {
@@ -98,37 +97,6 @@ const Year = ({ slide }) => {
           />
         </div>
       </Form.Field>
-      <Modal
-        basic
-        onClose={() => setOpen(false)}
-        onOpen={() => setOpen(true)}
-        open={open}
-        size="small"
-      >
-        <Header icon>
-          <Icon name="calendar times outline" />
-          Are you sure you want to change the year?
-        </Header>
-        <Modal.Content>
-          <p>{`You have a selected feature or basemap selected that is tied to ${tempYear}. Changing the year will remove these selections.`}</p>
-        </Modal.Content>
-        <Modal.Actions>
-          <Button basic color="red" inverted onClick={() => setOpen(false)}>
-            <Icon name="remove" />
-            <span>{`Keep ${tempYear}`}</span>
-          </Button>
-          <Button
-            negative
-            inverted
-            onClick={() => {
-              setOpen(false);
-            }}
-          >
-            <Icon name="trash" />
-            <span>Clear selection and change year</span>
-          </Button>
-        </Modal.Actions>
-      </Modal>
     </>
   );
 };
