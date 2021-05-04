@@ -34,7 +34,7 @@ const Year = ({ slide }) => {
   const [onUpdateYear] = useMutation(UPDATE_SLIDE_YEAR);
   const yearTimer = useRef();
 
-  const [tempYear, setTempYear] = useState(null);
+  const [tempYear, setTempYear] = useState('');
   const [inputYear, setInputYear] = useState(1900);
   const [open, setOpen] = useState(false);
   const [rangeError, setRangeError] = useState(false);
