@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { useQuery, useMutation, gql } from '@apollo/client';
-import { omit, map } from 'lodash';
+import { map } from 'lodash';
 import {
   Container,
   Header as Heading,
@@ -37,7 +37,6 @@ const GET_PROJECT = gql`
       imageTitle
       creator
       source
-      date
       url
       published
     }
@@ -74,7 +73,6 @@ const UPDATE_PROJECT = gql`
     $imageTitle: String
     $creator: String
     $source: String
-    $date: String
     $url: String
     $published: Boolean
     $tags: TagRelateToManyInput
@@ -90,12 +88,22 @@ const UPDATE_PROJECT = gql`
         imageTitle: $imageTitle
         creator: $creator
         source: $source
-        date: $date
         url: $url
         published: $published
       }
     ) {
       id
+      title
+      description
+      tags {
+        id
+      }
+      category
+      imageTitle
+      creator
+      source
+      url
+      published
     }
   }
 `;
@@ -135,7 +143,7 @@ const Create = ({ user }) => {
       loading
         ? null
         : {
-            title: data.Project.imageTitle,
+            imageTitle: data.Project.imageTitle,
             creator: data.Project.creator,
             source: data.Project.source,
             date: data.Project.date,
@@ -146,17 +154,12 @@ const Create = ({ user }) => {
 
   const submitForm = () => {
     setLoading(true);
-    let imageData = {};
-    if (imageMeta) {
-      imageData = omit(imageMeta, 'title');
-      imageData.imageTitle = imageMeta.title;
-    }
     updateProject({
       variables: {
         project,
         title,
         description,
-        ...imageData,
+        ...imageMeta,
         tags: {
           connect: tags.map(t => ({ id: t })),
         },

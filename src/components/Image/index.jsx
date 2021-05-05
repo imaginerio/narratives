@@ -6,32 +6,28 @@ import { Segment, Image as Img, Form, Input, Button } from 'semantic-ui-react';
 
 import styles from './Image.module.css';
 
-const Image = ({ image, addHandler, updateHandler }) => {
+const Image = ({ image, updateHandler }) => {
   const fileInputRef = useRef(null);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [imageMeta, setImageMeta] = useState(
-    image && {
-      title: image.title,
-      creator: image.creator,
-      source: image.source,
-      date: image.date,
-    }
-  );
+  const [imageMeta, setImageMeta] = useState({
+    imageTitle: image.imageTitle,
+    creator: image.creator,
+    source: image.source,
+  });
 
   useEffect(() => {
     if (image) {
       setImageMeta({
-        title: image.title,
+        imageTitle: image.imageTitle,
         creator: image.creator,
         source: image.source,
-        date: image.date,
       });
     }
   }, [image]);
 
   const getSignedUrl = e => {
-    const [file] = e.target.files;
+    const file = e.target.files[0];
     if (file) {
       setIsLoading(true);
       return axios.post('/upload', { name: file.name, type: file.type }).then(({ data }) => {
@@ -48,86 +44,68 @@ const Image = ({ image, addHandler, updateHandler }) => {
 
   return (
     <Segment>
-      {image ? (
+      {image.url ? (
         <>
-          {image.url ? (
-            <>
-              <Img src={image.url} />
-              <Button
-                className={styles.closeButton}
-                circular
-                icon="close"
-                size="mini"
-                onClick={() => updateHandler(image.id, { url: null }, 1)}
-              />
-            </>
-          ) : (
-            <>
-              <Button
-                content="Choose File"
-                labelPosition="left"
-                icon="file"
-                onClick={() => fileInputRef.current.click()}
-                loading={isLoading}
-              />
-              <input ref={fileInputRef} type="file" hidden onChange={getSignedUrl} />
-            </>
-          )}
-          <Form.Field inline style={{ marginTop: 15 }} disabled={!image.url}>
-            <label className={styles.inlineLabel}>Title</label>
-            <Input
-              className={styles.inlineInput}
-              value={imageMeta ? imageMeta.title || '' : ''}
-              onChange={(e, { value }) => {
-                setImageMeta({ ...imageMeta, title: value });
-                updateHandler(image.id, { title: value });
-              }}
-            />
-          </Form.Field>
-          <Form.Field inline disabled={!image.url}>
-            <label className={styles.inlineLabel}>Creator</label>
-            <Input
-              className={styles.inlineInput}
-              value={imageMeta ? imageMeta.creator || '' : ''}
-              onChange={(e, { value }) => {
-                setImageMeta({ ...imageMeta, creator: value });
-                updateHandler(image.id, { creator: value });
-              }}
-            />
-          </Form.Field>
-          <Form.Field inline disabled={!image.url}>
-            <label className={styles.inlineLabel}>Source</label>
-            <Input
-              className={styles.inlineInput}
-              value={imageMeta ? imageMeta.source || '' : ''}
-              onChange={(e, { value }) => {
-                setImageMeta({ ...imageMeta, source: value });
-                updateHandler(image.id, { source: value });
-              }}
-            />
-          </Form.Field>
-          <Form.Field inline disabled={!image.url}>
-            <label className={styles.inlineLabel}>Date</label>
-            <Input
-              className={styles.inlineInput}
-              value={imageMeta ? imageMeta.date || '' : ''}
-              onChange={(e, { value }) => {
-                setImageMeta({ ...imageMeta, date: value });
-                updateHandler(image.id, { date: value });
-              }}
-            />
-          </Form.Field>
+          <Img src={image.url} />
+          <Button
+            className={styles.closeButton}
+            circular
+            icon="close"
+            size="mini"
+            onClick={() => updateHandler(image.id, { url: null }, 1)}
+          />
         </>
       ) : (
-        <Button content="Add an image" onClick={addHandler} />
+        <>
+          <Button
+            content="Choose File"
+            labelPosition="left"
+            icon="file"
+            onClick={() => fileInputRef.current.click()}
+            loading={isLoading}
+          />
+          <input ref={fileInputRef} type="file" hidden onChange={getSignedUrl} />
+        </>
       )}
+      <Form.Field inline style={{ marginTop: 15 }} disabled={!image.url}>
+        <label className={styles.inlineLabel}>Title</label>
+        <Input
+          className={styles.inlineInput}
+          value={imageMeta ? imageMeta.imageTitle || '' : ''}
+          onChange={(e, { value }) => {
+            setImageMeta({ ...imageMeta, imageTitle: value });
+            updateHandler(image.id, { imageTitle: value });
+          }}
+        />
+      </Form.Field>
+      <Form.Field inline disabled={!image.url}>
+        <label className={styles.inlineLabel}>Creator</label>
+        <Input
+          className={styles.inlineInput}
+          value={imageMeta ? imageMeta.creator || '' : ''}
+          onChange={(e, { value }) => {
+            setImageMeta({ ...imageMeta, creator: value });
+            updateHandler(image.id, { creator: value });
+          }}
+        />
+      </Form.Field>
+      <Form.Field inline disabled={!image.url}>
+        <label className={styles.inlineLabel}>Source</label>
+        <Input
+          className={styles.inlineInput}
+          value={imageMeta ? imageMeta.source || '' : ''}
+          onChange={(e, { value }) => {
+            setImageMeta({ ...imageMeta, source: value });
+            updateHandler(image.id, { source: value });
+          }}
+        />
+      </Form.Field>
     </Segment>
   );
 };
 
 Image.propTypes = {
   image: PropTypes.shape(),
-  addHandler: PropTypes.func.isRequired,
   updateHandler: PropTypes.func.isRequired,
 };
 
