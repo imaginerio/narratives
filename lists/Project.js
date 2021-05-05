@@ -47,9 +47,6 @@ module.exports = {
     source: {
       type: Text,
     },
-    date: {
-      type: Text,
-    },
     url: {
       type: Url,
     },

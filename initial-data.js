@@ -54,8 +54,8 @@ const populateLayers = async (keystone, context) => {
     data: { allLayers },
   } = await keystone.executeGraphQL({
     context,
-    query: `query{
-      allLayers{
+    query: `query {
+      allLayers {
         id
         layerId
       }
@@ -107,8 +107,8 @@ const populateBasemaps = async (keystone, context) => {
     data: { allBasemaps },
   } = await keystone.executeGraphQL({
     context,
-    query: `query{
-      allBasemaps{
+    query: `query {
+      allBasemaps {
         id
         ssid
       }
@@ -155,9 +155,47 @@ const populateBasemaps = async (keystone, context) => {
   return Promise.all(documentReqs);
 };
 
+const migrateImages = async (keystone, context) => {
+  const {
+    data: { allSlides },
+  } = await keystone.executeGraphQL({
+    context,
+    query: `query {
+      allSlides {
+        id
+        image {
+          imageTitle: title
+          creator
+          source
+          url
+        }
+      }
+    }`,
+  });
+
+  const imageUpdateRequests = allSlides
+    .filter(slide => slide.image)
+    .map(slide =>
+      keystone.executeGraphQL({
+        context,
+        query: `mutation UpdateSlideImage($id: ID!, $imageTitle: String, $creator: String, $source: String, $url: String) {
+          updateSlide(id: $id, data: { imageTitle: $imageTitle, creator: $creator, source: $source, url: $url }) {
+            id
+          }
+        }`,
+        variables: {
+          id: slide.id,
+          ...slide.image,
+        },
+      })
+    );
+  return Promise.all(imageUpdateRequests);
+};
+
 module.exports = async keystone => {
   const context = keystone.createContext({ skipAccessControl: true });
   await addInitialUser(keystone, context);
   await populateLayers(keystone, context);
   await populateBasemaps(keystone, context);
+  await migrateImages(keystone, context);
 };
