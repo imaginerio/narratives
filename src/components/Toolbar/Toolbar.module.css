@@ -2,7 +2,7 @@
   width: 30px;
   height: 30px;
   background-color: white;
-  position: absolute;
+  position: relative;
   border-radius: 5px;
   box-shadow: 0 0 0 2px rgb(0 0 0 / 10%);
   font-size: 14px;
@@ -10,17 +10,17 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  margin-top: 5px;
 }
 
 .button:hover {
   background-color: #f1f1f1;
 }
 
-.button2D {
-  top: 65px;
-}
-
-.buttonLock {
-  top: 100px;
-  padding: 0 0 3px 2px;
+.toolbar {
+  position: 'absolute';
+  left: 15px;
+  top: 235px;
+  display: 'flex';
+  flex-direction: column;
 }

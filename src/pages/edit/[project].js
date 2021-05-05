@@ -8,6 +8,7 @@ import withApollo from '../../lib/withApollo';
 import Slides from '../../components/Slides';
 import Editor from '../../components/Editor';
 import EditorHeader from '../../components/Editor/EditorHeader';
+import { DrawProvider } from '../../providers/DrawProvider';
 
 const GET_SLIDES = gql`
   query GetSlides($project: ID!) {
@@ -142,7 +143,9 @@ const EditPage = () => {
             />
           </Grid.Column>
           <Grid.Column width={13} style={{ padding: 0 }}>
-            {activeSlide && <Editor slide={activeSlide} removeSlide={removeSlide} />}
+            <DrawProvider>
+              {activeSlide && <Editor slide={activeSlide} removeSlide={removeSlide} />}
+            </DrawProvider>
           </Grid.Column>
         </Grid.Row>
       </Grid>
