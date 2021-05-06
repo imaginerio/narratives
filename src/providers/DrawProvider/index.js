@@ -16,6 +16,7 @@ const INITIAL_STATE = {
   mode: null,
   features: [],
   selectedFeatureIndex: '',
+  clickRadius: 12,
 };
 
 function reducer(state, [type, payload]) {
@@ -27,6 +28,12 @@ function reducer(state, [type, payload]) {
       const modeHandler = mode ? new mode.Handler() : null;
       return { ...state, mode: modeHandler };
     }
+    case 'SET_FEATURES': {
+      return { ...state, features: payload };
+    }
+    case 'SET_SELECTED_FEATURE_INDEX': {
+      return { ...state, selectedFeatureIndex: payload };
+    }
     default: {
       throw new Error(`Unhandled action type: ${type}`);
     }
@@ -36,8 +43,27 @@ function reducer(state, [type, payload]) {
 function DrawProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
 
+  function onSelect(e) {
+    const { selectedFeatureIndex } = e;
+    dispatch(['SET_SELECTED_FEATURE_INDEX', selectedFeatureIndex]);
+  }
+
+  function onUpdate(e) {
+    const { data, editType } = e;
+
+    dispatch(['SET_FEATURES', data]);
+
+    switch (editType) {
+      case 'addFeature': {
+        dispatch(['SET_MODE', 'editing']);
+        break;
+      }
+      default:
+        break;
+    }
+  }
   return (
-    <StateContext.Provider value={state}>
+    <StateContext.Provider value={{ ...state, onUpdate, onSelect }}>
       <DispatchContext.Provider value={dispatch}>{children}</DispatchContext.Provider>
     </StateContext.Provider>
   );
@@ -53,16 +79,12 @@ function useDrawState() {
   return context;
 }
 
-function useDrawDispatch(features) {
+function useDrawDispatch() {
   const context = useContext(DispatchContext);
 
   if (context === undefined) {
     throw new Error('useDrawDispatch must be used within a DrawProvider');
   }
-
-  //   useEffect(() => {
-  //     context.dispatch('SET_GEOJSON', { geoJson: features });
-  //   }, [features]);
 
   return context;
 }

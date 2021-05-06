@@ -14,7 +14,7 @@ import { Icon } from 'semantic-ui-react';
 import { Editor } from 'react-map-gl-draw';
 
 import { useDraw } from '../../providers/DrawProvider';
-import Toolbar from '../../components/Toolbar';
+import Toolbar from '../Toolbar';
 
 import { minZoom, maxZoom } from '../../config/map';
 import styles from './Atlas.module.css';
@@ -31,8 +31,7 @@ const Atlas = ({
 }) => {
   const mapRef = useRef(null);
 
-  const [{ mode, features }, dispatchDraw] = useDraw();
-  console.log(mode);
+  const [drawProps] = useDraw();
   const [mapViewport, setMapViewport] = useState(viewport);
   const [featureData, setFeatureData] = useState(null);
   const [is2D, setIs2D] = useState(true);
@@ -152,10 +151,9 @@ const Atlas = ({
     }
     return props;
   };
-
   return (
     <ReactMapGL {...getMapProps()}>
-      <Editor clickRadius={12} mode={mode} onSelect={() => {}} />
+      <Editor {...drawProps} />
       <Toolbar />
       {activeBasemap && (
         <>
