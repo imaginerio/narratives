@@ -24,8 +24,8 @@ import Header from '../../components/Header';
 import Confirm from '../../components/Confirm';
 import Wysiwyg from '../../components/Wysiwyg';
 
-const GET_PROJECT = gql`
-  query GetTags($project: ID!) {
+export const GET_PROJECT = gql`
+  query GetProject($project: ID!) {
     Project(where: { id: $project }) {
       id
       title
@@ -132,6 +132,8 @@ const Create = ({ user }) => {
   const [imageMeta, setImageMeta] = useState(null);
   const [published, setPublished] = useState(false);
   const [isLoading, setLoading] = useState(false);
+
+  console.log(error);
 
   useEffect(() => {
     setTags(loading ? [] : map(data.Project.tags, 'id'));
