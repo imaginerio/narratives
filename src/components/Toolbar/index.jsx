@@ -1,4 +1,4 @@
-import React, { useContext, createContext, useEffect, useReducer } from 'react';
+import React from 'react';
 
 import { useDraw } from '../../providers/DrawProvider';
 import styles from './Toolbar.module.css';

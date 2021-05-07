@@ -20,7 +20,7 @@ const INITIAL_STATE = {
 };
 
 function reducer(state, [type, payload]) {
-  console.log(type, payload);
+  // console.log(type, payload);
   switch (type) {
     case 'SET_MODE': {
       const modeId = payload;
@@ -33,6 +33,12 @@ function reducer(state, [type, payload]) {
     }
     case 'SET_SELECTED_FEATURE_INDEX': {
       return { ...state, selectedFeatureIndex: payload };
+    }
+    case 'DEL_FEATURE': {
+      return {
+        ...state,
+        features: state.features.filter((feature, index) => payload !== index),
+      };
     }
     default: {
       throw new Error(`Unhandled action type: ${type}`);

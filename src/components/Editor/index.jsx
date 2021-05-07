@@ -21,6 +21,7 @@ import Layers from '../Layers';
 import Search from '../Search';
 import Confirm from '../Confirm';
 import Wysiwyg from '../Wysiwyg';
+import DrawList from '../DrawList';
 
 import styles from './Editor.module.css';
 
@@ -158,6 +159,7 @@ const Editor = ({ slide, removeSlide }) => {
                 }}
               />
             </Form.Field>
+            <DrawList />
             <Form.Field>
               <Confirm
                 buttonIcon="trash"
