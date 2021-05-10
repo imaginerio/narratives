@@ -95,8 +95,8 @@ function useDrawDispatch() {
   return context;
 }
 
-function useDraw(features, featureService) {
-  return [useDrawState(), useDrawDispatch(features, featureService)];
+function useDraw() {
+  return [useDrawState(), useDrawDispatch()];
 }
 
 DrawProvider.propTypes = {
