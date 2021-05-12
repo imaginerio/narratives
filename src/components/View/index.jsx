@@ -37,6 +37,10 @@ export const GET_PROJECT = gql`
         opacity
         size
         selectedFeature
+        annotations {
+          id
+          feature
+        }
         image {
           title
           creator
@@ -64,6 +68,7 @@ const View = ({ project, preview }) => {
   const [activeBasemap, setActiveBasemap] = useState(null);
   const [opacity, setOpacity] = useState(1);
   const [selectedFeature, setSelectedFeature] = useState(null);
+  const [annotations, setAnnotations] = useState(null);
 
   const config = { variables: { project } };
   if (preview) config.pollInterval = 5000;
@@ -108,6 +113,7 @@ const View = ({ project, preview }) => {
           activeBasemap={activeBasemap}
           opacity={opacity}
           selectedFeature={selectedFeature}
+          annotations={annotations}
         />
       </div>
       <div>
@@ -140,6 +146,12 @@ const View = ({ project, preview }) => {
             setActiveBasemap(step.data.basemap);
             setOpacity(step.data.opacity);
             setSelectedFeature(step.data.selectedFeature);
+            if (step.data.annotations) {
+              setAnnotations({
+                type: 'FeatureCollection',
+                features: step.data.annotations.map(({ feature }) => JSON.parse(feature)),
+              });
+            }
           }}
         >
           <Step data={{ ...data.Project.slides[0], index: 0 }}>

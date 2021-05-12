@@ -32,7 +32,8 @@ const Atlas = ({
 }) => {
   const mapRef = useRef(null);
 
-  const [drawProps] = useDraw();
+  let drawProps = [];
+  if (!viewer) [drawProps] = useDraw();
   const [mapViewport, setMapViewport] = useState(viewport);
   const [featureData, setFeatureData] = useState(null);
   const [is2D, setIs2D] = useState(true);
@@ -156,7 +157,7 @@ const Atlas = ({
   return (
     <ReactMapGL {...getMapProps()}>
       {drawProps.editing && <Editor {...drawProps} />}
-      <Toolbar />
+      {!viewer && <Toolbar />}
       {activeBasemap && (
         <>
           <AttributionControl
