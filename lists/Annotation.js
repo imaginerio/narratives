@@ -3,9 +3,11 @@ const { Text, Relationship, Integer } = require('@keystonejs/fields');
 const defaultAuth = ({ authentication: { item } }) => {
   if (item) {
     return {
-      project: {
-        user: {
-          id: item.id,
+      slide: {
+        project: {
+          user: {
+            id: item.id,
+          },
         },
       },
     };

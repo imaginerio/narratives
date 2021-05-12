@@ -1,4 +1,4 @@
-import React, { useContext, createContext, useReducer, useEffect } from 'react';
+import React, { useContext, createContext, useReducer, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { last } from 'lodash';
@@ -17,6 +17,7 @@ const MODES = [
 const INITIAL_STATE = {
   mode: null,
   features: [],
+  ids: [],
   selectedFeatureIndex: '',
   clickRadius: 12,
   slide: null,
@@ -49,6 +50,14 @@ const CREATE_ANNOTATION = gql`
   }
 `;
 
+const UPDATE_ANNOTATION_FEATURE = gql`
+  mutation UpdateAnnotation($id: ID!, $feature: String) {
+    updateAnnotation(id: $id, data: { feature: $feature }) {
+      id
+    }
+  }
+`;
+
 function reducer(state, [type, payload]) {
   // console.log(type, payload);
   switch (type) {
@@ -60,6 +69,9 @@ function reducer(state, [type, payload]) {
     }
     case 'SET_FEATURES': {
       return { ...state, features: payload };
+    }
+    case 'SET_IDS': {
+      return { ...state, ids: payload };
     }
     case 'SET_SELECTED_FEATURE_INDEX': {
       return { ...state, selectedFeatureIndex: payload };
@@ -85,7 +97,10 @@ function reducer(state, [type, payload]) {
 function DrawProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
   const [createAnnotation] = useMutation(CREATE_ANNOTATION);
+  const [updateAnnotation] = useMutation(UPDATE_ANNOTATION_FEATURE);
   const { data: annotations } = useQuery(GET_ANNOTATIONS, { variables: { slide: state.slide } });
+
+  const updateTimer = useRef();
 
   function onSelect(e) {
     const { selectedFeatureIndex } = e;
@@ -117,6 +132,21 @@ function DrawProvider({ children }) {
         });
         break;
       }
+      case 'movePosition': {
+        const { ids, selectedFeatureIndex } = state;
+        const id = ids[selectedFeatureIndex];
+        const feature = JSON.stringify(data[selectedFeatureIndex]);
+        clearTimeout(updateTimer.current);
+        updateTimer.current = setTimeout(
+          () =>
+            updateAnnotation({
+              variables: { id, feature },
+              refetchQueries: [{ query: GET_ANNOTATIONS, variables: { slide: state.slide } }],
+            }),
+          500
+        );
+        break;
+      }
       default:
         break;
     }
@@ -125,6 +155,7 @@ function DrawProvider({ children }) {
   useEffect(() => {
     if (annotations) {
       dispatch(['SET_FEATURES', annotations.Slide.annotations.map(a => JSON.parse(a.feature))]);
+      dispatch(['SET_IDS', annotations.Slide.annotations.map(a => a.id)]);
     }
   }, [annotations]);
 
