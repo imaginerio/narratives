@@ -163,7 +163,7 @@ const Editor = ({ slide, removeSlide }) => {
                 }}
               />
             </Form.Field>
-            <DrawList />
+            <DrawList slide={slide} />
             <Form.Field>
               <Confirm
                 buttonIcon="trash"

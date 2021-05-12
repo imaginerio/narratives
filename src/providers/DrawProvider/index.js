@@ -17,7 +17,6 @@ const MODES = [
 const INITIAL_STATE = {
   mode: null,
   features: [],
-  ids: [],
   selectedFeatureIndex: '',
   clickRadius: 12,
   slide: null,
@@ -31,20 +30,14 @@ const GET_ANNOTATIONS = gql`
         id
         title
         feature
-        index
       }
     }
   }
 `;
 
 const CREATE_ANNOTATION = gql`
-  mutation CreateAnnotation(
-    $title: String
-    $index: Int
-    $feature: String
-    $slide: SlideRelateToOneInput
-  ) {
-    createAnnotation(data: { title: $title, index: $index, feature: $feature, slide: $slide }) {
+  mutation CreateAnnotation($title: String, $feature: String, $slide: SlideRelateToOneInput) {
+    createAnnotation(data: { title: $title, feature: $feature, slide: $slide }) {
       id
     }
   }
@@ -70,17 +63,8 @@ function reducer(state, [type, payload]) {
     case 'SET_FEATURES': {
       return { ...state, features: payload };
     }
-    case 'SET_IDS': {
-      return { ...state, ids: payload };
-    }
     case 'SET_SELECTED_FEATURE_INDEX': {
       return { ...state, selectedFeatureIndex: payload };
-    }
-    case 'DEL_FEATURE': {
-      return {
-        ...state,
-        features: state.features.filter((feature, index) => payload !== index),
-      };
     }
     case 'SLIDE': {
       return {
@@ -116,12 +100,10 @@ function DrawProvider({ children }) {
       case 'addFeature': {
         dispatch(['SET_MODE', 'editing']);
         const newFeature = last(data);
-        const index = data.length - 1;
         createAnnotation({
           variables: {
-            title: `Feature ${index}`,
+            title: 'New annotation',
             feature: JSON.stringify(newFeature),
-            index,
             slide: {
               connect: {
                 id: state.slide,
@@ -133,8 +115,8 @@ function DrawProvider({ children }) {
         break;
       }
       case 'movePosition': {
-        const { ids, selectedFeatureIndex } = state;
-        const id = ids[selectedFeatureIndex];
+        const { selectedFeatureIndex } = state;
+        const { id } = data[selectedFeatureIndex];
         const feature = JSON.stringify(data[selectedFeatureIndex]);
         clearTimeout(updateTimer.current);
         updateTimer.current = setTimeout(
@@ -154,8 +136,13 @@ function DrawProvider({ children }) {
 
   useEffect(() => {
     if (annotations) {
-      dispatch(['SET_FEATURES', annotations.Slide.annotations.map(a => JSON.parse(a.feature))]);
-      dispatch(['SET_IDS', annotations.Slide.annotations.map(a => a.id)]);
+      dispatch([
+        'SET_FEATURES',
+        annotations.Slide.annotations.map(a => {
+          const feature = JSON.parse(a.feature);
+          return { ...feature, id: a.id };
+        }),
+      ]);
     }
   }, [annotations]);
 
