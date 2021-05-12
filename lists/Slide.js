@@ -89,6 +89,11 @@ module.exports = {
       ref: 'Project.slides',
       many: false,
     },
+    annotations: {
+      type: Relationship,
+      ref: 'Annotation',
+      many: true,
+    },
   },
   labelField: 'title',
   hooks: {
