@@ -29,7 +29,7 @@ export default function Toolbar() {
             id="toolbar"
             onClick={() => dispatch(['SET_MODE', 'drawPolyline'])}
           >
-            <img src="/img/line.svg" alt="Draw line" />
+            <img src="/img/LineString.svg" alt="Draw line" />
           </button>
           <button
             className={styles.button}
@@ -39,7 +39,7 @@ export default function Toolbar() {
             id="toolbar"
             onClick={() => dispatch(['SET_MODE', 'drawPolygon'])}
           >
-            <img src="/img/polygon.svg" alt="Draw polygon" />
+            <img src="/img/Polygon.svg" alt="Draw polygon" />
           </button>
           <button
             className={styles.button}
@@ -49,7 +49,7 @@ export default function Toolbar() {
             id="toolbar"
             onClick={() => dispatch(['SET_MODE', 'drawPoint'])}
           >
-            <img src="/img/point.svg" alt="Draw point" />
+            <img src="/img/Point.svg" alt="Draw point" />
           </button>
         </>
       )}

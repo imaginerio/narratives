@@ -48,6 +48,7 @@ const UPDATE_ANNOTATION_FEATURE = gql`
   mutation UpdateAnnotation($id: ID!, $feature: String) {
     updateAnnotation(id: $id, data: { feature: $feature }) {
       id
+      feature
     }
   }
 `;
