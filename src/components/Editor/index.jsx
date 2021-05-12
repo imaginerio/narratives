@@ -13,7 +13,7 @@ import {
   UPDATE_IMAGE,
 } from './graphql';
 import { useDraw } from '../../providers/DrawProvider';
-import debouncedMutation from '../../lib/debouncedMutation';
+import debouncedMutation from '../../providers/debouncedMutation';
 
 import AtlasContext from '../Atlas/Context';
 import Image from '../Image';

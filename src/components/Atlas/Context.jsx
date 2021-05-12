@@ -6,7 +6,7 @@ import { Dimmer, Loader } from 'semantic-ui-react';
 
 import Atlas from './index';
 import { minZoom, maxZoom, minLon, maxLon, minLat, maxLat } from '../../config/map';
-import debouncedMutation from '../../lib/debouncedMutation';
+import debouncedMutation from '../../providers/debouncedMutation';
 
 const GET_SLIDE_ATLAS = gql`
   query GetSlideYear($slide: ID!) {

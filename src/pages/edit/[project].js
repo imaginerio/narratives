@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { getDataFromTree } from '@apollo/react-ssr';
 import { Container, Grid, Dimmer, Loader } from 'semantic-ui-react';
-import withApollo from '../../lib/withApollo';
+import withApollo from '../../providers/withApollo';
 
 import Slides from '../../components/Slides';
 import Editor from '../../components/Editor';

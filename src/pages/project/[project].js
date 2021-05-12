@@ -17,7 +17,7 @@ import {
   Dimmer,
   Loader,
 } from 'semantic-ui-react';
-import withApollo from '../../lib/withApollo';
+import withApollo from '../../providers/withApollo';
 
 import Image from '../../components/Image';
 import Header from '../../components/Header';

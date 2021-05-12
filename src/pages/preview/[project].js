@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { getDataFromTree } from '@apollo/react-ssr';
-import withApollo from '../../lib/withApollo';
+import withApollo from '../../providers/withApollo';
 
 import View from '../../components/View';
 
