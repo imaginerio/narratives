@@ -91,7 +91,7 @@ module.exports = {
     },
     annotations: {
       type: Relationship,
-      ref: 'Annotation',
+      ref: 'Annotation.slide',
       many: true,
     },
   },

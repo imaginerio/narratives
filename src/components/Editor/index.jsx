@@ -12,6 +12,7 @@ import {
   ADD_IMAGE,
   UPDATE_IMAGE,
 } from './graphql';
+import { useDraw } from '../../providers/DrawProvider';
 import debouncedMutation from '../../lib/debouncedMutation';
 
 import AtlasContext from '../Atlas/Context';
@@ -34,6 +35,9 @@ const Editor = ({ slide, removeSlide }) => {
   const { loading, error, data } = useQuery(GET_SLIDES, {
     variables: { slide },
   });
+
+  const [, dispatch] = useDraw();
+  useEffect(() => dispatch(['SLIDE', slide]), [slide]);
 
   useEffect(() => {
     setTitle(loading && !data ? '' : data.Slide.title || '');

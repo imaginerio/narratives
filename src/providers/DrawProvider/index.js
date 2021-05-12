@@ -1,5 +1,7 @@
-import React, { useContext, createContext, useReducer } from 'react';
+import React, { useContext, createContext, useReducer, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useQuery, useMutation, gql } from '@apollo/client';
+import { last } from 'lodash';
 import { DrawPolygonMode, DrawLineStringMode, EditingMode, DrawPointMode } from 'react-map-gl-draw';
 
 const StateContext = createContext();
@@ -17,7 +19,35 @@ const INITIAL_STATE = {
   features: [],
   selectedFeatureIndex: '',
   clickRadius: 12,
+  slide: null,
 };
+
+const GET_ANNOTATIONS = gql`
+  query GetAnnotations($slide: ID!) {
+    Slide(where: { id: $slide }) {
+      id
+      annotations {
+        id
+        title
+        feature
+        index
+      }
+    }
+  }
+`;
+
+const CREATE_ANNOTATION = gql`
+  mutation CreateAnnotation(
+    $title: String
+    $index: Int
+    $feature: String
+    $slide: SlideRelateToOneInput
+  ) {
+    createAnnotation(data: { title: $title, index: $index, feature: $feature, slide: $slide }) {
+      id
+    }
+  }
+`;
 
 function reducer(state, [type, payload]) {
   // console.log(type, payload);
@@ -40,6 +70,12 @@ function reducer(state, [type, payload]) {
         features: state.features.filter((feature, index) => payload !== index),
       };
     }
+    case 'SLIDE': {
+      return {
+        ...state,
+        slide: payload,
+      };
+    }
     default: {
       throw new Error(`Unhandled action type: ${type}`);
     }
@@ -48,6 +84,8 @@ function reducer(state, [type, payload]) {
 
 function DrawProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
+  const [createAnnotation] = useMutation(CREATE_ANNOTATION);
+  const { data: annotations } = useQuery(GET_ANNOTATIONS, { variables: { slide: state.slide } });
 
   function onSelect(e) {
     const { selectedFeatureIndex } = e;
@@ -62,12 +100,34 @@ function DrawProvider({ children }) {
     switch (editType) {
       case 'addFeature': {
         dispatch(['SET_MODE', 'editing']);
+        const newFeature = last(data);
+        const index = data.length - 1;
+        createAnnotation({
+          variables: {
+            title: `Feature ${index}`,
+            feature: JSON.stringify(newFeature),
+            index,
+            slide: {
+              connect: {
+                id: state.slide,
+              },
+            },
+          },
+          refetchQueries: [{ query: GET_ANNOTATIONS, variables: { slide: state.slide } }],
+        });
         break;
       }
       default:
         break;
     }
   }
+
+  useEffect(() => {
+    if (annotations) {
+      dispatch(['SET_FEATURES', annotations.Slide.annotations.map(a => JSON.parse(a.feature))]);
+    }
+  }, [annotations]);
+
   return (
     <StateContext.Provider value={{ ...state, onUpdate, onSelect }}>
       <DispatchContext.Provider value={dispatch}>{children}</DispatchContext.Provider>

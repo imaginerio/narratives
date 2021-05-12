@@ -1,4 +1,4 @@
-const { Text, Relationship } = require('@keystonejs/fields');
+const { Text, Relationship, Integer } = require('@keystonejs/fields');
 
 const defaultAuth = ({ authentication: { item } }) => {
   if (item) {
@@ -25,12 +25,15 @@ module.exports = {
     title: {
       type: Text,
     },
+    index: {
+      type: Integer,
+    },
     feature: {
       type: Text,
     },
     slide: {
       type: Relationship,
-      ref: 'Slide',
+      ref: 'Slide.annotations',
       many: false,
     },
   },

@@ -9,7 +9,7 @@ import styles from './DrawList.module.css';
 export default function Toolbar() {
   const [{ features }, dispatch] = useDraw();
 
-  if (features.length === 0) return null;
+  if (!features || features.length === 0) return null;
   return (
     <Form.Field>
       <label>Features</label>
