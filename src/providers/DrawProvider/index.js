@@ -15,7 +15,9 @@ const MODES = [
 ];
 
 const INITIAL_STATE = {
+  editing: false,
   mode: null,
+  modeId: null,
   features: [],
   selectedFeatureIndex: '',
   clickRadius: 12,
@@ -52,13 +54,14 @@ const UPDATE_ANNOTATION_FEATURE = gql`
 `;
 
 function reducer(state, [type, payload]) {
-  // console.log(type, payload);
   switch (type) {
+    case 'TOGGLE_EDITING': {
+      return { ...state, editing: !state.editing };
+    }
     case 'SET_MODE': {
-      const modeId = payload;
-      const mode = MODES.find(m => m.id === modeId);
+      const mode = MODES.find(m => m.id === payload);
       const modeHandler = mode ? new mode.Handler() : null;
-      return { ...state, mode: modeHandler };
+      return { ...state, mode: modeHandler, modeId: payload };
     }
     case 'SET_FEATURES': {
       return { ...state, features: payload };
@@ -145,6 +148,12 @@ function DrawProvider({ children }) {
       ]);
     }
   }, [annotations]);
+
+  useEffect(() => {
+    if (state.features.length && state.editing && state.modeId !== 'editing') {
+      dispatch(['SET_MODE', 'editing']);
+    }
+  }, [state.features, state.editing]);
 
   return (
     <StateContext.Provider value={{ ...state, onUpdate, onSelect }}>

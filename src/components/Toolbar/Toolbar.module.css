@@ -18,6 +18,10 @@
   background-color: #f1f1f1;
 }
 
+.button.active{
+  background-color: #ccc;
+}
+
 .toolbar {
   position: 'absolute';
   left: 15px;
