@@ -30,7 +30,6 @@ const GET_ANNOTATIONS = gql`
       id
       annotations {
         id
-        title
         feature
       }
     }
@@ -103,9 +102,9 @@ function DrawProvider({ children }) {
       case 'addFeature': {
         dispatch(['SET_MODE', 'editing']);
         const newFeature = last(data);
+        newFeature.properties.title = 'New annotation';
         createAnnotation({
           variables: {
-            title: 'New annotation',
             feature: JSON.stringify(newFeature),
             slide: {
               connect: {

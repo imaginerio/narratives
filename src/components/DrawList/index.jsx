@@ -12,7 +12,6 @@ const GET_ANNOTATIONS = gql`
       id
       annotations {
         id
-        title
         feature
       }
     }
@@ -64,7 +63,7 @@ const DrawList = ({ slide }) => {
                 </Button>
               </List.Content>
               <List.Content verticalAlign="middle" className={styles.title}>
-                {feature.title}
+                {JSON.parse(feature.feature).properties.title}
               </List.Content>
             </List.Item>
           ))}

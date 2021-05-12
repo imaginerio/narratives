@@ -28,6 +28,7 @@ const Atlas = ({
   selectedFeature,
   activeBasemap,
   opacity,
+  annotations,
 }) => {
   const mapRef = useRef(null);
 
@@ -151,9 +152,10 @@ const Atlas = ({
     }
     return props;
   };
+
   return (
     <ReactMapGL {...getMapProps()}>
-      <Editor {...drawProps} />
+      {drawProps.editing && <Editor {...drawProps} />}
       <Toolbar />
       {activeBasemap && (
         <>
@@ -191,6 +193,31 @@ const Atlas = ({
             type="line"
             paint={{ 'line-width': 3, 'line-color': '#000000' }}
             beforeId={activeBasemap ? 'overlay' : 'expressway-label'}
+          />
+        </Source>
+      )}
+      {!drawProps.editing && annotations && (
+        <Source type="geojson" data={annotations}>
+          <Layer id="annotation-polygon" type="fill" filter={['==', '$type', 'Polygon']} />
+          <Layer id="annotation-line" type="line" filter={['==', '$type', 'LineString']} />
+          <Layer id="annotation-point" type="circle" filter={['==', '$type', 'Point']} />
+          <Layer
+            id="annotation-polygon-label"
+            type="symbol"
+            filter={['==', '$type', 'Polygon']}
+            layout={{ 'text-field': ['get', 'title'], 'symbol-placement': 'line-center' }}
+          />
+          <Layer
+            id="annotation-line-label"
+            type="symbol"
+            filter={['==', '$type', 'LineString']}
+            layout={{ 'text-field': ['get', 'title'], 'symbol-placement': 'line' }}
+          />
+          <Layer
+            id="annotation-point-label"
+            type="symbol"
+            filter={['==', '$type', 'Point']}
+            layout={{ 'text-field': ['get', 'title'] }}
           />
         </Source>
       )}
@@ -243,6 +270,7 @@ Atlas.propTypes = {
   activeBasemap: PropTypes.shape(),
   selectedFeature: PropTypes.string,
   opacity: PropTypes.number,
+  annotations: PropTypes.shape(),
 };
 
 Atlas.defaultProps = {
@@ -251,6 +279,7 @@ Atlas.defaultProps = {
   activeBasemap: null,
   selectedFeature: null,
   opacity: 1,
+  annotations: null,
 };
 
 export default Atlas;

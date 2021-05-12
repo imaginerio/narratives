@@ -24,9 +24,6 @@ module.exports = {
     delete: defaultAuth,
   },
   fields: {
-    title: {
-      type: Text,
-    },
     feature: {
       type: Text,
     },
