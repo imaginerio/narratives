@@ -199,14 +199,23 @@ const Atlas = ({
       )}
       {!drawProps.editing && annotations && (
         <Source type="geojson" data={annotations}>
-          <Layer id="annotation-polygon" type="fill" filter={['==', '$type', 'Polygon']} />
-          <Layer id="annotation-line" type="line" filter={['==', '$type', 'LineString']} />
+          <Layer
+            id="annotation-polygon"
+            type="fill"
+            filter={['==', '$type', 'Polygon']}
+            paint={{ 'fill-opacity': 0.25 }}
+          />
+          <Layer
+            id="annotation-line"
+            type="line"
+            filter={['any', ['==', '$type', 'LineString'], ['==', '$type', 'Polygon']]}
+          />
           <Layer id="annotation-point" type="circle" filter={['==', '$type', 'Point']} />
           <Layer
             id="annotation-polygon-label"
             type="symbol"
             filter={['==', '$type', 'Polygon']}
-            layout={{ 'text-field': ['get', 'title'], 'symbol-placement': 'line-center' }}
+            layout={{ 'text-field': ['get', 'title'], 'symbol-placement': 'point' }}
             paint={{ 'text-halo-width': 3, 'text-halo-color': '#FFFFFF' }}
           />
           <Layer
