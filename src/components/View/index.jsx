@@ -138,7 +138,7 @@ const View = ({ project, preview }) => {
             });
 
             if (step.data.index > 0) {
-              newViewport.transitionInterpolator = new FlyToInterpolator({ speed: 1.2 });
+              newViewport.transitionInterpolator = new FlyToInterpolator({ speed: 0.75 });
               newViewport.transitionDuration = 'auto';
             }
             setViewport(newViewport);
