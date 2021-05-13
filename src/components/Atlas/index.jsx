@@ -207,18 +207,24 @@ const Atlas = ({
             type="symbol"
             filter={['==', '$type', 'Polygon']}
             layout={{ 'text-field': ['get', 'title'], 'symbol-placement': 'line-center' }}
+            paint={{ 'text-halo-width': 3, 'text-halo-color': '#FFFFFF' }}
           />
           <Layer
             id="annotation-line-label"
             type="symbol"
             filter={['==', '$type', 'LineString']}
             layout={{ 'text-field': ['get', 'title'], 'symbol-placement': 'line' }}
+            paint={{ 'text-halo-width': 3, 'text-halo-color': '#FFFFFF' }}
           />
           <Layer
             id="annotation-point-label"
             type="symbol"
             filter={['==', '$type', 'Point']}
-            layout={{ 'text-field': ['get', 'title'] }}
+            layout={{
+              'text-field': ['get', 'title'],
+              'text-variable-anchor': ['bottom-left', 'top-left', 'bottom-right', 'top-right'],
+            }}
+            paint={{ 'text-halo-width': 3, 'text-halo-color': '#FFFFFF' }}
           />
         </Source>
       )}
