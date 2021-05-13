@@ -37,8 +37,8 @@ const GET_ANNOTATIONS = gql`
 `;
 
 const CREATE_ANNOTATION = gql`
-  mutation CreateAnnotation($title: String, $feature: String, $slide: SlideRelateToOneInput) {
-    createAnnotation(data: { title: $title, feature: $feature, slide: $slide }) {
+  mutation CreateAnnotation($feature: String, $slide: SlideRelateToOneInput) {
+    createAnnotation(data: { feature: $feature, slide: $slide }) {
       id
     }
   }
