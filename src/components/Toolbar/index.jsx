@@ -17,7 +17,11 @@ export default function Toolbar() {
         id="toolbar"
         onClick={() => dispatch(['TOGGLE_EDITING'])}
       >
-        <img src={editing ? '/img/pen-active.svg' : '/img/pen.svg'} alt="Toggle edit mode" />
+        <img
+          src={editing ? '/img/pen-active.svg' : '/img/pen.svg'}
+          alt="Toggle edit mode"
+          className={styles.icon}
+        />
       </button>
       {editing && (
         <>
@@ -29,7 +33,7 @@ export default function Toolbar() {
             id="toolbar"
             onClick={() => dispatch(['SET_MODE', 'drawPolyline'])}
           >
-            <img src="/img/LineString.svg" alt="Draw line" />
+            <img src="/img/LineString.svg" alt="Draw line" className={styles.icon} />
           </button>
           <button
             className={styles.button}
@@ -39,7 +43,7 @@ export default function Toolbar() {
             id="toolbar"
             onClick={() => dispatch(['SET_MODE', 'drawPolygon'])}
           >
-            <img src="/img/Polygon.svg" alt="Draw polygon" />
+            <img src="/img/Polygon.svg" alt="Draw polygon" className={styles.icon} />
           </button>
           <button
             className={styles.button}
@@ -49,7 +53,7 @@ export default function Toolbar() {
             id="toolbar"
             onClick={() => dispatch(['SET_MODE', 'drawPoint'])}
           >
-            <img src="/img/Point.svg" alt="Draw point" />
+            <img src="/img/Point.svg" alt="Draw point" className={styles.icon} />
           </button>
         </>
       )}
