@@ -95,7 +95,7 @@ exports[`project page matches snapshot 1`] = `
           Description
         </label>
         <textarea
-          id="tiny-react_12656761121620983619807"
+          id="tiny-react_99192348221620987612635"
           style={
             Object {
               "visibility": "hidden",
@@ -147,22 +147,7 @@ exports[`project page matches snapshot 1`] = `
           <div
             className="field"
             disabled={false}
-            inline={true}
-          >
-            <label
-              className="inlineLabel"
-            >
-              Creator
-            </label>
-            <input
-              className="input"
-              onChange={[Function]}
-              value="Test creator"
-            />
-          </div>
-          <div
-            className="field"
-            disabled={false}
+            error={false}
             inline={true}
           >
             <label

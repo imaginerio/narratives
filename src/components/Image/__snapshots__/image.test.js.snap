@@ -41,22 +41,7 @@ exports[`Image matches snapshot 1`] = `
   <div
     className="field"
     disabled={true}
-    inline={true}
-  >
-    <label
-      className="inlineLabel"
-    >
-      Creator
-    </label>
-    <input
-      className="input"
-      onChange={[Function]}
-      value="Test creator"
-    />
-  </div>
-  <div
-    className="field"
-    disabled={true}
+    error={false}
     inline={true}
   >
     <label
