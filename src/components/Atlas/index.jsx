@@ -11,6 +11,10 @@ import ReactMapGL, {
 import axios from 'axios';
 import { map as mapProp } from 'lodash';
 import { Icon } from 'semantic-ui-react';
+import { Editor } from 'react-map-gl-draw';
+
+import { useDraw } from '../../providers/DrawProvider';
+import Toolbar from '../Toolbar';
 
 import { minZoom, maxZoom } from '../../config/map';
 import styles from './Atlas.module.css';
@@ -24,9 +28,12 @@ const Atlas = ({
   selectedFeature,
   activeBasemap,
   opacity,
+  annotations,
 }) => {
   const mapRef = useRef(null);
 
+  let drawProps = [];
+  if (!viewer) [drawProps] = useDraw();
   const [mapViewport, setMapViewport] = useState(viewport);
   const [featureData, setFeatureData] = useState(null);
   const [is2D, setIs2D] = useState(true);
@@ -149,6 +156,8 @@ const Atlas = ({
 
   return (
     <ReactMapGL {...getMapProps()}>
+      {drawProps.editing && <Editor {...drawProps} />}
+      {!viewer && <Toolbar />}
       {activeBasemap && (
         <>
           <AttributionControl
@@ -185,6 +194,46 @@ const Atlas = ({
             type="line"
             paint={{ 'line-width': 3, 'line-color': '#000000' }}
             beforeId={activeBasemap ? 'overlay' : 'expressway-label'}
+          />
+        </Source>
+      )}
+      {!drawProps.editing && annotations && (
+        <Source type="geojson" data={annotations}>
+          <Layer
+            id="annotation-polygon"
+            type="fill"
+            filter={['==', '$type', 'Polygon']}
+            paint={{ 'fill-opacity': 0.25 }}
+          />
+          <Layer
+            id="annotation-line"
+            type="line"
+            filter={['any', ['==', '$type', 'LineString'], ['==', '$type', 'Polygon']]}
+          />
+          <Layer id="annotation-point" type="circle" filter={['==', '$type', 'Point']} />
+          <Layer
+            id="annotation-polygon-label"
+            type="symbol"
+            filter={['==', '$type', 'Polygon']}
+            layout={{ 'text-field': ['get', 'title'], 'symbol-placement': 'point' }}
+            paint={{ 'text-halo-width': 3, 'text-halo-color': '#FFFFFF' }}
+          />
+          <Layer
+            id="annotation-line-label"
+            type="symbol"
+            filter={['==', '$type', 'LineString']}
+            layout={{ 'text-field': ['get', 'title'], 'symbol-placement': 'line' }}
+            paint={{ 'text-halo-width': 3, 'text-halo-color': '#FFFFFF' }}
+          />
+          <Layer
+            id="annotation-point-label"
+            type="symbol"
+            filter={['==', '$type', 'Point']}
+            layout={{
+              'text-field': ['get', 'title'],
+              'text-variable-anchor': ['bottom-left', 'top-left', 'bottom-right', 'top-right'],
+            }}
+            paint={{ 'text-halo-width': 3, 'text-halo-color': '#FFFFFF' }}
           />
         </Source>
       )}
@@ -237,6 +286,7 @@ Atlas.propTypes = {
   activeBasemap: PropTypes.shape(),
   selectedFeature: PropTypes.string,
   opacity: PropTypes.number,
+  annotations: PropTypes.shape(),
 };
 
 Atlas.defaultProps = {
@@ -245,6 +295,7 @@ Atlas.defaultProps = {
   activeBasemap: null,
   selectedFeature: null,
   opacity: 1,
+  annotations: null,
 };
 
 export default Atlas;

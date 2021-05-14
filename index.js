@@ -19,6 +19,7 @@ const ImageSchema = require('./lists/Image');
 const TagSchema = require('./lists/Tag');
 const LayerSchema = require('./lists/Layer');
 const BasemapSchema = require('./lists/Basemap');
+const AnnotationSchema = require('./lists/Annotation');
 
 const PROJECT_NAME = 'imagineRio Narratives';
 const adapterConfig = { mongoUri: process.env.MONGO_URI };
@@ -42,6 +43,7 @@ keystone.createList('Project', ProjectSchema);
 keystone.createList('Tag', TagSchema);
 keystone.createList('Layer', LayerSchema);
 keystone.createList('Basemap', BasemapSchema);
+keystone.createList('Annotation', AnnotationSchema);
 
 module.exports = {
   keystone,

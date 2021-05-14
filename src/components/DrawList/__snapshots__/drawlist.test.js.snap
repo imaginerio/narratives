@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Draw List matches snapshot 1`] = `
+<div
+  className="field"
+>
+  <label>
+    Features
+  </label>
+  <div
+    className="segment"
+  >
+    <div
+      className="list"
+      divided={true}
+      verticalAlign="middle"
+    >
+      <div
+        className="list-item"
+      >
+        <div
+          className="list-content"
+        >
+          <div
+            className="input"
+          >
+            <img
+              alt="Point"
+              className="icon"
+              src="/img/Point.svg"
+            />
+            <input
+              disabled={true}
+              onChange={[Function]}
+              size="mini"
+              value="Title"
+            />
+            <div>
+              <div
+                className="button"
+                disabled={true}
+                icon="edit outline"
+                onClick={[Function]}
+                size="tiny"
+              />
+              <div
+                className="button"
+                disabled={true}
+                icon="trash alternate"
+                onClick={[Function]}
+                size="tiny"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -39,6 +39,7 @@ const mocks = [
               opacity: 1,
               size: 'Medium',
               selectedFeature: null,
+              annotations: null,
               image: null,
               disabledLayers: [],
               basemap: null,
