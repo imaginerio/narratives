@@ -1,0 +1,111 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Draw Toolbar expands on click: editing 1`] = `
+<div
+  style={
+    Object {
+      "display": "flex",
+      "flexDirection": "column",
+      "left": 15,
+      "position": "absolute",
+      "top": 235,
+    }
+  }
+>
+  <button
+    className="button"
+    id="toolbar"
+    onClick={[Function]}
+    tabIndex={-1}
+    type="button"
+  >
+    <img
+      alt="Toggle edit mode"
+      className="icon"
+      src="/img/pen-active.svg"
+    />
+  </button>
+  <button
+    className="button"
+    id="toolbar"
+    onClick={[Function]}
+    style={
+      Object {
+        "backgroundColor": null,
+      }
+    }
+    tabIndex={-1}
+    type="button"
+  >
+    <img
+      alt="Draw line"
+      className="icon"
+      src="/img/LineString.svg"
+    />
+  </button>
+  <button
+    className="button"
+    id="toolbar"
+    onClick={[Function]}
+    style={
+      Object {
+        "backgroundColor": null,
+      }
+    }
+    tabIndex={-1}
+    type="button"
+  >
+    <img
+      alt="Draw polygon"
+      className="icon"
+      src="/img/Polygon.svg"
+    />
+  </button>
+  <button
+    className="button"
+    id="toolbar"
+    onClick={[Function]}
+    style={
+      Object {
+        "backgroundColor": null,
+      }
+    }
+    tabIndex={-1}
+    type="button"
+  >
+    <img
+      alt="Draw point"
+      className="icon"
+      src="/img/Point.svg"
+    />
+  </button>
+</div>
+`;
+
+exports[`Draw Toolbar matches snapshot: default 1`] = `
+<div
+  style={
+    Object {
+      "display": "flex",
+      "flexDirection": "column",
+      "left": 15,
+      "position": "absolute",
+      "top": 235,
+    }
+  }
+>
+  <button
+    className="button"
+    id="toolbar"
+    onClick={[Function]}
+    tabIndex={-1}
+    type="button"
+  >
+    <img
+      alt="Toggle edit mode"
+      className="icon"
+      src="/img/pen.svg"
+    />
+  </button>
+</div>
+`;

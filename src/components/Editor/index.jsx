@@ -11,7 +11,8 @@ import {
   UPDATE_SLIDE_SIZE,
   UPDATE_IMAGE,
 } from './graphql';
-import debouncedMutation from '../../lib/debouncedMutation';
+import { useDraw } from '../../providers/DrawProvider';
+import debouncedMutation from '../../providers/debouncedMutation';
 
 import AtlasContext from '../Atlas/Context';
 import Image from '../Image';
@@ -20,6 +21,7 @@ import Layers from '../Layers';
 import Search from '../Search';
 import Confirm from '../Confirm';
 import Wysiwyg from '../Wysiwyg';
+import DrawList from '../DrawList';
 
 import styles from './Editor.module.css';
 
@@ -32,6 +34,9 @@ const Editor = ({ slide, removeSlide }) => {
   const { loading, error, data } = useQuery(GET_SLIDES, {
     variables: { slide },
   });
+
+  const [, dispatch] = useDraw();
+  useEffect(() => dispatch(['SLIDE', slide]), [slide]);
 
   useEffect(() => {
     setTitle(loading && !data ? '' : data.Slide.title || '');
@@ -137,6 +142,7 @@ const Editor = ({ slide, removeSlide }) => {
                 }}
               />
             </Form.Field>
+            <DrawList slide={slide} />
             <Form.Field>
               <Confirm
                 buttonIcon="trash"

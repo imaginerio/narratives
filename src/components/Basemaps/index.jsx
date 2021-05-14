@@ -4,7 +4,7 @@ import { useQuery, useMutation } from '@apollo/client';
 import { Button, Segment } from 'semantic-ui-react';
 import { Slider } from 'react-semantic-ui-range';
 
-import debouncedMutation from '../../lib/debouncedMutation';
+import debouncedMutation from '../../providers/debouncedMutation';
 import { GET_SLIDE, GET_BASEMAPS, UPDATE_BASEMAP, UPDATE_SLIDE_OPACITY } from './graphql';
 import Chooser from './Chooser';
 import styles from './Basemaps.module.css';

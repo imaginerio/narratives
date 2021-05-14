@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useQuery, gql } from '@apollo/client';
 import { Container, Header as Heading, Image, Card, Popup, Icon } from 'semantic-ui-react';
 import parse from 'html-react-parser';
-import withApollo from '../lib/withApollo';
+import withApollo from '../providers/withApollo';
 
 import Header from '../components/Header';
 

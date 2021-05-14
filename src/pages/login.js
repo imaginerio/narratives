@@ -9,7 +9,7 @@ import {
   Image,
   Message,
 } from 'semantic-ui-react';
-import withApollo from '../lib/withApollo';
+import withApollo from '../providers/withApollo';
 
 import Header from '../components/Header';
 

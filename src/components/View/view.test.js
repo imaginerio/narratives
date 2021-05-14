@@ -40,6 +40,7 @@ const mocks = [
               imageTitle: null,
               url: null,
               source: null,
+              annotations: null,
               disabledLayers: [],
               basemap: null,
             },
