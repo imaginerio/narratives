@@ -82,11 +82,8 @@ module.exports = {
     imageTitle: {
       type: Text,
     },
-    creator: {
-      type: Text,
-    },
     source: {
-      type: Text,
+      type: Url,
     },
     url: {
       type: Url,

@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 const crypto = require('crypto');
 const axios = require('axios');
-const { map, flatten } = require('lodash');
+const { map, flatten, omit } = require('lodash');
 
 const randomString = () => crypto.randomBytes(6).hexSlice();
 
@@ -163,10 +163,12 @@ const migrateImages = async (keystone, context) => {
     query: `query {
       allSlides {
         id
+        imageTitle
         image {
           imageTitle: title
           creator
           source
+          date
           url
         }
       }
@@ -174,21 +176,27 @@ const migrateImages = async (keystone, context) => {
   });
 
   const imageUpdateRequests = allSlides
-    .filter(slide => slide.image)
-    .map(slide =>
-      keystone.executeGraphQL({
+    .filter(slide => slide.image && !slide.imageTitle)
+    .map(slide => {
+      const { url } = slide.image;
+      const imageTitle = Object.values(omit(slide.image, 'url'))
+        .filter(v => v)
+        .join(', ');
+
+      return keystone.executeGraphQL({
         context,
-        query: `mutation UpdateSlideImage($id: ID!, $imageTitle: String, $creator: String, $source: String, $url: String) {
-          updateSlide(id: $id, data: { imageTitle: $imageTitle, creator: $creator, source: $source, url: $url }) {
+        query: `mutation UpdateSlideImage($id: ID!, $imageTitle: String, $url: String) {
+          updateSlide(id: $id, data: { imageTitle: $imageTitle, url: $url }) {
             id
           }
         }`,
         variables: {
           id: slide.id,
-          ...slide.image,
+          url,
+          imageTitle,
         },
-      })
-    );
+      });
+    });
   return Promise.all(imageUpdateRequests);
 };
 
