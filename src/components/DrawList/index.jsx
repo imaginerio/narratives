@@ -80,8 +80,17 @@ const DrawList = ({ slide }) => {
                             ...newFeature,
                             properties: { ...newFeature.properties, title: value },
                           };
+                          const featureString = JSON.stringify(updatedFeature);
                           updateAnnotation({
-                            variables: { id, feature: JSON.stringify(updatedFeature) },
+                            variables: { id, feature: featureString },
+                            optimisticResponse: {
+                              __typename: 'Mutation',
+                              updateAnnotation: {
+                                __typename: 'Annotation',
+                                id,
+                                feature: featureString,
+                              },
+                            },
                           });
                         }, 500);
                       }}
