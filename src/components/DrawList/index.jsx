@@ -7,7 +7,7 @@ import { Button, List, Segment, Form, Input } from 'semantic-ui-react';
 import { useDraw } from '../../providers/DrawProvider';
 import styles from './DrawList.module.css';
 
-const GET_ANNOTATIONS = gql`
+export const GET_ANNOTATIONS = gql`
   query GetAnnotations($slide: ID!) {
     Slide(where: { id: $slide }) {
       id
