@@ -18,9 +18,7 @@ const mocks = [
           title: 'Test Project',
           description: 'Test Project',
           imageTitle: null,
-          creator: null,
           source: null,
-          date: null,
           url: null,
           user: {
             name: 'Test User',

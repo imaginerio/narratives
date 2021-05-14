@@ -15,10 +15,7 @@ jest.mock('semantic-ui-react', () => {
 describe('Image', () => {
   it('matches snapshot', async () => {
     const component = renderer.create(
-      <Image
-        image={{ imageTitle: 'Test image', creator: 'Test creator', source: 'Test source' }}
-        updateHandler={() => {}}
-      />
+      <Image image={{ imageTitle: 'Test image', source: 'Test source' }} updateHandler={() => {}} />
     );
 
     await act(() => new Promise(resolve => setTimeout(resolve, 0)));

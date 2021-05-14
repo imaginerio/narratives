@@ -35,7 +35,6 @@ export const GET_PROJECT = gql`
       }
       category
       imageTitle
-      creator
       source
       url
       published
@@ -71,7 +70,6 @@ const UPDATE_PROJECT = gql`
     $title: String
     $description: String
     $imageTitle: String
-    $creator: String
     $source: String
     $url: String
     $published: Boolean
@@ -86,7 +84,6 @@ const UPDATE_PROJECT = gql`
         tags: $tags
         category: $category
         imageTitle: $imageTitle
-        creator: $creator
         source: $source
         url: $url
         published: $published
@@ -100,7 +97,6 @@ const UPDATE_PROJECT = gql`
       }
       category
       imageTitle
-      creator
       source
       url
       published
@@ -144,9 +140,7 @@ export const Create = ({ user }) => {
         ? null
         : {
             imageTitle: data.Project.imageTitle,
-            creator: data.Project.creator,
             source: data.Project.source,
-            date: data.Project.date,
             url: data.Project.url,
           }
     );

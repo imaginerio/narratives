@@ -10,9 +10,9 @@ const Image = ({ image, updateHandler }) => {
   const fileInputRef = useRef(null);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [urlError, setUrlError] = useState(false);
   const [imageMeta, setImageMeta] = useState({
     imageTitle: image.imageTitle,
-    creator: image.creator,
     source: image.source,
   });
 
@@ -20,7 +20,6 @@ const Image = ({ image, updateHandler }) => {
     if (image) {
       setImageMeta({
         imageTitle: image.imageTitle,
-        creator: image.creator,
         source: image.source,
       });
     }
@@ -78,25 +77,23 @@ const Image = ({ image, updateHandler }) => {
           }}
         />
       </Form.Field>
-      <Form.Field inline disabled={!image.url}>
-        <label className={styles.inlineLabel}>Creator</label>
-        <Input
-          className={styles.inlineInput}
-          value={imageMeta ? imageMeta.creator || '' : ''}
-          onChange={(e, { value }) => {
-            setImageMeta({ ...imageMeta, creator: value });
-            updateHandler(image.id, { creator: value });
-          }}
-        />
-      </Form.Field>
-      <Form.Field inline disabled={!image.url}>
+      <Form.Field inline disabled={!image.url} error={urlError}>
         <label className={styles.inlineLabel}>Source</label>
         <Input
           className={styles.inlineInput}
           value={imageMeta ? imageMeta.source || '' : ''}
           onChange={(e, { value }) => {
             setImageMeta({ ...imageMeta, source: value });
-            updateHandler(image.id, { source: value });
+            if (
+              value.match(
+                /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/
+              )
+            ) {
+              updateHandler(image.id, { source: value });
+              setUrlError(false);
+            } else {
+              setUrlError(true);
+            }
           }}
         />
       </Form.Field>

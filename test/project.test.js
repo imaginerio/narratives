@@ -23,7 +23,6 @@ const mocks = [
           tags: [{ id: '2' }],
           category: 'Literature',
           imageTitle: 'Test image',
-          creator: 'Test creator',
           source: 'Test source',
           url: 'https://rio-narrative-files.s3.amazonaws.com/',
           published: true,

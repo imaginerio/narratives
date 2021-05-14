@@ -8,7 +8,6 @@ export const GET_SLIDES = gql`
       description
       size
       imageTitle
-      creator
       source
       url
     }
@@ -56,20 +55,10 @@ export const ADD_IMAGE = gql`
 `;
 
 export const UPDATE_IMAGE = gql`
-  mutation UpdateImage(
-    $slide: ID!
-    $imageTitle: String
-    $creator: String
-    $source: String
-    $url: String
-  ) {
-    updateSlide(
-      id: $slide
-      data: { imageTitle: $imageTitle, creator: $creator, source: $source, url: $url }
-    ) {
+  mutation UpdateImage($slide: ID!, $imageTitle: String, $source: String, $url: String) {
+    updateSlide(id: $slide, data: { imageTitle: $imageTitle, source: $source, url: $url }) {
       id
       imageTitle
-      creator
       source
       url
     }

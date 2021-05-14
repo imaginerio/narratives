@@ -42,9 +42,7 @@ const Editor = ({ slide, removeSlide }) => {
         ? {}
         : {
             imageTitle: data.Slide.imageTitle,
-            creator: data.Slide.creator,
             source: data.Slide.source,
-            date: data.Slide.date,
             url: data.Slide.url,
           }
     );

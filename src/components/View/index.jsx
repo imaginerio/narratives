@@ -17,9 +17,7 @@ export const GET_PROJECT = gql`
       title
       description
       imageTitle
-      creator
       source
-      date
       url
       user {
         name
@@ -37,13 +35,9 @@ export const GET_PROJECT = gql`
         opacity
         size
         selectedFeature
-        image {
-          title
-          creator
-          source
-          date
-          url
-        }
+        imageTitle
+        url
+        source
         disabledLayers: layers {
           id
           layerId
@@ -73,8 +67,8 @@ const View = ({ project, preview }) => {
   if (loading || !project) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
 
-  const getCaption = image => {
-    if (image.title || image.creator || image.date || image.source) {
+  const getCaption = ({ imageTitle, source }) => {
+    if (imageTitle || source) {
       return (
         <div
           style={{
@@ -85,12 +79,13 @@ const View = ({ project, preview }) => {
             position: 'relative',
           }}
         >
-          <i>{image.title}</i>
-          <span>: </span>
-          <span>{` ${image.creator || ''}`}</span>
-          <span>{` ${image.date || ''}`}</span>
-          <span>&nbsp;</span>
-          <span>{` ${image.source || ''}`}</span>
+          {source ? (
+            <a href={source} target="_blank" rel="noreferrer">
+              {imageTitle || source}
+            </a>
+          ) : (
+            imageTitle
+          )}
         </div>
       );
     }
@@ -176,10 +171,8 @@ const View = ({ project, preview }) => {
                 }}
               >
                 <Card fluid className={styles[slide.size]}>
-                  {slide.image && slide.image.url && (
-                    <Image src={slide.image.url} wrapped ui={false} />
-                  )}
-                  {slide.image && getCaption(slide.image)}
+                  {slide.url && <Image src={slide.url} wrapped ui={false} />}
+                  {slide.url && getCaption(slide)}
                   {(slide.title || slide.description) && (
                     <Card.Content>
                       {slide.title && <Card.Header>{slide.title}</Card.Header>}
