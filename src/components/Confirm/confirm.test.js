@@ -3,7 +3,12 @@ import { render, screen } from '@testing-library/react';
 
 import Confirm from './index';
 
-jest.mock('semantic-ui-react/dist/commonjs/addons/Portal/Portal', () => ({ children }) => children);
+jest.mock(
+  'semantic-ui-react/dist/commonjs/addons/Portal/Portal',
+  () =>
+    ({ children }) =>
+      children
+);
 
 describe('Confirm', () => {
   const confirmProps = {

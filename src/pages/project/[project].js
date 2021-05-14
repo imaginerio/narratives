@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { useQuery, useMutation, gql } from '@apollo/client';
-import { omit, map } from 'lodash';
+import { map } from 'lodash';
 import {
   Container,
   Header as Heading,
@@ -24,8 +24,8 @@ import Header from '../../components/Header';
 import Confirm from '../../components/Confirm';
 import Wysiwyg from '../../components/Wysiwyg';
 
-const GET_PROJECT = gql`
-  query GetTags($project: ID!) {
+export const GET_PROJECT = gql`
+  query GetProject($project: ID!) {
     Project(where: { id: $project }) {
       id
       title
@@ -35,9 +35,7 @@ const GET_PROJECT = gql`
       }
       category
       imageTitle
-      creator
       source
-      date
       url
       published
     }
@@ -72,9 +70,7 @@ const UPDATE_PROJECT = gql`
     $title: String
     $description: String
     $imageTitle: String
-    $creator: String
     $source: String
-    $date: String
     $url: String
     $published: Boolean
     $tags: TagRelateToManyInput
@@ -88,14 +84,22 @@ const UPDATE_PROJECT = gql`
         tags: $tags
         category: $category
         imageTitle: $imageTitle
-        creator: $creator
         source: $source
-        date: $date
         url: $url
         published: $published
       }
     ) {
       id
+      title
+      description
+      tags {
+        id
+      }
+      category
+      imageTitle
+      source
+      url
+      published
     }
   }
 `;
@@ -108,7 +112,7 @@ const DELETE_PROJECT = gql`
   }
 `;
 
-const Create = ({ user }) => {
+export const Create = ({ user }) => {
   const router = useRouter();
   const { project } = router.query;
 
@@ -135,10 +139,8 @@ const Create = ({ user }) => {
       loading
         ? null
         : {
-            title: data.Project.imageTitle,
-            creator: data.Project.creator,
+            imageTitle: data.Project.imageTitle,
             source: data.Project.source,
-            date: data.Project.date,
             url: data.Project.url,
           }
     );
@@ -146,17 +148,12 @@ const Create = ({ user }) => {
 
   const submitForm = () => {
     setLoading(true);
-    let imageData = {};
-    if (imageMeta) {
-      imageData = omit(imageMeta, 'title');
-      imageData.imageTitle = imageMeta.title;
-    }
     updateProject({
       variables: {
         project,
         title,
         description,
-        ...imageData,
+        ...imageMeta,
         tags: {
           connect: tags.map(t => ({ id: t })),
         },

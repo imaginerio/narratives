@@ -1,4 +1,4 @@
-const { Text, Relationship, Float, Integer, Select } = require('@keystonejs/fields');
+const { Text, Relationship, Float, Integer, Select, Url } = require('@keystonejs/fields');
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 const { gql } = require('apollo-server-express');
 
@@ -78,6 +78,15 @@ module.exports = {
     opacity: {
       type: Float,
       defaultValue: 1,
+    },
+    imageTitle: {
+      type: Text,
+    },
+    source: {
+      type: Url,
+    },
+    url: {
+      type: Url,
     },
     image: {
       type: Relationship,
