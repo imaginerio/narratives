@@ -1,5 +1,5 @@
 import React from 'react';
-import renderer from 'react-test-renderer';
+import renderer, { act } from 'react-test-renderer';
 import { MockedProvider } from '@apollo/client/testing';
 import { DrawProvider } from '../../providers/DrawProvider';
 
@@ -29,7 +29,7 @@ describe('Draw Toolbar', () => {
     );
 
     const button = component.root.findByType('button');
-    button.props.onClick();
+    act(() => button.props.onClick());
     const tree = component.toJSON();
     expect(tree).toMatchSnapshot('editing');
   });
