@@ -98,6 +98,11 @@ jest.mock(
       children
 );
 
+jest.mock('@tinymce/tinymce-react', () => {
+  const Editor = () => <textarea className="tinymce" />;
+  return { Editor };
+});
+
 describe('project page', () => {
   it('matches snapshot', async () => {
     const component = renderer.create(

@@ -95,12 +95,7 @@ exports[`project page matches snapshot 1`] = `
           Description
         </label>
         <textarea
-          id="tiny-react_71665378821620987869405"
-          style={
-            Object {
-              "visibility": "hidden",
-            }
-          }
+          className="tinymce"
         />
       </div>
       <div
