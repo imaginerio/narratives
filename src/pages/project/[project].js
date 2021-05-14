@@ -116,7 +116,7 @@ const DELETE_PROJECT = gql`
   }
 `;
 
-const Create = ({ user }) => {
+export const Create = ({ user }) => {
   const router = useRouter();
   const { project } = router.query;
 
@@ -132,8 +132,6 @@ const Create = ({ user }) => {
   const [imageMeta, setImageMeta] = useState(null);
   const [published, setPublished] = useState(false);
   const [isLoading, setLoading] = useState(false);
-
-  console.log(error);
 
   useEffect(() => {
     setTags(loading ? [] : map(data.Project.tags, 'id'));

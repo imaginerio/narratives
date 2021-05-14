@@ -1,8 +1,10 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable jsx-a11y/heading-has-content */
 import React from 'react';
 import renderer, { act } from 'react-test-renderer';
 import { MockedProvider } from '@apollo/client/testing';
 import * as nextRouter from 'next/router';
-import Create, { GET_PROJECT } from '../src/pages/project/[project]';
+import { Create, GET_PROJECT } from '../src/pages/project/[project]';
 
 const mocks = [
   {
@@ -52,15 +54,50 @@ nextRouter.useRouter.mockImplementation(() => ({ query: { project: '1' } }));
 
 jest.mock('semantic-ui-react', () => {
   const Button = props => <div {...props} className="button" />;
-  const Field = props => <div {...props} className="field" />;
-  const Form = { Field };
   const Input = props => <input {...props} className="input" />;
   const Dimmer = props => <div {...props} className="dimmer" />;
   const Loader = props => <div {...props} className="loader" />;
-  return { Button, Form, Input, Dimmer, Loader };
+  const Container = props => <div {...props} className="container" />;
+  const Checkbox = props => <input {...props} className="checkbox" />;
+  const Divider = props => <hr {...props} className="divider" />;
+  const Dropdown = props => <select {...props} className="dropdown" />;
+  const Icon = props => <div {...props} className="icon" />;
+  const Image = props => <img {...props} className="img" />;
+  const Header = props => <h1 {...props} className="header" />;
+  const Field = props => <div {...props} className="field" />;
+  const Segment = props => <div {...props} className="segment" />;
+  const Form = props => <form {...props} className="form" />;
+  Form.Input = Input;
+  Form.Field = Field;
+  const Modal = props => <div {...props} className="modal" />;
+  const Content = props => <div {...props} className="content" />;
+  const Actions = props => <div {...props} className="actions" />;
+  Modal.Content = Content;
+  Modal.Actions = Actions;
+  return {
+    Button,
+    Form,
+    Input,
+    Dimmer,
+    Loader,
+    Container,
+    Image,
+    Header,
+    Checkbox,
+    Divider,
+    Dropdown,
+    Icon,
+    Modal,
+    Segment,
+  };
 });
 
-jest.mock('semantic-ui-react/dist/commonjs/addons/Portal/Portal', () => ({ children }) => children);
+jest.mock(
+  'semantic-ui-react/dist/commonjs/addons/Portal/Portal',
+  () =>
+    ({ children }) =>
+      children
+);
 
 describe('project page', () => {
   it('matches snapshot', async () => {
