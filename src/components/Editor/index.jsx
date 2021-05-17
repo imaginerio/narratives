@@ -9,8 +9,6 @@ import {
   UPDATE_SLIDE_TITLE,
   UPDATE_SLIDE_DESCRIPTION,
   UPDATE_SLIDE_SIZE,
-  UPDATE_SLIDE_YOUTUBE,
-  UPDATE_SLIDE_SOUNDCLOUD,
   UPDATE_IMAGE,
 } from './graphql';
 import { useDraw } from '../../providers/DrawProvider';
@@ -23,6 +21,7 @@ import Layers from '../Layers';
 import Search from '../Search';
 import Confirm from '../Confirm';
 import Wysiwyg from '../Wysiwyg';
+import Media from '../Media';
 import DrawList from '../DrawList';
 
 import styles from './Editor.module.css';
@@ -30,8 +29,6 @@ import styles from './Editor.module.css';
 const Editor = ({ slide, removeSlide }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [youtube, setYoutube] = useState('');
-  const [soundcloud, setSoundcloud] = useState('');
   const [imageMeta, setImageMeta] = useState(null);
   const [size, setSize] = useState('Small');
 
@@ -45,8 +42,6 @@ const Editor = ({ slide, removeSlide }) => {
   useEffect(() => {
     setTitle(loading && !data ? '' : data.Slide.title || '');
     setDescription(loading && !data ? '' : data.Slide.description || '');
-    setYoutube(loading && !data ? '' : data.Slide.youtube || '');
-    setSoundcloud(loading && !data ? '' : data.Slide.soundcloud || '');
     setSize(loading && !data ? 'Small' : data.Slide.size);
     setImageMeta(
       loading && !data
@@ -63,15 +58,11 @@ const Editor = ({ slide, removeSlide }) => {
   const [updateDescription] = useMutation(UPDATE_SLIDE_DESCRIPTION);
   const [updateSize] = useMutation(UPDATE_SLIDE_SIZE);
   const [updateImage] = useMutation(UPDATE_IMAGE);
-  const [updateYoutube] = useMutation(UPDATE_SLIDE_YOUTUBE);
-  const [updateSoundcloud] = useMutation(UPDATE_SLIDE_SOUNDCLOUD);
 
   const titleTimer = useRef();
   const descriptionTimer = useRef();
   const sizeTimer = useRef();
   const imageTimer = useRef();
-  const youtubeTimer = useRef();
-  const soundcloudTimer = useRef();
 
   if (loading)
     return (
@@ -152,47 +143,7 @@ const Editor = ({ slide, removeSlide }) => {
                 }}
               />
             </Form.Field>
-            <Form.Field>
-              <label>Media</label>
-              <Segment>
-                <Form.Field>
-                  <label>Youtube: </label>
-                  <Input
-                    placeholder="Youtube URL"
-                    icon="linkify"
-                    iconPosition="left"
-                    value={youtube}
-                    onChange={(e, { value }) => {
-                      setYoutube(value);
-                      youtubeTimer.current = debouncedMutation({
-                        slide,
-                        timerRef: youtubeTimer,
-                        mutation: updateYoutube,
-                        values: { youtube: value },
-                      });
-                    }}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <label>Soundcloud: </label>
-                  <Input
-                    placeholder="Soundcloud URL"
-                    icon="linkify"
-                    iconPosition="left"
-                    value={soundcloud}
-                    onChange={(e, { value }) => {
-                      setSoundcloud(value);
-                      soundcloudTimer.current = debouncedMutation({
-                        slide,
-                        timerRef: soundcloudTimer,
-                        mutation: updateSoundcloud,
-                        values: { soundcloud: value },
-                      });
-                    }}
-                  />
-                </Form.Field>
-              </Segment>
-            </Form.Field>
+            <Media slide={slide} />
             <DrawList slide={slide} />
             <Form.Field>
               <Confirm
