@@ -95,7 +95,11 @@ const Atlas = ({
     }
   };
 
-  useEffect(() => setMapViewport(viewport), [viewport]);
+  useEffect(() => {
+    if (viewport.latitude && viewport.longitude && viewport.zoom) {
+      setMapViewport(viewport);
+    }
+  }, [viewport]);
   useEffect(setMapYear, [year]);
   useEffect(setDisabledLayers, [disabledLayers]);
 
@@ -114,8 +118,10 @@ const Atlas = ({
   }, [selectedFeature]);
 
   const onViewportChange = nextViewport => {
-    setMapViewport(nextViewport);
-    handler(nextViewport);
+    if (viewport.latitude && viewport.longitude && viewport.zoom) {
+      setMapViewport(nextViewport);
+      handler(nextViewport);
+    }
   };
 
   const onMapLoad = () => {
