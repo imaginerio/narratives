@@ -56,6 +56,7 @@
     "react-dom": "^16.13.1",
     "react-map-gl": "^5.2.8",
     "react-map-gl-draw": "0.21.0",
+    "react-player": "^2.9.0",
     "react-scrollama": "^2.2.12",
     "react-semantic-ui-range": "^0.7.0",
     "semantic-ui-css": "^2.4.1",

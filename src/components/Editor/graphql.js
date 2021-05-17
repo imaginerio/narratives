@@ -7,6 +7,7 @@ export const GET_SLIDES = gql`
       title
       description
       size
+      media
       imageTitle
       source
       url
@@ -28,6 +29,15 @@ export const UPDATE_SLIDE_DESCRIPTION = gql`
     updateSlide(id: $slide, data: { description: $description }) {
       id
       description
+    }
+  }
+`;
+
+export const UPDATE_SLIDE_MEDIA = gql`
+  mutation UpdateSlideMedia($slide: ID!, $media: String) {
+    updateSlide(id: $slide, data: { media: $media }) {
+      id
+      media
     }
   }
 `;

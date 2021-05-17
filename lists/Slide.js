@@ -79,6 +79,9 @@ module.exports = {
       type: Float,
       defaultValue: 1,
     },
+    media: {
+      type: Url,
+    },
     imageTitle: {
       type: Text,
     },
