@@ -7,6 +7,8 @@ export const GET_SLIDES = gql`
       title
       description
       size
+      youtube
+      soundcloud
       imageTitle
       source
       url
@@ -28,6 +30,24 @@ export const UPDATE_SLIDE_DESCRIPTION = gql`
     updateSlide(id: $slide, data: { description: $description }) {
       id
       description
+    }
+  }
+`;
+
+export const UPDATE_SLIDE_YOUTUBE = gql`
+  mutation UpdateSlideYoutube($slide: ID!, $youtube: String) {
+    updateSlide(id: $slide, data: { youtube: $youtube }) {
+      id
+      youtube
+    }
+  }
+`;
+
+export const UPDATE_SLIDE_SOUNDCLOUD = gql`
+  mutation UpdateSlideSoundcloud($slide: ID!, $soundcloud: String) {
+    updateSlide(id: $slide, data: { soundcloud: $soundcloud }) {
+      id
+      soundcloud
     }
   }
 `;

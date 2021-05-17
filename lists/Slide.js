@@ -79,6 +79,12 @@ module.exports = {
       type: Float,
       defaultValue: 1,
     },
+    youtube: {
+      type: Url,
+    },
+    soundcloud: {
+      type: Url,
+    },
     imageTitle: {
       type: Text,
     },
