@@ -37,6 +37,7 @@ const mocks = [
               opacity: 1,
               size: 'Medium',
               selectedFeature: null,
+              media: null,
               imageTitle: null,
               url: null,
               source: null,
