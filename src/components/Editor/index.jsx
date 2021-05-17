@@ -30,6 +30,7 @@ const Editor = ({ slide, removeSlide }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [media, setMedia] = useState('');
+  const [mediaError, setMediaError] = useState(false);
   const [imageMeta, setImageMeta] = useState(null);
   const [size, setSize] = useState('Small');
 
@@ -147,7 +148,7 @@ const Editor = ({ slide, removeSlide }) => {
                 }}
               />
             </Form.Field>
-            <Form.Field>
+            <Form.Field error={mediaError}>
               <label>Media Link</label>
               <Input
                 placeholder="Media URL"
@@ -156,12 +157,21 @@ const Editor = ({ slide, removeSlide }) => {
                 value={media}
                 onChange={(e, { value }) => {
                   setMedia(value);
-                  mediaTimer.current = debouncedMutation({
-                    slide,
-                    timerRef: mediaTimer,
-                    mutation: updateMedia,
-                    values: { media: value },
-                  });
+                  if (
+                    value.match(
+                      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/
+                    )
+                  ) {
+                    mediaTimer.current = debouncedMutation({
+                      slide,
+                      timerRef: mediaTimer,
+                      mutation: updateMedia,
+                      values: { media: value },
+                    });
+                    setMediaError(false);
+                  } else {
+                    setMediaError(true);
+                  }
                 }}
               />
             </Form.Field>
