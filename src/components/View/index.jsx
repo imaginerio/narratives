@@ -4,6 +4,7 @@ import { useQuery, gql } from '@apollo/client';
 import { pick } from 'lodash';
 import { Scrollama, Step } from 'react-scrollama';
 import { FlyToInterpolator, WebMercatorViewport } from 'react-map-gl';
+import ReactPlayer from 'react-player';
 import { Card, Header, Image } from 'semantic-ui-react';
 import parse from 'html-react-parser';
 
@@ -34,6 +35,7 @@ export const GET_PROJECT = gql`
         pitch
         opacity
         size
+        media
         selectedFeature
         imageTitle
         url
@@ -185,9 +187,10 @@ const View = ({ project, preview }) => {
                 <Card fluid className={styles[slide.size]}>
                   {slide.url && <Image src={slide.url} wrapped ui={false} />}
                   {slide.url && getCaption(slide)}
-                  {(slide.title || slide.description) && (
+                  {(slide.title || slide.description || slide.media) && (
                     <Card.Content>
                       {slide.title && <Card.Header>{slide.title}</Card.Header>}
+                      {slide.media && <ReactPlayer url={slide.media} width="100%" />}
                       {slide.description && (
                         <Card.Description>{parse(slide.description)}</Card.Description>
                       )}

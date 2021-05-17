@@ -9,6 +9,7 @@ import {
   UPDATE_SLIDE_TITLE,
   UPDATE_SLIDE_DESCRIPTION,
   UPDATE_SLIDE_SIZE,
+  UPDATE_SLIDE_MEDIA,
   UPDATE_IMAGE,
 } from './graphql';
 import { useDraw } from '../../providers/DrawProvider';
@@ -21,7 +22,6 @@ import Layers from '../Layers';
 import Search from '../Search';
 import Confirm from '../Confirm';
 import Wysiwyg from '../Wysiwyg';
-import Media from '../Media';
 import DrawList from '../DrawList';
 
 import styles from './Editor.module.css';
@@ -29,6 +29,7 @@ import styles from './Editor.module.css';
 const Editor = ({ slide, removeSlide }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [media, setMedia] = useState('');
   const [imageMeta, setImageMeta] = useState(null);
   const [size, setSize] = useState('Small');
 
@@ -42,6 +43,7 @@ const Editor = ({ slide, removeSlide }) => {
   useEffect(() => {
     setTitle(loading && !data ? '' : data.Slide.title || '');
     setDescription(loading && !data ? '' : data.Slide.description || '');
+    setMedia(loading && !data ? '' : data.Slide.media || '');
     setSize(loading && !data ? 'Small' : data.Slide.size);
     setImageMeta(
       loading && !data
@@ -58,11 +60,13 @@ const Editor = ({ slide, removeSlide }) => {
   const [updateDescription] = useMutation(UPDATE_SLIDE_DESCRIPTION);
   const [updateSize] = useMutation(UPDATE_SLIDE_SIZE);
   const [updateImage] = useMutation(UPDATE_IMAGE);
+  const [updateMedia] = useMutation(UPDATE_SLIDE_MEDIA);
 
   const titleTimer = useRef();
   const descriptionTimer = useRef();
   const sizeTimer = useRef();
   const imageTimer = useRef();
+  const mediaTimer = useRef();
 
   if (loading)
     return (
@@ -143,7 +147,24 @@ const Editor = ({ slide, removeSlide }) => {
                 }}
               />
             </Form.Field>
-            <Media slide={slide} />
+            <Form.Field>
+              <label>Media Link</label>
+              <Input
+                placeholder="Media URL"
+                icon="linkify"
+                iconPosition="left"
+                value={media}
+                onChange={(e, { value }) => {
+                  setMedia(value);
+                  mediaTimer.current = debouncedMutation({
+                    slide,
+                    timerRef: mediaTimer,
+                    mutation: updateMedia,
+                    values: { media: value },
+                  });
+                }}
+              />
+            </Form.Field>
             <DrawList slide={slide} />
             <Form.Field>
               <Confirm
