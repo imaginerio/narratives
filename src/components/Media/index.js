@@ -6,7 +6,7 @@ import { Segment, Form, Input } from 'semantic-ui-react';
 
 import debouncedMutation from '../../providers/debouncedMutation';
 
-const GET_SLIDE_MEDIA = gql`
+export const GET_SLIDE_MEDIA = gql`
   query GetSlideMedia($slide: ID!) {
     Slide(where: { id: $slide }) {
       id
