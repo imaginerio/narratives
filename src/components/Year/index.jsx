@@ -5,7 +5,7 @@ import { useQuery, useMutation, gql } from '@apollo/client';
 import { Form, Input } from 'semantic-ui-react';
 import { Slider } from 'react-semantic-ui-range';
 
-import debouncedMutation from '../../lib/debouncedMutation';
+import debouncedMutation from '../../providers/debouncedMutation';
 
 import styles from './Year.module.css';
 

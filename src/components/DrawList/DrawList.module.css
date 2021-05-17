@@ -1,0 +1,17 @@
+.title {
+  color: rgb(39, 39, 39);
+  font-size: 15px;
+  padding-top: 5px;
+} 
+
+.icon{
+  height: 16px;
+  width: 16px;
+  margin: 8px 4px 0 0;
+}
+
+.input{
+  display: grid;
+  grid-template-columns: 20px 1fr 80px;
+  column-gap: 5px;
+}

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { Container, Header as Heading, Segment, Button, Image, Icon } from 'semantic-ui-react';
-import withApollo from '../lib/withApollo';
+import withApollo from '../providers/withApollo';
 
 import Header from '../components/Header';
 
@@ -29,9 +29,7 @@ const CREATE_PROJECT = gql`
     $title: String
     $description: String
     $imageTitle: String
-    $creator: String
     $source: String
-    $date: String
     $url: String
     $tags: TagRelateToManyInput
     $category: ProjectCategoryType
@@ -43,9 +41,7 @@ const CREATE_PROJECT = gql`
         tags: $tags
         category: $category
         imageTitle: $imageTitle
-        creator: $creator
         source: $source
-        date: $date
         url: $url
       }
     ) {
@@ -65,7 +61,13 @@ const Projects = ({ user }) => {
       variables: {
         title: 'Untitled project',
       },
-    }).then(({ data: { createProject: { id } } }) => window.location.replace(`/project/${id}`));
+    }).then(
+      ({
+        data: {
+          createProject: { id },
+        },
+      }) => window.location.replace(`/project/${id}`)
+    );
   };
 
   if (loading) return <p>Loading...</p>;

@@ -1,0 +1,59 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Image matches snapshot 1`] = `
+<div
+  className="segment"
+>
+  <div
+    className="button"
+    content="Choose File"
+    icon="file"
+    labelPosition="left"
+    loading={false}
+    onClick={[Function]}
+  />
+  <input
+    hidden={true}
+    onChange={[Function]}
+    type="file"
+  />
+  <div
+    className="field"
+    disabled={true}
+    inline={true}
+    style={
+      Object {
+        "marginTop": 15,
+      }
+    }
+  >
+    <label
+      className="inlineLabel"
+    >
+      Title
+    </label>
+    <input
+      className="input"
+      onChange={[Function]}
+      value="Test image"
+    />
+  </div>
+  <div
+    className="field"
+    disabled={true}
+    error={false}
+    inline={true}
+  >
+    <label
+      className="inlineLabel"
+    >
+      Source
+    </label>
+    <input
+      className="input"
+      onChange={[Function]}
+      value="Test source"
+    />
+  </div>
+</div>
+`;

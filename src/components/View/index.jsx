@@ -4,6 +4,7 @@ import { useQuery, gql } from '@apollo/client';
 import { pick } from 'lodash';
 import { Scrollama, Step } from 'react-scrollama';
 import { FlyToInterpolator, WebMercatorViewport } from 'react-map-gl';
+import ReactPlayer from 'react-player';
 import { Card, Header, Image } from 'semantic-ui-react';
 import parse from 'html-react-parser';
 
@@ -17,9 +18,7 @@ export const GET_PROJECT = gql`
       title
       description
       imageTitle
-      creator
       source
-      date
       url
       user {
         name
@@ -36,13 +35,14 @@ export const GET_PROJECT = gql`
         pitch
         opacity
         size
+        media
         selectedFeature
-        image {
-          title
-          creator
-          source
-          date
-          url
+        imageTitle
+        url
+        source
+        annotations {
+          id
+          feature
         }
         disabledLayers: layers {
           id
@@ -64,6 +64,7 @@ const View = ({ project, preview }) => {
   const [activeBasemap, setActiveBasemap] = useState(null);
   const [opacity, setOpacity] = useState(1);
   const [selectedFeature, setSelectedFeature] = useState(null);
+  const [annotations, setAnnotations] = useState(null);
 
   const config = { variables: { project } };
   if (preview) config.pollInterval = 5000;
@@ -73,8 +74,8 @@ const View = ({ project, preview }) => {
   if (loading || !project) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
 
-  const getCaption = image => {
-    if (image.title || image.creator || image.date || image.source) {
+  const getCaption = ({ imageTitle, source }) => {
+    if (imageTitle || source) {
       return (
         <div
           style={{
@@ -85,12 +86,13 @@ const View = ({ project, preview }) => {
             position: 'relative',
           }}
         >
-          <i>{image.title}</i>
-          <span>: </span>
-          <span>{` ${image.creator || ''}`}</span>
-          <span>{` ${image.date || ''}`}</span>
-          <span>&nbsp;</span>
-          <span>{` ${image.source || ''}`}</span>
+          {source ? (
+            <a href={source} target="_blank" rel="noreferrer">
+              {imageTitle || source}
+            </a>
+          ) : (
+            imageTitle
+          )}
         </div>
       );
     }
@@ -108,6 +110,7 @@ const View = ({ project, preview }) => {
           activeBasemap={activeBasemap}
           opacity={opacity}
           selectedFeature={selectedFeature}
+          annotations={annotations}
         />
       </div>
       <div>
@@ -132,7 +135,7 @@ const View = ({ project, preview }) => {
             });
 
             if (step.data.index > 0) {
-              newViewport.transitionInterpolator = new FlyToInterpolator({ speed: 1.2 });
+              newViewport.transitionInterpolator = new FlyToInterpolator({ speed: 0.75 });
               newViewport.transitionDuration = 'auto';
             }
             setViewport(newViewport);
@@ -140,6 +143,12 @@ const View = ({ project, preview }) => {
             setActiveBasemap(step.data.basemap);
             setOpacity(step.data.opacity);
             setSelectedFeature(step.data.selectedFeature);
+            if (step.data.annotations) {
+              setAnnotations({
+                type: 'FeatureCollection',
+                features: step.data.annotations.map(({ feature }) => JSON.parse(feature)),
+              });
+            }
           }}
         >
           <Step data={{ ...data.Project.slides[0], index: 0 }}>
@@ -175,20 +184,21 @@ const View = ({ project, preview }) => {
                   paddingBottom: i + 1 === data.Project.slides.length ? '75vh' : '25vh',
                 }}
               >
-                <Card fluid className={styles[slide.size]}>
-                  {slide.image && slide.image.url && (
-                    <Image src={slide.image.url} wrapped ui={false} />
-                  )}
-                  {slide.image && getCaption(slide.image)}
-                  {(slide.title || slide.description) && (
-                    <Card.Content>
-                      {slide.title && <Card.Header>{slide.title}</Card.Header>}
-                      {slide.description && (
-                        <Card.Description>{parse(slide.description)}</Card.Description>
-                      )}
-                    </Card.Content>
-                  )}
-                </Card>
+                {(slide.url || slide.title || slide.description || slide.media) && (
+                  <Card fluid className={styles[slide.size]}>
+                    {slide.url && <Image src={slide.url} wrapped ui={false} />}
+                    {slide.url && getCaption(slide)}
+                    {(slide.title || slide.description || slide.media) && (
+                      <Card.Content>
+                        {slide.title && <Card.Header>{slide.title}</Card.Header>}
+                        {slide.media && <ReactPlayer url={slide.media} width="100%" />}
+                        {slide.description && (
+                          <Card.Description>{parse(slide.description)}</Card.Description>
+                        )}
+                      </Card.Content>
+                    )}
+                  </Card>
+                )}
               </div>
             </Step>
           ))}

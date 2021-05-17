@@ -1,0 +1,342 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`project page matches snapshot 1`] = `
+<div
+  style={
+    Object {
+      "backgroundColor": "#FAFAFA",
+      "minHeight": "100vh",
+    }
+  }
+>
+  <div
+    className="header"
+  >
+    <h1
+      className="header"
+    >
+      Rio Story Maps
+    </h1>
+    <a
+      className="logout"
+      href="/projects"
+    >
+      Login
+    </a>
+  </div>
+  <div
+    className="container"
+    style={
+      Object {
+        "marginTop": 30,
+      }
+    }
+    text={true}
+  >
+    <div
+      as="a"
+      className="button"
+      content="My narratives / Minhas narrativas"
+      href="/projects"
+      icon="angle left"
+    />
+    <h1
+      as="h1"
+      className="header"
+    >
+      Edit Narrative
+    </h1>
+    <form
+      className="form"
+      loading={false}
+    >
+      <input
+        className="input"
+        icon="linkify"
+        label="URL"
+        readOnly={true}
+        value="http://localhost/"
+      />
+      <div
+        className="field"
+      >
+        <input
+          checked={true}
+          className="checkbox"
+          label="Publish to the map gallery"
+          onChange={[Function]}
+        />
+      </div>
+      <hr
+        className="divider"
+        style={
+          Object {
+            "margin": "40px 0",
+          }
+        }
+      />
+      <div
+        className="field"
+        required={true}
+      >
+        <label>
+          Title
+        </label>
+        <input
+          className="input"
+          onChange={[Function]}
+          value="Test Map"
+        />
+      </div>
+      <div
+        className="field"
+      >
+        <label>
+          Description
+        </label>
+        <textarea
+          className="tinymce"
+        />
+      </div>
+      <div
+        className="field"
+      >
+        <label>
+          Image
+        </label>
+        <div
+          className="segment"
+        >
+          <img
+            className="img"
+            src="https://rio-narrative-files.s3.amazonaws.com/"
+          />
+          <div
+            circular={true}
+            className="button"
+            icon="close"
+            onClick={[Function]}
+            size="mini"
+          />
+          <div
+            className="field"
+            disabled={false}
+            inline={true}
+            style={
+              Object {
+                "marginTop": 15,
+              }
+            }
+          >
+            <label
+              className="inlineLabel"
+            >
+              Title
+            </label>
+            <input
+              className="input"
+              onChange={[Function]}
+              value="Test image"
+            />
+          </div>
+          <div
+            className="field"
+            disabled={false}
+            error={false}
+            inline={true}
+          >
+            <label
+              className="inlineLabel"
+            >
+              Source
+            </label>
+            <input
+              className="input"
+              onChange={[Function]}
+              value="Test source"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        className="field"
+      >
+        <label>
+          Tags
+        </label>
+        <select
+          allowAdditions={true}
+          className="dropdown"
+          fluid={true}
+          multiple={true}
+          onAddItem={[Function]}
+          onChange={[Function]}
+          options={
+            Array [
+              Object {
+                "key": "2",
+                "text": "Test",
+                "value": "2",
+              },
+            ]
+          }
+          placeholder="Select tags"
+          search={true}
+          selection={true}
+          value={
+            Array [
+              "2",
+            ]
+          }
+        />
+      </div>
+      <div
+        className="field"
+      >
+        <label>
+          Category
+        </label>
+        <select
+          className="dropdown"
+          fluid={true}
+          onChange={[Function]}
+          options={
+            Array [
+              Object {
+                "key": "null",
+                "text": "",
+                "value": null,
+              },
+              Object {
+                "key": "Literature",
+                "text": "Literature",
+                "value": "Literature",
+              },
+            ]
+          }
+          placeholder="Select a category"
+          selection={true}
+          value="Literature"
+        />
+      </div>
+      <div
+        className="button"
+        disabled={false}
+        floated="right"
+        onClick={[Function]}
+        primary={true}
+        size="big"
+        style={
+          Object {
+            "paddingLeft": 60,
+            "paddingRight": 60,
+          }
+        }
+        type="submit"
+      >
+        Save
+      </div>
+      <div
+        className="button"
+        disabled={false}
+        floated="right"
+        href="/projects"
+        size="big"
+        style={
+          Object {
+            "marginRight": 20,
+          }
+        }
+      >
+        Cancel
+      </div>
+      <div
+        style={
+          Object {
+            "clear": "left",
+            "margin": 100,
+          }
+        }
+      />
+    </form>
+    <div
+      basic={true}
+      className="modal"
+      onClose={[Function]}
+      onOpen={[Function]}
+      open={false}
+      size="small"
+      trigger={
+        <Button
+          content="Delete Project"
+          disabled={false}
+          fluid={true}
+          icon="trash"
+          labelPosition="left"
+          negative={true}
+        />
+      }
+    >
+      <h1
+        className="header"
+        icon={true}
+      >
+        <div
+          className="icon"
+          name="trash"
+        />
+        Delete this narrative?
+      </h1>
+      <div
+        className="content"
+      >
+        <p>
+          Are you sure you want to delete this narrative? This action is permanent and cannot be undone.
+        </p>
+      </div>
+      <div
+        className="actions"
+      >
+        <div
+          basic={true}
+          className="button"
+          color="red"
+          inverted={true}
+          onClick={[Function]}
+        >
+          <div
+            className="icon"
+            name="remove"
+          />
+          <span>
+            No
+          </span>
+        </div>
+        <div
+          className="button"
+          inverted={true}
+          negative={true}
+          onClick={[Function]}
+        >
+          <div
+            className="icon"
+            name="trash"
+          />
+          <span>
+            Yes
+          </span>
+        </div>
+      </div>
+    </div>
+    <img
+      className="img"
+      src="/img/hrc-logo.png"
+      style={
+        Object {
+          "marginTop": 60,
+        }
+      }
+    />
+  </div>
+</div>
+`;

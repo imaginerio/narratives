@@ -7,14 +7,10 @@ export const GET_SLIDES = gql`
       title
       description
       size
-      image {
-        id
-        title
-        creator
-        source
-        date
-        url
-      }
+      media
+      imageTitle
+      source
+      url
     }
   }
 `;
@@ -33,6 +29,15 @@ export const UPDATE_SLIDE_DESCRIPTION = gql`
     updateSlide(id: $slide, data: { description: $description }) {
       id
       description
+    }
+  }
+`;
+
+export const UPDATE_SLIDE_MEDIA = gql`
+  mutation UpdateSlideMedia($slide: ID!, $media: String) {
+    updateSlide(id: $slide, data: { media: $media }) {
+      id
+      media
     }
   }
 `;
@@ -60,23 +65,11 @@ export const ADD_IMAGE = gql`
 `;
 
 export const UPDATE_IMAGE = gql`
-  mutation UpdateImage(
-    $image: ID!
-    $title: String
-    $creator: String
-    $source: String
-    $date: String
-    $url: String
-  ) {
-    updateImage(
-      id: $image
-      data: { title: $title, creator: $creator, source: $source, date: $date, url: $url }
-    ) {
+  mutation UpdateImage($slide: ID!, $imageTitle: String, $source: String, $url: String) {
+    updateSlide(id: $slide, data: { imageTitle: $imageTitle, source: $source, url: $url }) {
       id
-      title
-      creator
+      imageTitle
       source
-      date
       url
     }
   }

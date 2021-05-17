@@ -59,7 +59,12 @@ jest.mock('semantic-ui-react', () => {
   return { Button, Segment };
 });
 
-jest.mock('semantic-ui-react/dist/commonjs/addons/Portal/Portal', () => ({ children }) => children);
+jest.mock(
+  'semantic-ui-react/dist/commonjs/addons/Portal/Portal',
+  () =>
+    ({ children }) =>
+      children
+);
 
 describe('Basemaps', () => {
   it('matches snapshot', async () => {
