@@ -45,10 +45,13 @@ module.exports = class CheckAuthentication {
         },
       }).then(async data => {
         const { Slide } = data;
-        Slide.layers = { connect: Slide.layers };
-        Slide.basemap = { connect: Slide.basemap };
-        Slide.project = { connect: Slide.project };
-        Slide.annotations = { create: Slide.annotations };
+
+        Slide.title = `${Slide.title} copy`;
+        if (Slide.layers) Slide.layers = { connect: Slide.layers };
+        if (Slide.basemap) Slide.basemap = { connect: Slide.basemap };
+        if (Slide.project) Slide.project = { connect: Slide.project };
+        if (Slide.annotations) Slide.annotations = { create: Slide.annotations };
+
         return createItem({
           keystone,
           listKey: 'Slide',

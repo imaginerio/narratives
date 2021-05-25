@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { getDataFromTree } from '@apollo/react-ssr';
+import axios from 'axios';
 import { Container, Grid, Dimmer, Loader } from 'semantic-ui-react';
+
 import withApollo from '../../providers/withApollo';
 
 import Slides from '../../components/Slides';
@@ -117,6 +119,8 @@ const EditPage = () => {
       refetchQueries: [{ query: GET_SLIDES, variables: { project } }],
     });
 
+  const duplicate = slideId => axios.get(`/duplicate/${slideId}`).then(refetch);
+
   if (loading || !project)
     return (
       <Dimmer active>
@@ -140,6 +144,7 @@ const EditPage = () => {
               active={activeSlide}
               handler={setActiveSlide}
               onUpdate={updateSlideOrder}
+              duplicate={duplicate}
             />
           </Grid.Column>
           <Grid.Column width={13} style={{ padding: 0 }}>

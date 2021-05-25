@@ -1,12 +1,13 @@
 import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useDrag, useDrop } from 'react-dnd';
+import { Button } from 'semantic-ui-react';
 
 import ItemTypes from './ItemTypes';
 
 import styles from './Slide.module.css';
 
-const Slide = ({ id, title, index, color, moveCard, handler }) => {
+const Slide = ({ id, title, index, color, moveCard, handler, duplicate }) => {
   const ref = useRef(null);
   const [, drop] = useDrop({
     accept: ItemTypes.SLIDE,
@@ -59,6 +60,7 @@ const Slide = ({ id, title, index, color, moveCard, handler }) => {
       onClick={() => handler(id)}
       onKeyPress={() => handler(id)}
     >
+      <Button icon="plus" size="mini" className={styles.duplicate} onClick={() => duplicate(id)} />
       <div className={styles.slideTitle}>{title}</div>
       <div className={styles.slideNumber}>{index}</div>
     </div>
@@ -72,6 +74,7 @@ Slide.propTypes = {
   color: PropTypes.string,
   moveCard: PropTypes.func.isRequired,
   handler: PropTypes.func.isRequired,
+  duplicate: PropTypes.func.isRequired,
 };
 
 Slide.defaultProps = {
