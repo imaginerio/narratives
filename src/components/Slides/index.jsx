@@ -7,7 +7,7 @@ import Slide from '../Slide';
 
 import styles from './Slides.module.css';
 
-const Slides = ({ slides, active, handler, onUpdate, duplicate }) => {
+const Slides = ({ slides, active, handler, onUpdate, duplicate, newSlide }) => {
   const [cards, setCards] = useState(slides);
   const moveCard = useCallback(
     (dragIndex, hoverIndex) => {
@@ -41,21 +41,19 @@ const Slides = ({ slides, active, handler, onUpdate, duplicate }) => {
 
   return (
     <div className={styles.slides}>
-      {cards.map((slide, i) => {
-        const color = slide.id === active ? 'blue' : '';
-        return (
-          <Slide
-            key={slide.id}
-            id={slide.id}
-            title={slide.title}
-            index={i}
-            color={color}
-            moveCard={moveCard}
-            handler={handler}
-            duplicate={duplicate}
-          />
-        );
-      })}
+      {cards.map(({ id, title }, i) => (
+        <Slide
+          key={id}
+          id={id}
+          title={title}
+          index={i}
+          color={id === active ? 'blue' : ''}
+          moveCard={moveCard}
+          handler={handler}
+          duplicate={duplicate}
+          newSlide={newSlide}
+        />
+      ))}
     </div>
   );
 };
@@ -66,6 +64,7 @@ Slides.propTypes = {
   handler: PropTypes.func.isRequired,
   onUpdate: PropTypes.func.isRequired,
   duplicate: PropTypes.func.isRequired,
+  newSlide: PropTypes.func.isRequired,
 };
 
 Slides.defaultProps = {

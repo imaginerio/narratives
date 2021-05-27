@@ -17,8 +17,14 @@
 }
 
 .duplicate{
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  transform: scale(.75);
+  position: absolute !important;
+  top: 5px;
+  right: 5px;
+  margin: 0 !important;
+  text-align: center;
+  padding: 5px !important;
+}
+
+.duplicate > i {
+  margin: 0 !important;
 }

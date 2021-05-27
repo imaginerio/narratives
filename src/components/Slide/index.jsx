@@ -1,13 +1,13 @@
 import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useDrag, useDrop } from 'react-dnd';
-import { Button } from 'semantic-ui-react';
+import { Dropdown, Icon } from 'semantic-ui-react';
 
 import ItemTypes from './ItemTypes';
 
 import styles from './Slide.module.css';
 
-const Slide = ({ id, title, index, color, moveCard, handler, duplicate }) => {
+const Slide = ({ id, title, index, color, moveCard, handler, duplicate, newSlide }) => {
   const ref = useRef(null);
   const [, drop] = useDrop({
     accept: ItemTypes.SLIDE,
@@ -60,7 +60,18 @@ const Slide = ({ id, title, index, color, moveCard, handler, duplicate }) => {
       onClick={() => handler(id)}
       onKeyPress={() => handler(id)}
     >
-      <Button icon="plus" size="mini" className={styles.duplicate} onClick={() => duplicate(id)} />
+      <Dropdown button icon="plus" className={styles.duplicate}>
+        <Dropdown.Menu direction="left">
+          <Dropdown.Item onClick={() => newSlide(id)}>
+            <Icon name="plus square outline" />
+            New
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => duplicate(id)}>
+            <Icon name="copy outline" />
+            Copy
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
       <div className={styles.slideTitle}>{title}</div>
       <div className={styles.slideNumber}>{index}</div>
     </div>
@@ -75,6 +86,7 @@ Slide.propTypes = {
   moveCard: PropTypes.func.isRequired,
   handler: PropTypes.func.isRequired,
   duplicate: PropTypes.func.isRequired,
+  newSlide: PropTypes.func.isRequired,
 };
 
 Slide.defaultProps = {
