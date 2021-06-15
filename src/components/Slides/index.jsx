@@ -7,7 +7,7 @@ import Slide from '../Slide';
 
 import styles from './Slides.module.css';
 
-const Slides = ({ slides, active, handler, onUpdate, duplicate, newSlide }) => {
+const Slides = ({ slides, active, handler, onUpdate, duplicate, newSlide, removeSlide }) => {
   const [cards, setCards] = useState(slides);
   const moveCard = useCallback(
     (dragIndex, hoverIndex) => {
@@ -52,6 +52,7 @@ const Slides = ({ slides, active, handler, onUpdate, duplicate, newSlide }) => {
           handler={handler}
           duplicate={duplicate}
           newSlide={newSlide}
+          removeSlide={removeSlide}
         />
       ))}
     </div>
@@ -65,6 +66,7 @@ Slides.propTypes = {
   onUpdate: PropTypes.func.isRequired,
   duplicate: PropTypes.func.isRequired,
   newSlide: PropTypes.func.isRequired,
+  removeSlide: PropTypes.func.isRequired,
 };
 
 Slides.defaultProps = {

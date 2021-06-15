@@ -7,7 +7,17 @@ import ItemTypes from './ItemTypes';
 
 import styles from './Slide.module.css';
 
-const Slide = ({ id, title, index, color, moveCard, handler, duplicate, newSlide }) => {
+const Slide = ({
+  id,
+  title,
+  index,
+  color,
+  moveCard,
+  handler,
+  duplicate,
+  newSlide,
+  removeSlide,
+}) => {
   const ref = useRef(null);
   const [, drop] = useDrop({
     accept: ItemTypes.SLIDE,
@@ -60,7 +70,7 @@ const Slide = ({ id, title, index, color, moveCard, handler, duplicate, newSlide
       onClick={() => handler(id)}
       onKeyPress={() => handler(id)}
     >
-      <Dropdown button icon="plus" className={styles.duplicate}>
+      <Dropdown button icon="ellipsis horizontal" className={styles.duplicate}>
         <Dropdown.Menu direction="left">
           <Dropdown.Item onClick={() => newSlide(id)}>
             <Icon name="plus square outline" />
@@ -69,6 +79,10 @@ const Slide = ({ id, title, index, color, moveCard, handler, duplicate, newSlide
           <Dropdown.Item onClick={() => duplicate(id)}>
             <Icon name="copy outline" />
             Copy
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => removeSlide(id)}>
+            <Icon name="trash alternate outline" />
+            Delete
           </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
@@ -87,6 +101,7 @@ Slide.propTypes = {
   handler: PropTypes.func.isRequired,
   duplicate: PropTypes.func.isRequired,
   newSlide: PropTypes.func.isRequired,
+  removeSlide: PropTypes.func.isRequired,
 };
 
 Slide.defaultProps = {

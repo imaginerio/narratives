@@ -20,13 +20,12 @@ import Image from '../Image';
 import Year from '../Year';
 import Layers from '../Layers';
 import Search from '../Search';
-import Confirm from '../Confirm';
 import Wysiwyg from '../Wysiwyg';
 import DrawList from '../DrawList';
 
 import styles from './Editor.module.css';
 
-const Editor = ({ slide, removeSlide }) => {
+const Editor = ({ slide }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [media, setMedia] = useState('');
@@ -176,19 +175,6 @@ const Editor = ({ slide, removeSlide }) => {
               />
             </Form.Field>
             <DrawList slide={slide} />
-            <Form.Field>
-              <Confirm
-                buttonIcon="trash"
-                buttonTitle="Delete Slide"
-                confirmTitle="Delete this slide?"
-                confirmHandler={() => removeSlide(slide)}
-              >
-                <p>
-                  Are you sure you want to delete this slide? This action is permanent and cannot be
-                  undone.
-                </p>
-              </Confirm>
-            </Form.Field>
           </Form>
         </Grid.Column>
         <Grid.Column width={10} style={{ padding: 0 }}>
@@ -208,7 +194,6 @@ const Editor = ({ slide, removeSlide }) => {
 
 Editor.propTypes = {
   slide: PropTypes.string.isRequired,
-  removeSlide: PropTypes.func.isRequired,
 };
 
 export default Editor;

@@ -111,8 +111,10 @@ const EditPage = () => {
       variables: {
         id,
       },
-      refetchQueries: [{ query: GET_SLIDES, variables: { project } }],
-    }).then(() => setActiveSlide(data.Project.slides[0].id));
+    }).then(async () => {
+      await refetch();
+      setActiveSlide(data.Project.slides[0].id);
+    });
 
   const updateSlideOrder = newData =>
     editSlideOrder({
@@ -159,12 +161,11 @@ const EditPage = () => {
               onUpdate={updateSlideOrder}
               duplicate={duplicate}
               newSlide={newSlide}
+              removeSlide={removeSlide}
             />
           </Grid.Column>
           <Grid.Column width={13} style={{ padding: 0 }}>
-            <DrawProvider>
-              {activeSlide && <Editor slide={activeSlide} removeSlide={removeSlide} />}
-            </DrawProvider>
+            <DrawProvider>{activeSlide && <Editor slide={activeSlide} />}</DrawProvider>
           </Grid.Column>
         </Grid.Row>
       </Grid>
