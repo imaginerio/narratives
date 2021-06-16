@@ -1,0 +1,12 @@
+previewsEnabled: true
+services:
+  - type: web
+    name: narratives
+    region: oregon
+    env: node
+    plan: starter
+    healthCheckPath: /
+    envVars:
+      - fromGroup: narratives
+      - key: MONGO_URI
+        sync: false
