@@ -7,11 +7,24 @@
 
 .slideTitle{
   text-align: center;
-  margin-top: -10px;
+  margin-top: -5px;
 }
 
 .slideNumber{
   position: absolute;
   bottom: 5px;
   left: 5px;
+}
+
+.duplicate{
+  position: absolute !important;
+  top: 5px;
+  right: 5px;
+  margin: 0 !important;
+  text-align: center;
+  padding: 5px !important;
+}
+
+.duplicate > i {
+  margin: 0 !important;
 }

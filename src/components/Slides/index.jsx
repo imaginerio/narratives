@@ -7,7 +7,7 @@ import Slide from '../Slide';
 
 import styles from './Slides.module.css';
 
-const Slides = ({ slides, active, handler, onUpdate }) => {
+const Slides = ({ slides, active, handler, onUpdate, duplicate, newSlide, removeSlide }) => {
   const [cards, setCards] = useState(slides);
   const moveCard = useCallback(
     (dragIndex, hoverIndex) => {
@@ -41,20 +41,20 @@ const Slides = ({ slides, active, handler, onUpdate }) => {
 
   return (
     <div className={styles.slides}>
-      {cards.map((slide, i) => {
-        const color = slide.id === active ? 'blue' : '';
-        return (
-          <Slide
-            key={slide.id}
-            id={slide.id}
-            title={slide.title}
-            index={i}
-            color={color}
-            moveCard={moveCard}
-            handler={handler}
-          />
-        );
-      })}
+      {cards.map(({ id, title }, i) => (
+        <Slide
+          key={id}
+          id={id}
+          title={title}
+          index={i}
+          color={id === active ? 'blue' : ''}
+          moveCard={moveCard}
+          handler={handler}
+          duplicate={duplicate}
+          newSlide={newSlide}
+          removeSlide={removeSlide}
+        />
+      ))}
     </div>
   );
 };
@@ -64,6 +64,9 @@ Slides.propTypes = {
   active: PropTypes.string,
   handler: PropTypes.func.isRequired,
   onUpdate: PropTypes.func.isRequired,
+  duplicate: PropTypes.func.isRequired,
+  newSlide: PropTypes.func.isRequired,
+  removeSlide: PropTypes.func.isRequired,
 };
 
 Slides.defaultProps = {

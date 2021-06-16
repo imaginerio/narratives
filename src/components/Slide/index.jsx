@@ -1,12 +1,23 @@
 import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useDrag, useDrop } from 'react-dnd';
+import { Dropdown, Icon } from 'semantic-ui-react';
 
 import ItemTypes from './ItemTypes';
 
 import styles from './Slide.module.css';
 
-const Slide = ({ id, title, index, color, moveCard, handler }) => {
+const Slide = ({
+  id,
+  title,
+  index,
+  color,
+  moveCard,
+  handler,
+  duplicate,
+  newSlide,
+  removeSlide,
+}) => {
   const ref = useRef(null);
   const [, drop] = useDrop({
     accept: ItemTypes.SLIDE,
@@ -59,6 +70,22 @@ const Slide = ({ id, title, index, color, moveCard, handler }) => {
       onClick={() => handler(id)}
       onKeyPress={() => handler(id)}
     >
+      <Dropdown button icon="ellipsis horizontal" className={styles.duplicate}>
+        <Dropdown.Menu direction="left">
+          <Dropdown.Item onClick={() => newSlide(id)}>
+            <Icon name="plus square outline" />
+            New
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => duplicate(id)}>
+            <Icon name="copy outline" />
+            Copy
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => removeSlide(id)}>
+            <Icon name="trash alternate outline" />
+            Delete
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
       <div className={styles.slideTitle}>{title}</div>
       <div className={styles.slideNumber}>{index}</div>
     </div>
@@ -72,6 +99,9 @@ Slide.propTypes = {
   color: PropTypes.string,
   moveCard: PropTypes.func.isRequired,
   handler: PropTypes.func.isRequired,
+  duplicate: PropTypes.func.isRequired,
+  newSlide: PropTypes.func.isRequired,
+  removeSlide: PropTypes.func.isRequired,
 };
 
 Slide.defaultProps = {

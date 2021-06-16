@@ -11,10 +11,7 @@ const Image = ({ image, updateHandler }) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [urlError, setUrlError] = useState(false);
-  const [imageMeta, setImageMeta] = useState({
-    imageTitle: image.imageTitle,
-    source: image.source,
-  });
+  const [imageMeta, setImageMeta] = useState(null);
 
   useEffect(() => {
     if (image) {
@@ -43,7 +40,7 @@ const Image = ({ image, updateHandler }) => {
 
   return (
     <Segment>
-      {image.url ? (
+      {image?.url ? (
         <>
           <Img src={image.url} />
           <Button
@@ -66,7 +63,7 @@ const Image = ({ image, updateHandler }) => {
           <input ref={fileInputRef} type="file" hidden onChange={getSignedUrl} />
         </>
       )}
-      <Form.Field inline style={{ marginTop: 15 }} disabled={!image.url}>
+      <Form.Field inline style={{ marginTop: 15 }} disabled={!image?.url}>
         <label className={styles.inlineLabel}>Title</label>
         <Input
           className={styles.inlineInput}
@@ -77,7 +74,7 @@ const Image = ({ image, updateHandler }) => {
           }}
         />
       </Form.Field>
-      <Form.Field inline disabled={!image.url} error={urlError}>
+      <Form.Field inline disabled={!image?.url} error={urlError}>
         <label className={styles.inlineLabel}>Source</label>
         <Input
           className={styles.inlineInput}
