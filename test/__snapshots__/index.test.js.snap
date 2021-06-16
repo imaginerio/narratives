@@ -15,7 +15,7 @@ exports[`home page matches snapshot 1`] = `
     <div
       className="ui header title"
     >
-      Rio Story Maps
+      imagineRio Narratives
     </div>
     <a
       className="logout"

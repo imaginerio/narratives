@@ -36,7 +36,7 @@ module.exports = {
     },
     category: {
       type: Select,
-      options: ['History', 'Architecture', 'Literature'],
+      options: ['History', 'Architecture', 'Literature', 'Urbanism', 'Archaelogy', 'Environment'],
     },
     imageTitle: {
       type: Text,

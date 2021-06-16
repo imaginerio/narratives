@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { getDataFromTree } from '@apollo/react-ssr';
+import axios from 'axios';
 import { Container, Grid, Dimmer, Loader } from 'semantic-ui-react';
+
 import withApollo from '../../providers/withApollo';
 
 import Slides from '../../components/Slides';
@@ -55,6 +57,7 @@ const EditPage = () => {
   const { project } = router.query;
 
   const [activeSlide, setActiveSlide] = useState(null);
+  const [apiLoading, setApiLoading] = useState(false);
 
   const [addSlide] = useMutation(ADD_SLIDE);
   const [deleteSlide] = useMutation(DELETE_SLIDE);
@@ -72,10 +75,11 @@ const EditPage = () => {
     },
   });
 
-  const newSlide = () => {
+  const newSlide = slideId => {
+    setApiLoading(true);
     let order;
     try {
-      ({ order } = data.Project.slides.find(s => s.id === activeSlide));
+      ({ order } = data.Project.slides.find(s => s.id === slideId));
     } catch {
       order = 1;
     }
@@ -87,8 +91,18 @@ const EditPage = () => {
         order,
       },
     }).then(async ({ data: { createSlide } }) => {
-      await refetch({ variables: { project } });
+      await refetch();
       setActiveSlide(createSlide.id);
+      setApiLoading(false);
+    });
+  };
+
+  const duplicate = slideId => {
+    setApiLoading(true);
+    axios.get(`/duplicate/${slideId}`).then(async ({ data: { id } }) => {
+      await refetch();
+      setActiveSlide(id);
+      setApiLoading(false);
     });
   };
 
@@ -97,8 +111,10 @@ const EditPage = () => {
       variables: {
         id,
       },
-      refetchQueries: [{ query: GET_SLIDES, variables: { project } }],
-    }).then(() => setActiveSlide(data.Project.slides[0].id));
+    }).then(async () => {
+      await refetch();
+      setActiveSlide(data.Project.slides[0].id);
+    });
 
   const updateSlideOrder = newData =>
     editSlideOrder({
@@ -130,22 +146,26 @@ const EditPage = () => {
       <Grid>
         <Grid.Row style={{ paddingBottom: 0, zIndex: 2 }}>
           <Grid.Column>
-            <EditorHeader title={data.Project.title} handler={newSlide} project={project} />
+            <EditorHeader title={data.Project.title} project={project} />
           </Grid.Column>
         </Grid.Row>
         <Grid.Row style={{ paddingTop: 0, paddingBottom: 0 }}>
+          <Dimmer active={apiLoading}>
+            <Loader size="huge">Loading</Loader>
+          </Dimmer>
           <Grid.Column width={3}>
             <Slides
               slides={data.Project.slides}
               active={activeSlide}
               handler={setActiveSlide}
               onUpdate={updateSlideOrder}
+              duplicate={duplicate}
+              newSlide={newSlide}
+              removeSlide={removeSlide}
             />
           </Grid.Column>
           <Grid.Column width={13} style={{ padding: 0 }}>
-            <DrawProvider>
-              {activeSlide && <Editor slide={activeSlide} removeSlide={removeSlide} />}
-            </DrawProvider>
+            <DrawProvider>{activeSlide && <Editor slide={activeSlide} />}</DrawProvider>
           </Grid.Column>
         </Grid.Row>
       </Grid>

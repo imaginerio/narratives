@@ -24,7 +24,7 @@ const Header = ({ user }) => {
 
   return (
     <div className={styles.header}>
-      <Heading className={styles.title}>Rio Story Maps</Heading>
+      <Heading className={styles.title}>imagineRio Narratives</Heading>
       {user ? (
         // eslint-disable-next-line jsx-a11y/anchor-is-valid
         <a className={styles.logout} onClick={signOut} href="#">
