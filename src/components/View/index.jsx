@@ -153,7 +153,7 @@ const View = ({ project, preview }) => {
         >
           <Step data={{ ...data.Project.slides[0], index: 0 }}>
             <div className={styles.scrollContainer}>
-              <Card fluid className={styles.Medium} style={{ padding: '2em' }}>
+              <Card fluid className={styles.Medium}>
                 <Card.Content>
                   <Card.Header style={{ fontSize: '1.5em', textAlign: 'center' }}>
                     {data.Project.title}
