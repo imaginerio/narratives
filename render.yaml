@@ -6,6 +6,8 @@ services:
     env: node
     plan: starter
     healthCheckPath: /
+    buildCommand: yarn; yarn build
+    startCommand: yarn start
     envVars:
       - fromGroup: narratives
       - key: MONGO_URI
