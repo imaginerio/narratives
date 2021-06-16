@@ -79,10 +79,9 @@ const View = ({ project, preview }) => {
       return (
         <div
           style={{
-            backgroundColor: 'rgba(255, 255, 255, 0.8)',
-            lineHeight: '25px',
-            marginTop: -25,
-            paddingLeft: 15,
+            lineHeight: '1.4em',
+            margin: '1em 0',
+            fontSize: '0.8em',
             position: 'relative',
           }}
         >
