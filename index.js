@@ -23,13 +23,13 @@ const BasemapSchema = require('./lists/Basemap');
 const AnnotationSchema = require('./lists/Annotation');
 
 const PROJECT_NAME = 'imagineRio Narratives';
-const adapterConfig = { mongoUri: process.env.MONGO_URI };
+const adapterConfig = { mongoUri: `${process.env.MONGO_URI}${process.env.MONGO_DB}` };
 
 const keystone = new Keystone({
   adapter: new Adapter(adapterConfig),
   onConnect: process.env.CREATE_TABLES !== 'true' && initialiseData,
   cookieSecret: process.env.COOKIE_SECRET,
-  sessionStore: new MongoStore({ url: process.env.MONGO_URI }),
+  sessionStore: new MongoStore({ url: `${process.env.MONGO_URI}${process.env.MONGO_DB}` }),
 });
 
 keystone.createList('User', UserSchema);

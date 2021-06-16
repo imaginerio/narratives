@@ -1,14 +1,15 @@
-previewsEnabled: true
 services:
   - type: web
     name: narratives
     region: oregon
     env: node
     plan: starter
+    pullRequestPreviewsEnabled: true
     healthCheckPath: /
     buildCommand: yarn; yarn build
     startCommand: yarn start
     envVars:
       - fromGroup: narratives
-      - key: MONGO_URI
-        sync: false
+      - key: MONGO_DB
+        value: narratives
+        previewValue: image-rio-narratives
