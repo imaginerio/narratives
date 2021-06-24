@@ -4,7 +4,7 @@ import { without, some } from 'lodash';
 import { Card, Button } from 'semantic-ui-react';
 
 const TagButtons = ({ data, activeCategories, setActiveCategories }) => (
-  <Card style={{ margin: 15, border: 'none', boxShadow: 'none' }}>
+  <Card style={{ margin: 15, border: 'none', boxShadow: 'none', width: 'calc(33% - 30px)' }}>
     <Card.Content style={{ padding: 0 }}>
       <Card.Header>Filter by category: </Card.Header>
       <Card.Description style={{ margin: '5px -5px' }}>
