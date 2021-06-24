@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
-import { without, some } from 'lodash';
 import Masonry from 'react-masonry-component';
-import { Image, Card, Button, Label } from 'semantic-ui-react';
+import { Image, Card, Label } from 'semantic-ui-react';
+
+import TagButtons from './TagButtons';
 
 export const GET_PROJECTS = gql`
   query GetPublished {
@@ -43,34 +44,11 @@ const Gallery = () => {
       updateOnEachImageLoad={false}
       style={{ margin: -15 }}
     >
-      <Card style={{ margin: 15, border: 'none', boxShadow: 'none' }}>
-        <Card.Content style={{ padding: 0 }}>
-          <Card.Header>Filter by category: </Card.Header>
-          <Card.Description style={{ margin: '5px -5px' }}>
-            {data.categories.values
-              .filter(({ name }) => some(data.allProjects, p => p.category === name))
-              .map(({ name }) => {
-                const active = activeCategories.includes(name);
-                return (
-                  <Button
-                    key={name}
-                    inline
-                    basic={!active}
-                    primary={active}
-                    style={{ margin: 5 }}
-                    onClick={() =>
-                      setActiveCategories(
-                        active ? without(activeCategories, name) : [...activeCategories, name]
-                      )
-                    }
-                  >
-                    {name}
-                  </Button>
-                );
-              })}
-          </Card.Description>
-        </Card.Content>
-      </Card>
+      <TagButtons
+        data={data}
+        activeCategories={activeCategories}
+        setActiveCategories={setActiveCategories}
+      />
       {data.allProjects
         .filter(p => activeCategories.length === 0 || activeCategories.includes(p.category))
         .map(proj => (
