@@ -55,7 +55,7 @@ Array [
         onClick={[Function]}
       >
         <div
-          className="content"
+          className="content Content"
         >
           <div
             className="header"
@@ -69,7 +69,6 @@ Array [
             Test Project
           </div>
           <h3
-            className="ui header"
             style={
               Object {
                 "fontWeight": 400,
@@ -80,7 +79,7 @@ Array [
             Author: Test User
           </h3>
           <div
-            className="description"
+            className="description Description"
             style={
               Object {
                 "marginTop": 20,
@@ -105,7 +104,7 @@ Array [
         onClick={[Function]}
       >
         <div
-          className="content"
+          className="content Content"
         >
           <div
             className="header"
@@ -113,7 +112,7 @@ Array [
             Test Slide
           </div>
           <div
-            className="description"
+            className="description Description"
           >
             Test description
           </div>
