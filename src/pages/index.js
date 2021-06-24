@@ -32,8 +32,29 @@ export const Home = ({ user }) => {
   if (error) return <p>Error :(</p>;
 
   return (
-    <div style={{ backgroundColor: '#FAFAFA', minHeight: '100vh' }}>
+    <div style={{ minHeight: '100vh' }}>
       <Header user={user} />
+      <section style={{ backgroundColor: 'rgb(247, 249, 252)', padding: '50px 0px' }}>
+        <Container>
+          <Heading as="h1">Narratives</Heading>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis gravida, magna ac luctus
+            fringilla, neque purus vulputate nunc, accumsan iaculis quam orci sed ante. Aenean
+            rhoncus metus at dolor finibus lacinia. Cras iaculis orci ligula, in tempor mi malesuada
+            eget. Vivamus quis sollicitudin justo. In auctor purus mauris, ut volutpat mauris dictum
+            at. Nam ultrices turpis a dolor accumsan, at tempus ipsum vulputate. Morbi tempor in ex
+            id mollis. Etiam sem turpis, interdum sit amet ultrices ut, consectetur vitae urna.
+          </p>
+          <p>
+            Aenean quis ex vitae purus vestibulum malesuada vitae et diam. Nunc eget mattis metus.
+            Aliquam ut mauris pretium, venenatis mi sed, molestie ex. Fusce viverra auctor dui sit
+            amet convallis. Aliquam molestie fringilla orci, ut gravida libero hendrerit mattis.
+            Pellentesque faucibus libero nulla, vel scelerisque mi malesuada at. Etiam ac mattis
+            purus. Fusce augue metus, suscipit id orci et, luctus consequat neque. Aliquam
+            condimentum enim aliquam euismod porta.
+          </p>
+        </Container>
+      </section>
       <Container style={{ marginTop: 30, marginBottom: 30 }}>
         {user && (
           <a href="/projects" style={{ display: 'block', float: 'right' }}>
