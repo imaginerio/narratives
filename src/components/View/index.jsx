@@ -5,7 +5,7 @@ import { pick } from 'lodash';
 import { Scrollama, Step } from 'react-scrollama';
 import { FlyToInterpolator, WebMercatorViewport } from 'react-map-gl';
 import ReactPlayer from 'react-player';
-import { Card, Header, Image } from 'semantic-ui-react';
+import { Card, Image } from 'semantic-ui-react';
 import parse from 'html-react-parser';
 
 import Atlas from '../Atlas';
@@ -79,11 +79,11 @@ const View = ({ project, preview }) => {
       return (
         <div
           style={{
-            backgroundColor: 'rgba(255, 255, 255, 0.8)',
-            lineHeight: '25px',
-            marginTop: -25,
-            paddingLeft: 15,
+            lineHeight: '1.4em',
+            margin: '1em 0',
+            fontSize: '0.8em',
             position: 'relative',
+            color: 'rgba(0, 0, 0, 0.5)',
           }}
         >
           {source ? (
@@ -154,13 +154,13 @@ const View = ({ project, preview }) => {
           <Step data={{ ...data.Project.slides[0], index: 0 }}>
             <div className={styles.scrollContainer}>
               <Card fluid className={styles.Medium}>
-                <Card.Content>
+                <Card.Content className={styles.Content}>
                   <Card.Header style={{ fontSize: '1.5em', textAlign: 'center' }}>
                     {data.Project.title}
                   </Card.Header>
-                  <Header as="h3" style={{ textAlign: 'center' }}>
+                  <h3 style={{ textAlign: 'center', fontWeight: 400 }}>
                     {`Author: ${data.Project.user.name}`}
-                  </Header>
+                  </h3>
                   {data.Project.url && (
                     <>
                       <Image src={data.Project.url} style={{ marginTop: 20 }} />
@@ -168,7 +168,7 @@ const View = ({ project, preview }) => {
                     </>
                   )}
                   {data.Project.description && (
-                    <Card.Description style={{ marginTop: 20 }}>
+                    <Card.Description className={styles.Description} style={{ marginTop: 20 }}>
                       {parse(data.Project.description)}
                     </Card.Description>
                   )}
@@ -185,15 +185,17 @@ const View = ({ project, preview }) => {
                 }}
               >
                 {(slide.url || slide.title || slide.description || slide.media) && (
-                  <Card fluid className={styles[slide.size]}>
+                  <Card fluid className={styles[slide.size] || styles.Medium}>
                     {slide.url && <Image src={slide.url} wrapped ui={false} />}
                     {slide.url && getCaption(slide)}
                     {(slide.title || slide.description || slide.media) && (
-                      <Card.Content>
+                      <Card.Content className={styles.Content}>
                         {slide.title && <Card.Header>{slide.title}</Card.Header>}
                         {slide.media && <ReactPlayer url={slide.media} width="100%" />}
                         {slide.description && (
-                          <Card.Description>{parse(slide.description)}</Card.Description>
+                          <Card.Description className={styles.Description}>
+                            {parse(slide.description)}
+                          </Card.Description>
                         )}
                       </Card.Content>
                     )}

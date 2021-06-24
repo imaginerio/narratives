@@ -2,17 +2,38 @@
   padding: 25vh 80px 25vh 80px;
 }
 
+.Content {
+  padding: 1em 0 !important;
+}
+
+.Description {
+  font-size: 0.9em !important;
+}
+
 .Fullscreen{
-  width: 100% !important;
+  margin-left: -80px !important;
+  padding: 1.25em 1.5em !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background-color: rgba(255,255,255,0.9) !important;
+  width: calc(100% + 160px) !important;
   font-size: 1.25em;
 }
 
 .Medium{
+  padding: 1.25em 1.5em !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background-color: rgba(255,255,255,0.9) !important;
   width: 50% !important;
   font-size: 1.25em;
 }
 
 .Small{
+  padding: 1.25em 1.5em !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background-color: rgba(255,255,255,0.9) !important;
   width: 400px !important;
   font-size: 1.25em;
 }

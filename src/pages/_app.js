@@ -5,6 +5,8 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import 'semantic-ui-css/semantic.min.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import '../styles/fonts.css';
+import '../styles/overrides.css';
 
 function MyApp({ Component, pageProps }) {
   return (
