@@ -74,7 +74,7 @@ const Gallery = () => {
       {data.allProjects
         .filter(p => activeCategories.length === 0 || activeCategories.includes(p.category))
         .map(proj => (
-          <Card key={proj.id} href={`/view/${proj.id}`} style={{ margin: 15 }}>
+          <Card key={proj.id} href={`/details/${proj.id}`} style={{ margin: 15 }}>
             {proj.url && <Image src={proj.url} />}
             <Card.Content>
               {proj.category && (
