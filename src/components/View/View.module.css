@@ -2,6 +2,14 @@
   padding: 25vh 80px 25vh 80px;
 }
 
+.Content {
+  padding: 1em 0 !important;
+}
+
+.Description {
+  font-size: 0.9em !important;
+}
+
 .Fullscreen{
   margin-left: -80px !important;
   padding: 1.25em 1.5em !important;
