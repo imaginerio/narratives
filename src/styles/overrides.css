@@ -2,6 +2,10 @@ a:hover{
   text-decoration: underline;
 }
 
+a.ui.card:hover{
+  text-decoration: none;
+}
+
 .ui.card > .image:first-child{
   border-radius: 0 !important;
 }

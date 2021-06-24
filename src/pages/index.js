@@ -1,96 +1,52 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useQuery, gql } from '@apollo/client';
-import { Container, Header as Heading, Image, Card, Popup, Icon } from 'semantic-ui-react';
-import parse from 'html-react-parser';
+import { Container, Header as Heading, Image, Icon } from 'semantic-ui-react';
 import withApollo from '../providers/withApollo';
 
 import Header from '../components/Header';
+import Gallery from '../components/Gallery';
 
-export const GET_PROJECTS = gql`
-  query GetPublished {
-    allProjects(where: { published: true }) {
-      id
-      title
-      description
-      category
-      url
-      tags {
-        name
-      }
-      user {
-        name
-      }
-    }
-  }
-`;
-
-export const Home = ({ user }) => {
-  const { loading, error, data } = useQuery(GET_PROJECTS);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
-
-  return (
-    <div style={{ minHeight: '100vh' }}>
-      <Header user={user} />
-      <section style={{ backgroundColor: 'rgb(247, 249, 252)', padding: '50px 0px' }}>
-        <Container>
-          <Heading as="h1">Narratives</Heading>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis gravida, magna ac luctus
-            fringilla, neque purus vulputate nunc, accumsan iaculis quam orci sed ante. Aenean
-            rhoncus metus at dolor finibus lacinia. Cras iaculis orci ligula, in tempor mi malesuada
-            eget. Vivamus quis sollicitudin justo. In auctor purus mauris, ut volutpat mauris dictum
-            at. Nam ultrices turpis a dolor accumsan, at tempus ipsum vulputate. Morbi tempor in ex
-            id mollis. Etiam sem turpis, interdum sit amet ultrices ut, consectetur vitae urna.
-          </p>
-          <p>
-            Aenean quis ex vitae purus vestibulum malesuada vitae et diam. Nunc eget mattis metus.
-            Aliquam ut mauris pretium, venenatis mi sed, molestie ex. Fusce viverra auctor dui sit
-            amet convallis. Aliquam molestie fringilla orci, ut gravida libero hendrerit mattis.
-            Pellentesque faucibus libero nulla, vel scelerisque mi malesuada at. Etiam ac mattis
-            purus. Fusce augue metus, suscipit id orci et, luctus consequat neque. Aliquam
-            condimentum enim aliquam euismod porta.
-          </p>
-        </Container>
-      </section>
-      <Container style={{ marginTop: 30, marginBottom: 30 }}>
-        {user && (
-          <a href="/projects" style={{ display: 'block', float: 'right' }}>
-            <span>
-              <Icon name="map outline" />
-              Manage My Maps
-            </span>
-          </a>
-        )}
-        <Heading as="h1" style={{ margin: '50px 0' }}>
-          Map Gallery
-        </Heading>
-        <Card.Group itemsPerRow={3}>
-          {data.allProjects.map(proj => (
-            <Card key={proj.id} href={`/view/${proj.id}`}>
-              {proj.url && <Image src={proj.url} />}
-              <Card.Content>
-                <Card.Header>{proj.title}</Card.Header>
-                <Card.Meta>{proj.category}</Card.Meta>
-                <Card.Description>{proj.user.name}</Card.Description>
-              </Card.Content>
-              <Card.Content extra>
-                <Popup
-                  content={proj.description && parse(proj.description)}
-                  // eslint-disable-next-line prettier/prettier, react/jsx-one-expression-per-line
-                  trigger={<span><Icon name="info circle" />Map description</span>}
-                />
-              </Card.Content>
-            </Card>
-          ))}
-        </Card.Group>
-        <Image src="img/hrc-logo.png" style={{ margin: '50px 0' }} />
+export const Home = ({ user }) => (
+  <div style={{ minHeight: '100vh' }}>
+    <Header user={user} />
+    <section style={{ backgroundColor: 'rgb(247, 249, 252)', padding: '50px 0px' }}>
+      <Container>
+        <Heading as="h1">Narratives</Heading>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis gravida, magna ac luctus
+          fringilla, neque purus vulputate nunc, accumsan iaculis quam orci sed ante. Aenean rhoncus
+          metus at dolor finibus lacinia. Cras iaculis orci ligula, in tempor mi malesuada eget.
+          Vivamus quis sollicitudin justo. In auctor purus mauris, ut volutpat mauris dictum at. Nam
+          ultrices turpis a dolor accumsan, at tempus ipsum vulputate. Morbi tempor in ex id mollis.
+          Etiam sem turpis, interdum sit amet ultrices ut, consectetur vitae urna.
+        </p>
+        <p>
+          Aenean quis ex vitae purus vestibulum malesuada vitae et diam. Nunc eget mattis metus.
+          Aliquam ut mauris pretium, venenatis mi sed, molestie ex. Fusce viverra auctor dui sit
+          amet convallis. Aliquam molestie fringilla orci, ut gravida libero hendrerit mattis.
+          Pellentesque faucibus libero nulla, vel scelerisque mi malesuada at. Etiam ac mattis
+          purus. Fusce augue metus, suscipit id orci et, luctus consequat neque. Aliquam condimentum
+          enim aliquam euismod porta.
+        </p>
       </Container>
-    </div>
-  );
-};
+    </section>
+    <Container style={{ marginTop: 30, marginBottom: 30 }}>
+      {user && (
+        <a href="/projects" style={{ display: 'block', float: 'right' }}>
+          <span>
+            <Icon name="map outline" />
+            Manage My Maps
+          </span>
+        </a>
+      )}
+      <Heading as="h1" style={{ margin: '50px 0' }}>
+        Map Gallery
+      </Heading>
+      <Gallery />
+      <Image src="img/hrc-logo.png" style={{ margin: '50px 0' }} />
+    </Container>
+  </div>
+);
 
 Home.propTypes = {
   user: PropTypes.string,
