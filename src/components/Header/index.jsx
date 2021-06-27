@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useMutation, gql } from '@apollo/client';
-import { Header as Heading } from 'semantic-ui-react';
+import { Image } from 'semantic-ui-react';
 
 import styles from './Header.module.css';
 
@@ -12,6 +12,16 @@ const UNAUTH_MUTATION = gql`
     }
   }
 `;
+
+const pages = {
+  Home: '/',
+  About: '/about',
+  People: '/people',
+  Research: '/research',
+  Press: '/press',
+  Iconography: '/iconography',
+  Map: '/map',
+};
 
 const Header = ({ user }) => {
   const [signOut, { client }] = useMutation(UNAUTH_MUTATION, {
@@ -24,14 +34,27 @@ const Header = ({ user }) => {
 
   return (
     <div className={styles.header}>
-      <Heading className={styles.title}>imagineRio Narratives</Heading>
+      <Image src="/img/rio-logo.svg" style={{ width: 150 }} />
+      <div className={styles.spacer} />
+      {Object.keys(pages).map(page => (
+        <a
+          key={page}
+          className={styles.link}
+          href={`${process.env.NEXT_PUBLIC_MAIN_SITE}${pages[page]}`}
+        >
+          {page}
+        </a>
+      ))}
+      <a href="/" className={`${styles.link} ${styles.active}`}>
+        Narratives
+      </a>
       {user ? (
         // eslint-disable-next-line jsx-a11y/anchor-is-valid
-        <a className={styles.logout} onClick={signOut} href="#">
+        <a className={styles.link} onClick={signOut} href="#">
           Logout
         </a>
       ) : (
-        <a className={styles.logout} href="/projects">
+        <a className={styles.link} href="/projects">
           Login
         </a>
       )}

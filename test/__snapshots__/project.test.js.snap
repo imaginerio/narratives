@@ -12,13 +12,68 @@ exports[`project page matches snapshot 1`] = `
   <div
     className="header"
   >
-    <h1
-      className="header"
-    >
-      imagineRio Narratives
-    </h1>
+    <img
+      className="img"
+      src="/img/rio-logo.svg"
+      style={
+        Object {
+          "width": 150,
+        }
+      }
+    />
+    <div
+      className="spacer"
+    />
     <a
-      className="logout"
+      className="link"
+      href="undefined/"
+    >
+      Home
+    </a>
+    <a
+      className="link"
+      href="undefined/about"
+    >
+      About
+    </a>
+    <a
+      className="link"
+      href="undefined/people"
+    >
+      People
+    </a>
+    <a
+      className="link"
+      href="undefined/research"
+    >
+      Research
+    </a>
+    <a
+      className="link"
+      href="undefined/press"
+    >
+      Press
+    </a>
+    <a
+      className="link"
+      href="undefined/iconography"
+    >
+      Iconography
+    </a>
+    <a
+      className="link"
+      href="undefined/map"
+    >
+      Map
+    </a>
+    <a
+      className="link active"
+      href="/"
+    >
+      Narratives
+    </a>
+    <a
+      className="link"
       href="/projects"
     >
       Login
