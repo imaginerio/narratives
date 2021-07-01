@@ -148,9 +148,9 @@ const Editor = ({ slide }) => {
               />
             </Form.Field>
             <Form.Field error={mediaError}>
-              <label>Media Link</label>
+              <label>External Media</label>
               <Input
-                placeholder="Media URL"
+                placeholder="YouTube, SoundCloud URL"
                 icon="linkify"
                 iconPosition="left"
                 value={media}

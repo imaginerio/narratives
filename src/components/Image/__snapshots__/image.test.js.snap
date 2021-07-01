@@ -30,12 +30,13 @@ exports[`Image matches snapshot 1`] = `
     <label
       className="inlineLabel"
     >
-      Title
+      Caption
     </label>
     <input
       className="input"
       onChange={[Function]}
-      value="Test image"
+      placeholder="Image caption"
+      value=""
     />
   </div>
   <div
@@ -47,11 +48,12 @@ exports[`Image matches snapshot 1`] = `
     <label
       className="inlineLabel"
     >
-      Source
+      Link
     </label>
     <input
       className="input"
       onChange={[Function]}
+      placeholder="https://..."
       value="Test source"
     />
   </div>
