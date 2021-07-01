@@ -1,0 +1,3 @@
+[submodule "src/public/style"]
+	path = src/public/style
+	url = https://github.com/imaginerio/rio-cartography-style.git

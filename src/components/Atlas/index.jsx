@@ -61,6 +61,21 @@ const Atlas = ({
               ],
             };
           }
+          if (layer.source?.match('hillshade')) {
+            const hillshades = Object.keys(style.sources)
+              .filter(s => s.match('hillshade'))
+              .sort(
+                (a, b) => parseInt(b.replace(/\D/gi, ''), 10) - parseInt(a.replace(/\D/gi, ''), 10)
+              );
+
+            const newSource = hillshades.find(h => parseInt(h.replace(/\D/gi, ''), 10) <= year);
+            if (newSource) {
+              return {
+                ...layer,
+                source: newSource,
+              };
+            }
+          }
           return layer;
         });
         map.setStyle(style);
@@ -134,7 +149,7 @@ const Atlas = ({
     let props = {
       ref: mapRef,
       mapboxApiAccessToken: 'pk.eyJ1IjoiYXhpc21hcHMiLCJhIjoieUlmVFRmRSJ9.CpIxovz1TUWe_ecNLFuHNg',
-      mapStyle: '/style.json',
+      mapStyle: '/style/style.json',
       width: '100%',
       height: '100%',
       onLoad: onMapLoad,
