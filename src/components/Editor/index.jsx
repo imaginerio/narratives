@@ -22,6 +22,7 @@ import Layers from '../Layers';
 import Search from '../Search';
 import Wysiwyg from '../Wysiwyg';
 import DrawList from '../DrawList';
+import validateMediaUrl from '../../utils/validateMediaUrl';
 
 import styles from './Editor.module.css';
 
@@ -148,19 +149,15 @@ const Editor = ({ slide }) => {
               />
             </Form.Field>
             <Form.Field error={mediaError}>
-              <label>Media Link</label>
+              <label>External Media</label>
               <Input
-                placeholder="Media URL"
+                placeholder="YouTube, SoundCloud URL"
                 icon="linkify"
                 iconPosition="left"
                 value={media}
                 onChange={(e, { value }) => {
                   setMedia(value);
-                  if (
-                    value.match(
-                      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/
-                    )
-                  ) {
+                  if (!value || validateMediaUrl(value)) {
                     mediaTimer.current = debouncedMutation({
                       slide,
                       timerRef: mediaTimer,

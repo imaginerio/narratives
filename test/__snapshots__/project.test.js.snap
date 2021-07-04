@@ -186,11 +186,12 @@ exports[`project page matches snapshot 1`] = `
             <label
               className="inlineLabel"
             >
-              Title
+              Caption
             </label>
             <input
               className="input"
               onChange={[Function]}
+              placeholder="Image caption"
               value="Test image"
             />
           </div>
@@ -203,11 +204,12 @@ exports[`project page matches snapshot 1`] = `
             <label
               className="inlineLabel"
             >
-              Source
+              Link
             </label>
             <input
               className="input"
               onChange={[Function]}
+              placeholder="https://..."
               value="Test source"
             />
           </div>

@@ -64,10 +64,11 @@ const Image = ({ image, updateHandler }) => {
         </>
       )}
       <Form.Field inline style={{ marginTop: 15 }} disabled={!image?.url}>
-        <label className={styles.inlineLabel}>Title</label>
+        <label className={styles.inlineLabel}>Caption</label>
         <Input
+          placeholder="Image caption"
           className={styles.inlineInput}
-          value={imageMeta ? imageMeta.imageTitle || '' : ''}
+          value={imageMeta && image.url ? imageMeta.imageTitle || '' : ''}
           onChange={(e, { value }) => {
             setImageMeta({ ...imageMeta, imageTitle: value });
             updateHandler(image.id, { imageTitle: value });
@@ -75,13 +76,15 @@ const Image = ({ image, updateHandler }) => {
         />
       </Form.Field>
       <Form.Field inline disabled={!image?.url} error={urlError}>
-        <label className={styles.inlineLabel}>Source</label>
+        <label className={styles.inlineLabel}>Link</label>
         <Input
+          placeholder="https://..."
           className={styles.inlineInput}
           value={imageMeta ? imageMeta.source || '' : ''}
           onChange={(e, { value }) => {
             setImageMeta({ ...imageMeta, source: value });
             if (
+              !value ||
               value.match(
                 /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/
               )
