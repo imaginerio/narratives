@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { useQuery, gql } from '@apollo/client';
 import { pick } from 'lodash';
 import { Scrollama, Step } from 'react-scrollama';
 import { FlyToInterpolator, WebMercatorViewport } from 'react-map-gl';
@@ -12,67 +11,13 @@ import Atlas from '../Atlas';
 
 import styles from './View.module.css';
 
-export const GET_PROJECT = gql`
-  query GetFullProject($project: ID!) {
-    Project(where: { id: $project }) {
-      title
-      description
-      imageTitle
-      source
-      url
-      user {
-        name
-      }
-      slides(sortBy: order_ASC) {
-        id
-        title
-        description
-        year
-        longitude
-        latitude
-        zoom
-        bearing
-        pitch
-        opacity
-        size
-        media
-        selectedFeature
-        imageTitle
-        url
-        source
-        annotations {
-          id
-          feature
-        }
-        disabledLayers: layers {
-          id
-          layerId
-        }
-        basemap {
-          ssid
-          title
-          creator
-        }
-      }
-    }
-  }
-`;
-
-const View = ({ project, preview }) => {
+const View = ({ data }) => {
   const [viewport, setViewport] = useState({});
   const [year, setYear] = useState(1900);
   const [activeBasemap, setActiveBasemap] = useState(null);
   const [opacity, setOpacity] = useState(1);
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [annotations, setAnnotations] = useState(null);
-
-  const config = { variables: { project } };
-  if (preview) config.pollInterval = 5000;
-
-  const { loading, error, data } = useQuery(GET_PROJECT, config);
-
-  if (loading || !project) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
 
   const getCaption = ({ imageTitle, source }) => {
     if (imageTitle || source) {
@@ -211,12 +156,7 @@ const View = ({ project, preview }) => {
 };
 
 View.propTypes = {
-  project: PropTypes.string.isRequired,
-  preview: PropTypes.bool,
-};
-
-View.defaultProps = {
-  preview: false,
+  data: PropTypes.shape().isRequired,
 };
 
 export default View;
