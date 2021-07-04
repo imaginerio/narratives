@@ -13,7 +13,7 @@ import styles from './View.module.css';
 
 const View = ({ data }) => {
   const [viewport, setViewport] = useState({});
-  const [year, setYear] = useState(1900);
+  const [year, setYear] = useState(data.Project.slides[0].year);
   const [activeBasemap, setActiveBasemap] = useState(null);
   const [opacity, setOpacity] = useState(1);
   const [selectedFeature, setSelectedFeature] = useState(null);
