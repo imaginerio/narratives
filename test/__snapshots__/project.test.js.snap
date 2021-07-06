@@ -118,7 +118,7 @@ exports[`project page matches snapshot 1`] = `
         <input
           checked={true}
           className="checkbox"
-          label="Publish to the map gallery"
+          label="Submit for publication approval"
           onChange={[Function]}
         />
       </div>

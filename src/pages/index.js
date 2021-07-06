@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 import { Container, Header as Heading, Image, Icon } from 'semantic-ui-react';
 import withApollo from '../providers/withApollo';
 
 import Header from '../components/Header';
 import Gallery from '../components/Gallery';
 
-export const Home = ({ user }) => (
+export const Home = ({ user, data }) => (
   <div style={{ minHeight: '100vh' }}>
     <Header user={user} />
     <section style={{ backgroundColor: 'rgb(247, 249, 252)', padding: '50px 0px' }}>
@@ -42,7 +43,7 @@ export const Home = ({ user }) => (
       <Heading as="h1" style={{ margin: '50px 0' }}>
         Map Gallery
       </Heading>
-      <Gallery />
+      <Gallery data={data} />
       <Image src="img/hrc-logo.png" style={{ margin: '50px 0' }} />
     </Container>
   </div>
@@ -50,6 +51,9 @@ export const Home = ({ user }) => (
 
 Home.propTypes = {
   user: PropTypes.string,
+  data: PropTypes.shape({
+    allProjects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  }).isRequired,
 };
 
 Home.defaultProps = {
@@ -59,10 +63,36 @@ Home.defaultProps = {
 export default withApollo(Home);
 
 export async function getServerSideProps({ req }) {
+  const {
+    data: { data },
+  } = await axios.post(`${req.protocol}://${req.get('Host')}/admin/api`, {
+    query: `query GetPublished {
+        allProjects(where: { gallery: true }) {
+          id
+          title
+          description
+          category
+          url
+          tags {
+            name
+          }
+          user {
+            name
+          }
+        }
+        categories: __type(name: "ProjectCategoryType") {
+          values: enumValues {
+            name
+          }
+        }
+      }
+    `,
+  });
   let user = null;
   if (req.user) user = req.user.id;
   return {
     props: {
+      data,
       user,
     },
   };

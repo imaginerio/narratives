@@ -200,7 +200,7 @@ export const Create = ({ user }) => {
           />
           <Form.Field>
             <Checkbox
-              label="Publish to the map gallery"
+              label="Submit for publication approval"
               checked={published}
               onChange={(e, { checked }) => setPublished(checked)}
             />

@@ -2,6 +2,8 @@ const { Text, Relationship, Select, Url, Checkbox } = require('@keystonejs/field
 const { atTracking } = require('@keystonejs/list-plugins');
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 
+const userIsAdmin = ({ authentication: { item: user } }) => Boolean(user && user.isAdmin);
+
 const defaultAuth = ({ authentication: { item } }) => {
   if (item) {
     return {
@@ -49,6 +51,15 @@ module.exports = {
     },
     published: {
       type: Checkbox,
+    },
+    gallery: {
+      type: Checkbox,
+      access: {
+        read: true,
+        update: userIsAdmin,
+        create: userIsAdmin,
+        delete: userIsAdmin,
+      },
     },
     slides: {
       type: Relationship,

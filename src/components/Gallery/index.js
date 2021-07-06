@@ -1,39 +1,12 @@
 import React, { useState } from 'react';
-import { useQuery, gql } from '@apollo/client';
+import PropTypes from 'prop-types';
 import Masonry from 'react-masonry-component';
 import { Image, Card, Label } from 'semantic-ui-react';
 
 import TagButtons from './TagButtons';
 
-export const GET_PROJECTS = gql`
-  query GetPublished {
-    allProjects(where: { published: true }) {
-      id
-      title
-      description
-      category
-      url
-      tags {
-        name
-      }
-      user {
-        name
-      }
-    }
-    categories: __type(name: "ProjectCategoryType") {
-      values: enumValues {
-        name
-      }
-    }
-  }
-`;
-
-const Gallery = () => {
-  const { loading, error, data } = useQuery(GET_PROJECTS);
+const Gallery = ({ data }) => {
   const [activeCategories, setActiveCategories] = useState([]);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
 
   return (
     <Masonry
@@ -78,6 +51,12 @@ const Gallery = () => {
         ))}
     </Masonry>
   );
+};
+
+Gallery.propTypes = {
+  data: PropTypes.shape({
+    allProjects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  }).isRequired,
 };
 
 export default Gallery;
