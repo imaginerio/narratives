@@ -19,6 +19,11 @@ import Toolbar from '../Toolbar';
 import { minZoom, maxZoom } from '../../config/map';
 import styles from './Atlas.module.css';
 
+const labelLayout = {
+  'text-font': ['Lato Regular'],
+  'text-field': ['get', 'title'],
+};
+
 const Atlas = ({
   handler,
   viewport,
@@ -236,14 +241,14 @@ const Atlas = ({
             id="annotation-polygon-label"
             type="symbol"
             filter={['==', '$type', 'Polygon']}
-            layout={{ 'text-field': ['get', 'title'], 'symbol-placement': 'point' }}
+            layout={{ ...labelLayout, 'symbol-placement': 'point' }}
             paint={{ 'text-halo-width': 3, 'text-halo-color': '#FFFFFF' }}
           />
           <Layer
             id="annotation-line-label"
             type="symbol"
             filter={['==', '$type', 'LineString']}
-            layout={{ 'text-field': ['get', 'title'], 'symbol-placement': 'line' }}
+            layout={{ ...labelLayout, 'symbol-placement': 'line' }}
             paint={{ 'text-halo-width': 3, 'text-halo-color': '#FFFFFF' }}
           />
           <Layer
@@ -251,7 +256,7 @@ const Atlas = ({
             type="symbol"
             filter={['==', '$type', 'Point']}
             layout={{
-              'text-field': ['get', 'title'],
+              ...labelLayout,
               'text-variable-anchor': ['bottom-left', 'top-left', 'bottom-right', 'top-right'],
             }}
             paint={{ 'text-halo-width': 3, 'text-halo-color': '#FFFFFF' }}
