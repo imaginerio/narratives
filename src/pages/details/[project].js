@@ -82,7 +82,7 @@ const Details = ({ project, user }) => {
 
 Details.propTypes = {
   project: PropTypes.shape().isRequired,
-  user: PropTypes.string,
+  user: PropTypes.shape(),
 };
 
 Details.defaultProps = {
@@ -120,7 +120,7 @@ export async function getServerSideProps({ params, req }) {
   });
 
   let user = null;
-  if (req.user) user = req.user.id;
+  if (req.user) user = req.user;
 
   return { props: { ...data, user } };
 }

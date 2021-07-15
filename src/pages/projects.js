@@ -52,7 +52,7 @@ const CREATE_PROJECT = gql`
 
 const Projects = ({ user }) => {
   const [isLoading, setLoading] = useState(false);
-  const { loading, error, data } = useQuery(GET_PROJECTS, { variables: { user } });
+  const { loading, error, data } = useQuery(GET_PROJECTS, { variables: { user: user.id } });
   const [createProject] = useMutation(CREATE_PROJECT);
 
   const newProject = () => {
@@ -169,7 +169,7 @@ export async function getServerSideProps({ res, req }) {
   }
   return {
     props: {
-      user: req.user.id,
+      user: req.user,
     },
   };
 }
