@@ -1,34 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import parse from 'html-react-parser';
 import { Container, Header as Heading, Image, Icon } from 'semantic-ui-react';
 import withApollo from '../providers/withApollo';
 
 import Header from '../components/Header';
 import Gallery from '../components/Gallery';
 
-export const Home = ({ user, data }) => (
+const ParsedContent = ({ content }) => parse(content);
+
+export const Home = ({ user, data, content }) => (
   <div style={{ minHeight: '100vh' }}>
     <Header user={user} />
     <section style={{ backgroundColor: 'rgb(247, 249, 252)', padding: '50px 0px' }}>
       <Container>
-        <Heading as="h1">Narratives</Heading>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis gravida, magna ac luctus
-          fringilla, neque purus vulputate nunc, accumsan iaculis quam orci sed ante. Aenean rhoncus
-          metus at dolor finibus lacinia. Cras iaculis orci ligula, in tempor mi malesuada eget.
-          Vivamus quis sollicitudin justo. In auctor purus mauris, ut volutpat mauris dictum at. Nam
-          ultrices turpis a dolor accumsan, at tempus ipsum vulputate. Morbi tempor in ex id mollis.
-          Etiam sem turpis, interdum sit amet ultrices ut, consectetur vitae urna.
-        </p>
-        <p>
-          Aenean quis ex vitae purus vestibulum malesuada vitae et diam. Nunc eget mattis metus.
-          Aliquam ut mauris pretium, venenatis mi sed, molestie ex. Fusce viverra auctor dui sit
-          amet convallis. Aliquam molestie fringilla orci, ut gravida libero hendrerit mattis.
-          Pellentesque faucibus libero nulla, vel scelerisque mi malesuada at. Etiam ac mattis
-          purus. Fusce augue metus, suscipit id orci et, luctus consequat neque. Aliquam condimentum
-          enim aliquam euismod porta.
-        </p>
+        <ParsedContent content={content} />
       </Container>
     </section>
     <Container style={{ marginTop: 30, marginBottom: 30 }}>
@@ -54,6 +41,7 @@ Home.propTypes = {
   data: PropTypes.shape({
     allProjects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   }).isRequired,
+  content: PropTypes.string.isRequired,
 };
 
 Home.defaultProps = {
@@ -88,12 +76,26 @@ export async function getServerSideProps({ req }) {
       }
     `,
   });
+
   let user = null;
   if (req.user) user = req.user.id;
+
+  const {
+    data: {
+      post_stream: { posts },
+    },
+  } = await axios.get(`${process.env.NEXT_PUBLIC_PAGE_URL}en-narratives-about/96.json`, {
+    headers: {
+      'Api-Key': process.env.NEXT_PUBLIC_PAGE_API,
+      'Api-Username': 'system',
+    },
+  });
+
   return {
     props: {
       data,
       user,
+      content: posts[0].cooked,
     },
   };
 }
