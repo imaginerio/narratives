@@ -57,7 +57,7 @@ const Login = () => {
       <Header />
       <Container text>
         <Heading as="h1" style={{ margin: '20% 0 50px' }}>
-          Welcome to Rio Story Maps
+          Welcome to imagineRio Narratives
         </Heading>
         <Segment loading={reloading}>
           <Heading as="h3" style={{ margin: '10px 0 30px' }}>

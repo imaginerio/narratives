@@ -152,7 +152,17 @@ Projects.propTypes = {
 
 export default withApollo(Projects);
 
-export async function getServerSideProps({ req }) {
+export async function getServerSideProps({ res, req }) {
+  if (!req.user.termsAccepted) {
+    res.setHeader('location', '/legal/terms');
+    res.statusCode = 302;
+    res.end();
+  }
+  if (!req.user.privacyAccepted) {
+    res.setHeader('location', '/legal/privacy');
+    res.statusCode = 302;
+    res.end();
+  }
   return {
     props: {
       user: req.user.id,
