@@ -140,6 +140,10 @@ const Projects = ({ user }) => {
             </Segment>
           ))}
         </Segment.Group>
+        <Button icon labelPosition="left" floated="right" size="tiny" as="a" href="/download">
+          <Icon name="download" />
+          Download my data
+        </Button>
         <Image src="img/hrc-logo.png" />
       </Container>
     </div>
