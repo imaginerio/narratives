@@ -5,6 +5,7 @@ import { Container, Header as Heading, Segment, Button, Image, Icon } from 'sema
 import withApollo from '../providers/withApollo';
 
 import Header from '../components/Header';
+import Head from '../components/Head';
 
 const GET_PROJECTS = gql`
   query GetProjects($user: ID!) {
@@ -75,6 +76,7 @@ const Projects = ({ user }) => {
 
   return (
     <div style={{ backgroundColor: '#FAFAFA', minHeight: '100vh' }}>
+      <Head title="Projects" />
       <Header user={user} />
       <Container style={{ marginTop: 30, marginBottom: 30 }}>
         <a href="/" style={{ display: 'block', float: 'right', lineHeight: '36px' }}>

@@ -5,11 +5,13 @@ import { Container, Header as Heading, Image, Icon } from 'semantic-ui-react';
 import withApollo from '../providers/withApollo';
 
 import Header from '../components/Header';
+import Head from '../components/Head';
 import Gallery from '../components/Gallery';
 
 export const Home = ({ user, data }) => (
   <div style={{ minHeight: '100vh' }}>
     <Header user={user} />
+    <Head title="imagineRio Narratives" />
     <section style={{ backgroundColor: 'rgb(247, 249, 252)', padding: '50px 0px' }}>
       <Container>
         <Heading as="h1">Narratives</Heading>

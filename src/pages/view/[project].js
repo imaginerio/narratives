@@ -1,16 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import Head from 'next/head';
 
 import View from '../../components/View';
+import Head from '../../components/Head';
 
 const Preview = ({ data }) => (
   <>
-    <Head>
-      <title>imagineRio Narrative</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    </Head>
+    <Head title={data.Project.title} />
     <View data={data} />
   </>
 );

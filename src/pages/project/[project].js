@@ -21,6 +21,7 @@ import withApollo from '../../providers/withApollo';
 
 import Image from '../../components/Image';
 import Header from '../../components/Header';
+import Head from '../../components/Head';
 import Confirm from '../../components/Confirm';
 import Wysiwyg from '../../components/Wysiwyg';
 
@@ -182,6 +183,7 @@ export const Create = ({ user }) => {
 
   return (
     <div style={{ backgroundColor: '#FAFAFA', minHeight: '100vh' }}>
+      <Head title={data.Project.title} />
       <Header user={user} />
       <Container style={{ marginTop: 30 }} text>
         <Button

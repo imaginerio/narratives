@@ -12,6 +12,7 @@ import {
 import withApollo from '../providers/withApollo';
 
 import Header from '../components/Header';
+import Head from '../components/Head';
 
 const Login = () => {
   const AUTH_MUTATION = gql`
@@ -54,6 +55,7 @@ const Login = () => {
 
   return (
     <div style={{ backgroundColor: '#FAFAFA', minHeight: '100vh' }}>
+      <Head title="Login" />
       <Header />
       <Container text>
         <Heading as="h1" style={{ margin: '20% 0 50px' }}>

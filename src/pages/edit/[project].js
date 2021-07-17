@@ -7,6 +7,7 @@ import { Container, Grid, Dimmer, Loader } from 'semantic-ui-react';
 
 import withApollo from '../../providers/withApollo';
 
+import Head from '../../components/Head';
 import Slides from '../../components/Slides';
 import Editor from '../../components/Editor';
 import EditorHeader from '../../components/Editor/EditorHeader';
@@ -143,6 +144,7 @@ const EditPage = () => {
 
   return (
     <Container fluid>
+      <Head title={`Editing ${data.Project.title}`} />
       <Grid>
         <Grid.Row style={{ paddingBottom: 0, zIndex: 2 }}>
           <Grid.Column>

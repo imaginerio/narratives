@@ -5,6 +5,7 @@ import { getDataFromTree } from '@apollo/react-ssr';
 import withApollo from '../../providers/withApollo';
 
 import View from '../../components/View';
+import Head from '../../components/Head';
 
 export const GET_PROJECT = gql`
   query GetFullProject($project: ID!) {
@@ -64,7 +65,12 @@ const Preview = () => {
   if (loading || !project) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
 
-  return <View data={data} />;
+  return (
+    <>
+      <Head title={data.Project.title} />
+      <View data={data} />
+    </>
+  );
 };
 
 export default withApollo(Preview, { getDataFromTree });

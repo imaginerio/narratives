@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import parse from 'html-react-parser';
-import Head from 'next/head';
 import Masonry from 'react-masonry-component';
 import { Container, Header as Heading, Button } from 'semantic-ui-react';
 import withApollo from '../../providers/withApollo';
 
 import Header from '../../components/Header';
+import Head from '../../components/Head';
 
 const Details = ({ project, user }) => {
   const metadata = [
@@ -17,10 +17,7 @@ const Details = ({ project, user }) => {
   ];
   return (
     <>
-      <Head>
-        <title>{project.title}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      </Head>
+      <Head title={project.title} />
       <Header user={user} />
       {project.url && (
         <div
