@@ -4,10 +4,13 @@ const express = require('express');
 module.exports = class CheckAuthentication {
   prepareMiddleware() {
     const middleware = express();
-    middleware.get(['/projects', '/create', '/edit/*', '/duplicate/*'], (req, res, next) => {
-      if (req.user) return next();
-      return res.redirect(`/login?redirect=${req.originalUrl}`);
-    });
+    middleware.get(
+      ['/projects', '/create', '/edit/*', '/duplicate/*', '/download'],
+      (req, res, next) => {
+        if (req.user) return next();
+        return res.redirect(`/login?redirect=${req.originalUrl}`);
+      }
+    );
 
     middleware.get('/login', (req, res, next) => {
       if (req.user) {

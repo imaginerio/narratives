@@ -12,6 +12,7 @@ const initialiseData = require('./initial-data');
 const CheckAuthentication = require('./routes/authentication');
 const S3Upload = require('./routes/upload');
 const Duplicate = require('./routes/duplicate');
+const Download = require('./routes/download');
 
 const UserSchema = require('./lists/User');
 const ProjectSchema = require('./lists/Project');
@@ -62,6 +63,7 @@ module.exports = {
     new CheckAuthentication(),
     new S3Upload(),
     new Duplicate(),
+    new Download(),
     new NextApp({ dir: 'src' }),
   ],
   configureExpress: app => {

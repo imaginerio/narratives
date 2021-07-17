@@ -2,7 +2,7 @@
 const express = require('express');
 const { runCustomQuery, createItem } = require('@keystonejs/server-side-graphql-client');
 
-module.exports = class CheckAuthentication {
+module.exports = class DuplicateSlide {
   prepareMiddleware({ keystone }) {
     const middleware = express();
     middleware.get('/duplicate/:id', (req, res) =>
