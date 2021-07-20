@@ -296,7 +296,7 @@ export const Create = ({ user }) => {
 };
 
 Create.propTypes = {
-  user: PropTypes.string,
+  user: PropTypes.shape(),
 };
 
 Create.defaultProps = {
@@ -307,7 +307,7 @@ export default withApollo(Create);
 
 export async function getServerSideProps({ req }) {
   let user = null;
-  if (req.user) user = req.user.id;
+  if (req.user) user = req.user;
   return {
     props: {
       user,

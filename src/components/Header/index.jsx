@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useMutation, gql } from '@apollo/client';
-import { Image } from 'semantic-ui-react';
+import Avatar from 'boring-avatars';
+import { Image, Dropdown } from 'semantic-ui-react';
 
 import styles from './Header.module.css';
 
@@ -33,31 +34,44 @@ const Header = ({ user }) => {
   });
 
   return (
-    <div className={styles.header}>
-      <Image src="/img/rio-logo.svg" style={{ width: 150 }} />
-      <div className={styles.spacer} />
-      {Object.keys(pages).map(page => (
-        <a
-          key={page}
-          className={styles.link}
-          href={`${process.env.NEXT_PUBLIC_MAIN_SITE}${pages[page]}`}
-        >
-          {page}
+    <div style={{ backgroundColor: 'white' }}>
+      <div className={styles.header}>
+        <Image src="/img/rio-logo.svg" style={{ width: 150 }} />
+        <div className={styles.spacer} />
+        {Object.keys(pages).map(page => (
+          <a
+            key={page}
+            className={styles.link}
+            href={`${process.env.NEXT_PUBLIC_MAIN_SITE}${pages[page]}`}
+          >
+            {page}
+          </a>
+        ))}
+        <a href="/" className={`${styles.link} ${styles.active}`} style={{ marginRight: 20 }}>
+          Narratives
         </a>
-      ))}
-      <a href="/" className={`${styles.link} ${styles.active}`}>
-        Narratives
-      </a>
-      {user ? (
-        // eslint-disable-next-line jsx-a11y/anchor-is-valid
-        <a className={styles.link} onClick={signOut} href="#">
-          Logout
-        </a>
-      ) : (
-        <a className={styles.link} href="/projects">
-          Login
-        </a>
-      )}
+        {user && (
+          <Dropdown
+            icon={null}
+            pointing
+            style={{ marginTop: 5 }}
+            trigger={
+              // eslint-disable-next-line react/jsx-wrap-multilines
+              <Avatar
+                size={35}
+                name="Ben Sheesley"
+                variant="bauhaus"
+                colors={['#3C558E', '#EAF0DB', '#6CB2F5', '#CDE1F5']}
+              />
+            }
+          >
+            <Dropdown.Menu style={{ marginLeft: -40 }}>
+              <Dropdown.Item text="My narratives" as="a" href="/projects" />
+              <Dropdown.Item text="Logout" onClick={signOut} />
+            </Dropdown.Menu>
+          </Dropdown>
+        )}
+      </div>
     </div>
   );
 };

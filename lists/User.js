@@ -61,6 +61,24 @@ module.exports = {
         delete: access.userIsAdmin,
       },
     },
+    termsAccepted: {
+      type: Checkbox,
+      access: {
+        read: access.userIsAdminOrOwner,
+        update: access.userIsAdminOrOwner,
+        create: access.userIsAdmin,
+        delete: access.userIsAdmin,
+      },
+    },
+    privacyAccepted: {
+      type: Checkbox,
+      access: {
+        read: access.userIsAdminOrOwner,
+        update: access.userIsAdminOrOwner,
+        create: access.userIsAdmin,
+        delete: access.userIsAdmin,
+      },
+    },
     projects: {
       type: Relationship,
       ref: 'Project.user',

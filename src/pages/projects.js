@@ -53,7 +53,7 @@ const CREATE_PROJECT = gql`
 
 const Projects = ({ user }) => {
   const [isLoading, setLoading] = useState(false);
-  const { loading, error, data } = useQuery(GET_PROJECTS, { variables: { user } });
+  const { loading, error, data } = useQuery(GET_PROJECTS, { variables: { user: user.id } });
   const [createProject] = useMutation(CREATE_PROJECT);
 
   const newProject = () => {
@@ -142,6 +142,10 @@ const Projects = ({ user }) => {
             </Segment>
           ))}
         </Segment.Group>
+        <Button icon labelPosition="left" floated="right" size="tiny" as="a" href="/download">
+          <Icon name="download" />
+          Download my data
+        </Button>
         <Image src="img/hrc-logo.png" />
       </Container>
     </div>
@@ -154,10 +158,20 @@ Projects.propTypes = {
 
 export default withApollo(Projects);
 
-export async function getServerSideProps({ req }) {
+export async function getServerSideProps({ res, req }) {
+  if (!req.user.termsAccepted) {
+    res.setHeader('location', '/legal/terms');
+    res.statusCode = 302;
+    res.end();
+  }
+  if (!req.user.privacyAccepted) {
+    res.setHeader('location', '/legal/privacy');
+    res.statusCode = 302;
+    res.end();
+  }
   return {
     props: {
-      user: req.user.id,
+      user: req.user,
     },
   };
 }
