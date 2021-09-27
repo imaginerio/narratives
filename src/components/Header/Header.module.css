@@ -1,11 +1,13 @@
 .header{
   height: 90px;
-  padding: 0 20px;
-  margin: auto;
+  margin: 0 -30px;
   background-color: white;
+}
+
+.headerFlex{
   display: flex;
   align-items: center;
-  max-width: 1400px;
+  flex-wrap: wrap;
 }
 
 .title{
@@ -21,6 +23,8 @@
   margin-left: 25px;
   line-height: 30px;
   color: black;
+  font-weight: 300;
+  font-size: 15px;
   text-decoration-thickness: 3px;
   text-underline-offset: 5px;
 }

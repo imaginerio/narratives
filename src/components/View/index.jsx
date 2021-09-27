@@ -103,7 +103,7 @@ const View = ({ data }) => {
                   <Card.Header style={{ fontSize: '1.5em', textAlign: 'center' }}>
                     {data.Project.title}
                   </Card.Header>
-                  <h3 style={{ textAlign: 'center', fontWeight: 400 }}>
+                  <h3 style={{ textAlign: 'center', fontWeight: 300 }}>
                     {`Author: ${data.Project.user.name}`}
                   </h3>
                   {data.Project.url && (
