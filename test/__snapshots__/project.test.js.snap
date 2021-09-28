@@ -17,73 +17,76 @@ exports[`project page matches snapshot 1`] = `
     }
   >
     <div
-      className="header"
+      className="container"
     >
-      <img
-        className="img"
-        src="/img/rio-logo.svg"
-        style={
-          Object {
-            "width": 150,
-          }
-        }
-      />
       <div
-        className="spacer"
-      />
-      <a
-        className="link"
-        href="undefined/"
+        className="header headerFlex"
       >
-        Home
-      </a>
-      <a
-        className="link"
-        href="undefined/about"
-      >
-        About
-      </a>
-      <a
-        className="link"
-        href="undefined/people"
-      >
-        People
-      </a>
-      <a
-        className="link"
-        href="undefined/research"
-      >
-        Research
-      </a>
-      <a
-        className="link"
-        href="undefined/press"
-      >
-        Press
-      </a>
-      <a
-        className="link"
-        href="undefined/iconography"
-      >
-        Iconography
-      </a>
-      <a
-        className="link"
-        href="undefined/map"
-      >
-        Map
-      </a>
-      <a
-        className="link active"
-        href="/"
-        style={
-          Object {
-            "marginRight": 20,
+        <img
+          className="img"
+          src="/img/rio-logo.svg"
+          style={
+            Object {
+              "width": 150,
+            }
           }
-        }
-      >
-        Narratives
-      </a>
+        />
+        <div
+          className="spacer"
+        />
+        <div
+          className="headerFlex"
+        >
+          <a
+            className="link "
+            href="undefined/"
+          >
+            Home
+          </a>
+          <a
+            className="link "
+            href="undefined/about"
+          >
+            About
+          </a>
+          <a
+            className="link "
+            href="undefined/people"
+          >
+            People
+          </a>
+          <a
+            className="link "
+            href="undefined/research"
+          >
+            Research
+          </a>
+          <a
+            className="link "
+            href="undefined/press"
+          >
+            Press
+          </a>
+          <a
+            className="link active"
+            href="/"
+          >
+            Narratives
+          </a>
+          <a
+            className="link "
+            href="undefined/iconography"
+          >
+            Iconography
+          </a>
+          <a
+            className="link "
+            href="undefined/map"
+          >
+            Map
+          </a>
+        </div>
+      </div>
     </div>
   </div>
   <div
