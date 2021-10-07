@@ -3,13 +3,11 @@ const { Text, Relationship, Checkbox, Password } = require('@keystonejs/fields')
 
 // Access control functions
 const userIsAdmin = ({ authentication: { item: user } }) => Boolean(user && user.isAdmin);
-const userOwnsItem = ({ authentication: { item: user } }) => {
+const userOwnsItem = ({ existingItem: { id }, authentication: { item: user } }) => {
   if (!user) {
     return false;
   }
-  // Instead of a boolean, you can return a GraphQL query:
-  // https://www.keystonejs.com/api/access-control#graphqlwhere
-  return { id: user.id };
+  return id === user.id;
 };
 
 const userIsAdminOrOwner = auth => {
@@ -66,8 +64,8 @@ module.exports = {
       access: {
         read: access.userIsAdminOrOwner,
         update: access.userIsAdminOrOwner,
-        create: access.userIsAdmin,
-        delete: access.userIsAdmin,
+        create: access.userIsAdminOrOwner,
+        delete: access.userIsAdminOrOwner,
       },
     },
     privacyAccepted: {
@@ -75,8 +73,8 @@ module.exports = {
       access: {
         read: access.userIsAdminOrOwner,
         update: access.userIsAdminOrOwner,
-        create: access.userIsAdmin,
-        delete: access.userIsAdmin,
+        create: access.userIsAdminOrOwner,
+        delete: access.userIsAdminOrOwner,
       },
     },
     projects: {
