@@ -1,19 +1,7 @@
 const { Text, Url, Relationship } = require('@keystonejs/fields');
 
-const defaultAuth = ({ authentication: { item } }) => {
-  if (item) {
-    return {
-      slide: {
-        project: {
-          user: {
-            id: item.id,
-          },
-        },
-      },
-    };
-  }
-  return false;
-};
+const defaultAuth = ({ existingItem, authentication: { item } }) =>
+  item && existingItem.slide.project.user.toString() === item.id;
 
 module.exports = {
   access: {

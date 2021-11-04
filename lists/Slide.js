@@ -2,17 +2,13 @@ const { Text, Relationship, Float, Integer, Select, Url } = require('@keystonejs
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 const { gql } = require('apollo-server-express');
 
-const defaultAuth = ({ authentication: { item } }) => {
-  if (item) {
-    return {
-      project: {
-        user: {
-          id: item.id,
-        },
-      },
-    };
-  }
-  return false;
+const defaultAuth = ({ existingItem, authentication: { item } }) => {
+  console.log(
+    existingItem.project,
+    JSON.stringify(existingItem.project),
+    JSON.parse(JSON.stringify(existingItem.project))
+  );
+  return item && existingItem.project.user.toString() === item.id;
 };
 
 module.exports = {
