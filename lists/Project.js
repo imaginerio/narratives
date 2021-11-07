@@ -2,18 +2,12 @@ const { Text, Relationship, Select, Url, Checkbox } = require('@keystonejs/field
 const { atTracking } = require('@keystonejs/list-plugins');
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 
-const userIsAdmin = ({ authentication: { item: user } }) => Boolean(user && user.isAdmin);
+const { userIsAdmin, createDefaultAccess } = require('./access');
 
 const defaultAuth = ({ existingItem, authentication: { item } }) =>
-  item && existingItem.user.toString() === item.id;
+  (item && existingItem.user.toString() === item.id) || item.isAdmin;
 
-const access = {
-  auth: true,
-  create: ({ authentication: { item } }) => item !== undefined,
-  read: true,
-  update: defaultAuth,
-  delete: defaultAuth,
-};
+const access = createDefaultAccess(defaultAuth);
 
 module.exports = {
   fields: {

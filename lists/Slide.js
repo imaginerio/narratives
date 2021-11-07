@@ -2,6 +2,8 @@ const { Text, Relationship, Float, Integer, Select, Url } = require('@keystonejs
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 const { gql } = require('apollo-server-express');
 
+const { createDefaultAccess } = require('./access');
+
 const defaultAuth = async ({ context, existingItem, authentication: { item } }) => {
   const project = existingItem.project.toString();
   const { data } = await context.executeGraphQL({
@@ -17,16 +19,10 @@ const defaultAuth = async ({ context, existingItem, authentication: { item } }) 
     variables: { project },
   });
 
-  return data && item && data.Project.user.id === item.id;
+  return (data && item && data.Project.user.id === item.id) || item.isAdmin;
 };
 
-const access = {
-  auth: true,
-  create: ({ authentication: { item } }) => item !== undefined,
-  read: true,
-  update: defaultAuth,
-  delete: defaultAuth,
-};
+const access = createDefaultAccess(defaultAuth);
 
 module.exports = {
   fields: {
