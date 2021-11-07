@@ -2,105 +2,136 @@ const { Text, Relationship, Float, Integer, Select, Url } = require('@keystonejs
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 const { gql } = require('apollo-server-express');
 
-const defaultAuth = ({ existingItem, authentication: { item } }) => {
-  console.log(
-    existingItem.project,
-    JSON.stringify(existingItem.project),
-    JSON.parse(JSON.stringify(existingItem.project))
-  );
-  return item && existingItem.project.user.toString() === item.id;
+const defaultAuth = async ({ context, existingItem, authentication: { item } }) => {
+  const project = existingItem.project.toString();
+  const { data } = await context.executeGraphQL({
+    query: gql`
+      query getUser($project: ID!) {
+        Project(where: { id: $project }) {
+          user {
+            id
+          }
+        }
+      }
+    `,
+    variables: { project },
+  });
+
+  return data && item && data.Project.user.id === item.id;
+};
+
+const access = {
+  auth: true,
+  create: ({ authentication: { item } }) => item !== undefined,
+  read: true,
+  update: defaultAuth,
+  delete: defaultAuth,
 };
 
 module.exports = {
-  access: {
-    auth: true,
-    create: ({ authentication: { item } }) => item !== undefined,
-    read: true,
-    update: defaultAuth,
-    delete: defaultAuth,
-  },
   fields: {
     title: {
       type: Text,
+      access,
     },
     description: {
       type: Wysiwyg,
+      access,
     },
     order: {
       type: Integer,
+      access,
     },
     size: {
       type: Select,
       options: 'Fullscreen, Medium, Small',
       defaultValue: 'Small',
+      access,
     },
     year: {
       type: Integer,
       defaultValue: 1900,
+      access,
     },
     longitude: {
       type: Float,
       defaultValue: -43.1,
+      access,
     },
     latitude: {
       type: Float,
       defaultValue: -22.9,
+      access,
     },
     zoom: {
       type: Float,
       defaultValue: 12,
+      access,
     },
     bearing: {
       type: Float,
       defaultValue: 0,
+      access,
     },
     pitch: {
       type: Float,
       defaultValue: 0,
+      access,
     },
     selectedFeature: {
       type: Text,
+      access,
     },
     layers: {
       type: Relationship,
       ref: 'Layer',
       many: true,
+      access,
     },
     basemap: {
       type: Relationship,
       ref: 'Basemap',
       many: false,
+      access,
     },
     opacity: {
       type: Float,
       defaultValue: 1,
+      access,
     },
     media: {
       type: Url,
+      access,
     },
     imageTitle: {
       type: Text,
+      access,
     },
     source: {
       type: Url,
+      access,
     },
     url: {
       type: Url,
+      access,
     },
     image: {
       type: Relationship,
       ref: 'Image.slide',
       many: false,
+      access,
     },
     project: {
       type: Relationship,
       ref: 'Project.slides',
       many: false,
+      access,
     },
     annotations: {
       type: Relationship,
       ref: 'Annotation.slide',
       many: true,
+      access,
     },
   },
   labelField: 'title',
