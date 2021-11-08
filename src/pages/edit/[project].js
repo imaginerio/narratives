@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+import PropTypes from 'prop-types';
 import { useQuery, useMutation, gql } from '@apollo/client';
-import { getDataFromTree } from '@apollo/react-ssr';
 import axios from 'axios';
+import ErrorPage from 'next/error';
 import { Container, Grid, Dimmer, Loader } from 'semantic-ui-react';
 
 import withApollo from '../../providers/withApollo';
@@ -53,9 +53,8 @@ const EDIT_SLIDE_ORDER = gql`
   }
 `;
 
-const EditPage = () => {
-  const router = useRouter();
-  const { project } = router.query;
+const EditPage = ({ project, statusCode }) => {
+  if (statusCode) return <ErrorPage statusCode={statusCode} />;
 
   const [activeSlide, setActiveSlide] = useState(null);
   const [apiLoading, setApiLoading] = useState(false);
@@ -175,4 +174,40 @@ const EditPage = () => {
   );
 };
 
-export default withApollo(EditPage, { getDataFromTree });
+export default withApollo(EditPage);
+
+EditPage.propTypes = {
+  project: PropTypes.string.isRequired,
+  statusCode: PropTypes.number,
+};
+
+EditPage.defaultProps = {
+  statusCode: null,
+};
+
+export async function getServerSideProps({ req, params: { project } }) {
+  const {
+    data: {
+      data: {
+        Project: { user },
+      },
+    },
+  } = await axios.post(`${req.protocol}://${req.get('Host')}/admin/api`, {
+    query: `query GetProjectUser($project: ID!) {
+        Project(where: { id: $project }) {
+          user {
+            id
+          }
+        }
+      }
+    `,
+    variables: {
+      project,
+    },
+  });
+
+  let statusCode;
+  if (user.id !== req.user.id) statusCode = 403;
+
+  return { props: { project, statusCode } };
+}
