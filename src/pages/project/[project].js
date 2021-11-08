@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useRouter } from 'next/router';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { map } from 'lodash';
+import ErrorPage from 'next/error';
 import {
   Container,
   Header as Heading,
@@ -24,6 +24,7 @@ import Header from '../../components/Header';
 import Head from '../../components/Head';
 import Confirm from '../../components/Confirm';
 import Wysiwyg from '../../components/Wysiwyg';
+import useProjectAuth from '../../providers/useProjectAuth';
 
 export const GET_PROJECT = gql`
   query GetProject($project: ID!) {
@@ -113,9 +114,8 @@ const DELETE_PROJECT = gql`
   }
 `;
 
-export const Create = ({ user }) => {
-  const router = useRouter();
-  const { project } = router.query;
+export const Create = ({ user, project, statusCode }) => {
+  if (statusCode) return <ErrorPage statusCode={statusCode} />;
 
   const { loading, error, data } = useQuery(GET_PROJECT, { variables: { project } });
   const [addTag] = useMutation(ADD_TAG);
@@ -297,20 +297,29 @@ export const Create = ({ user }) => {
 
 Create.propTypes = {
   user: PropTypes.shape(),
+  project: PropTypes.string.isRequired,
+  statusCode: PropTypes.number,
 };
 
 Create.defaultProps = {
   user: null,
+  statusCode: null,
 };
 
 export default withApollo(Create);
 
-export async function getServerSideProps({ req }) {
+export async function getServerSideProps({ req, params: { project } }) {
   let user = null;
-  if (req.user) user = req.user;
+  if (req.user) {
+    user = req.user;
+  }
+  const statusCode = await useProjectAuth({ req, project });
+
   return {
     props: {
       user,
+      project,
+      statusCode,
     },
   };
 }

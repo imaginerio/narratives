@@ -12,6 +12,7 @@ import Slides from '../../components/Slides';
 import Editor from '../../components/Editor';
 import EditorHeader from '../../components/Editor/EditorHeader';
 import { DrawProvider } from '../../providers/DrawProvider';
+import useProjectAuth from '../../providers/useProjectAuth';
 
 const GET_SLIDES = gql`
   query GetSlides($project: ID!) {
@@ -186,28 +187,6 @@ EditPage.defaultProps = {
 };
 
 export async function getServerSideProps({ req, params: { project } }) {
-  const {
-    data: {
-      data: {
-        Project: { user },
-      },
-    },
-  } = await axios.post(`${req.protocol}://${req.get('Host')}/admin/api`, {
-    query: `query GetProjectUser($project: ID!) {
-        Project(where: { id: $project }) {
-          user {
-            id
-          }
-        }
-      }
-    `,
-    variables: {
-      project,
-    },
-  });
-
-  let statusCode;
-  if (user.id !== req.user.id) statusCode = 403;
-
+  const statusCode = await useProjectAuth({ req, project });
   return { props: { project, statusCode } };
 }
