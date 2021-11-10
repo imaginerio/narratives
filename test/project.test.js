@@ -107,7 +107,7 @@ describe('project page', () => {
   it('matches snapshot', async () => {
     const component = renderer.create(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <Create />
+        <Create project="1" />
       </MockedProvider>
     );
 

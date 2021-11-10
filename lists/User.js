@@ -25,8 +25,8 @@ module.exports = {
       access: {
         read: true,
         update: access.userIsAdminOrOwner,
-        create: access.userIsAdmin,
-        delete: access.userIsAdmin,
+        create: true,
+        delete: access.userIsAdminOrOwner,
       },
     },
     email: {
@@ -35,8 +35,17 @@ module.exports = {
       access: {
         read: access.userIsAdminOrOwner,
         update: access.userIsAdminOrOwner,
-        create: access.userIsAdmin,
-        delete: access.userIsAdmin,
+        create: true,
+        delete: access.userIsAdminOrOwner,
+      },
+    },
+    institution: {
+      type: Text,
+      access: {
+        read: true,
+        update: access.userIsAdminOrOwner,
+        create: true,
+        delete: access.userIsAdminOrOwner,
       },
     },
     isAdmin: {
@@ -55,7 +64,7 @@ module.exports = {
       access: {
         read: access.userIsAdminOrOwner,
         update: access.userIsAdminOrOwner,
-        create: access.userIsAdmin,
+        create: true,
         delete: access.userIsAdmin,
       },
     },

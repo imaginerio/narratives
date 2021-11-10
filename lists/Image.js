@@ -1,27 +1,13 @@
 const { Text, Url, Relationship } = require('@keystonejs/fields');
-
-const defaultAuth = ({ authentication: { item } }) => {
-  if (item) {
-    return {
-      slide: {
-        project: {
-          user: {
-            id: item.id,
-          },
-        },
-      },
-    };
-  }
-  return false;
-};
+const { userIsAdmin } = require('./access');
 
 module.exports = {
   access: {
     auth: true,
     create: ({ authentication: { item } }) => item !== undefined,
     read: true,
-    update: defaultAuth,
-    delete: defaultAuth,
+    update: userIsAdmin,
+    delete: userIsAdmin,
   },
   fields: {
     title: {
