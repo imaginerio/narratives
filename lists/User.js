@@ -1,5 +1,8 @@
 /* eslint-disable no-use-before-define */
 const { Text, Relationship, Checkbox, Password } = require('@keystonejs/fields');
+const uuid = require('uuid').v4;
+
+const { sendEmail } = require('../server/email');
 
 // Access control functions
 const userIsAdmin = ({ authentication: { item: user } }) => Boolean(user && user.isAdmin);
@@ -46,6 +49,25 @@ module.exports = {
         update: access.userIsAdminOrOwner,
         create: true,
         delete: access.userIsAdminOrOwner,
+      },
+    },
+    verified: {
+      type: Checkbox,
+      access: {
+        read: true,
+        update: access.userIsAdminOrOwner,
+        create: access.userIsAdminOrOwner,
+        delete: access.userIsAdminOrOwner,
+      },
+    },
+    verifyId: {
+      type: Text,
+      defaultValue: uuid(),
+      access: {
+        read: true,
+        update: access.userIsAdmin,
+        create: access.userIsAdmin,
+        delete: access.userIsAdmin,
       },
     },
     isAdmin: {
@@ -96,6 +118,13 @@ module.exports = {
         create: access.userIsAdmin,
         delete: access.userIsAdmin,
       },
+    },
+  },
+  hooks: {
+    afterChange: async ({ operation, updatedItem }) => {
+      if (operation === 'create') {
+        sendEmail({ to: updatedItem.email, key: updatedItem.verifyId });
+      }
     },
   },
 };
