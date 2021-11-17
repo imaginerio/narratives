@@ -31,6 +31,7 @@
     "@keystonejs/keystone": "^17.1.2",
     "@keystonejs/list-plugins": "^7.1.4",
     "@keystonejs/server-side-graphql-client": "^1.1.0",
+    "@sendgrid/mail": "^7.6.0",
     "@tinymce/tinymce-react": "^3.6.1",
     "@turf/area": "^6.3.0",
     "apollo-server-express": "^2.19.0",
