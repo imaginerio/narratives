@@ -1,20 +1,25 @@
+/* eslint-disable no-console */
 const sgMail = require('@sendgrid/mail');
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const msg = {
-  from: 'admin@narratives.imaginerio.org', // Change to your verified sender
+  from: 'admin@narratives.imaginerio.org',
   subject: 'Verify your email for imagineRio Narratives',
-  text: 'and easy to do anywhere, even with Node.js',
-  html: '<strong>and easy to do anywhere, even with Node.js</strong>',
 };
 
-module.exports.sendEmail = ({ to, key }) => {
+module.exports.sendEmail = ({ to, key, host }) => {
   sgMail
     .send({
       ...msg,
       to,
-      html: `<a href="${process.env.SERVER_URL}/verify/${key}">Verify your email for imagineRio Narratives</a>`,
+      html: `
+        <p>
+          Thank you for registering an account on <a href="http://narratives.imaginerio.org">imagineRio Narratives</a>.
+          Please click the link below to verify your account.
+        </p>
+        <p><a href="${host}/user/verify/${key}">Verify your email for imagineRio Narratives</a></p>
+      `,
     })
     .then(response => {
       console.log(response[0].statusCode);

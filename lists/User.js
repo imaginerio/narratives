@@ -55,9 +55,9 @@ module.exports = {
       type: Checkbox,
       access: {
         read: true,
-        update: access.userIsAdminOrOwner,
-        create: access.userIsAdminOrOwner,
-        delete: access.userIsAdminOrOwner,
+        update: true,
+        create: true,
+        delete: true,
       },
     },
     verifyId: {
@@ -121,9 +121,16 @@ module.exports = {
     },
   },
   hooks: {
-    afterChange: async ({ operation, updatedItem }) => {
+    afterChange: async ({ operation, updatedItem, context }) => {
+      const {
+        req: { protocol, hostname },
+      } = context;
       if (operation === 'create') {
-        sendEmail({ to: updatedItem.email, key: updatedItem.verifyId });
+        sendEmail({
+          to: updatedItem.email,
+          key: updatedItem.verifyId,
+          host: `${protocol}://${hostname}`,
+        });
       }
     },
   },
