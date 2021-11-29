@@ -11,7 +11,7 @@ const msg = {
 const templates = (template, { host, key }) => {
   switch (template) {
     case 'reset-password':
-      return '<p>Click <a href="{{resetUrl}}">here</a> to reset your password.</p>';
+      return `<p>Click <a href="${host}/user/reset/${key}">here</a> to reset your password.</p>`;
     default:
       return `<p>
         Thank you for registering an account on <a href="http://narratives.imaginerio.org">imagineRio Narratives</a>.

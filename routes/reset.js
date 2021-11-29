@@ -19,36 +19,30 @@ module.exports = class ResetPassword {
           }
         }`,
         variables: { email },
-      })
-        .then(({ data }) => {
-          const resetToken = uuid();
-          return runCustomQuery({
-            keystone,
-            query: `mutation UpdateResetToken($id: ID!, $resetToken: String) {
+      }).then(queryResponse => {
+        const resetToken = uuid();
+        return runCustomQuery({
+          keystone,
+          query: `mutation UpdateResetToken($id: ID!, $resetToken: String) {
               updateUser(id: $id, data: { resetId: $resetToken }) {
                 id
               }
             }`,
-            variables: {
-              id: data.allUsers[0].id,
-              resetToken,
-            },
-          }).then(() => {
-            return sendEmail({
-              to: email,
-              key: resetToken,
-              host: `${req.protocol}://${req.get('host')}`,
-              template: 'reset-password',
-            }).then(() => {
-              res.send({ success: true });
-            });
+          variables: {
+            id: queryResponse.allUsers[0].id,
+            resetToken,
+          },
+        }).then(() => {
+          sendEmail({
+            to: email,
+            key: resetToken,
+            host: `${req.get('protocol') || 'http'}://${req.get('host')}`,
+            template: 'reset-password',
           });
-        })
-        .then(async data => {
-          res.set({ 'Content-Disposition': 'attachment; filename="narratives_data.json"' });
-          res.set('Content-Type', 'application/json');
-          res.send(JSON.stringify(data, null, 2));
+
+          res.send({ success: true });
         });
+      });
     });
 
     return middleware;

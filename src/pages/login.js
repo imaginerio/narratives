@@ -82,6 +82,9 @@ const Login = () => {
               error={error}
               onChange={e => setSecret(e.target.value)}
             />
+            <a href="/reset" style={{ float: 'right', marginBottom: 15 }}>
+              Forgot your password?
+            </a>
             <Button type="submit" fluid primary loading={loading}>
               Login
             </Button>
