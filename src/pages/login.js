@@ -33,9 +33,9 @@ const Login = () => {
 
   const [signIn, { loading, client }] = useMutation(AUTH_MUTATION, {
     variables: { identity, secret },
-    onCompleted: async ({ authenticate: { verified } }) => {
+    onCompleted: async ({ authenticate }) => {
       setReloading(true);
-      if (!verified) {
+      if (!authenticate.item.verified) {
         setError(
           'Your account has not been verified. Please check your email for a verification link.'
         );
