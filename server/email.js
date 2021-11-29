@@ -8,18 +8,25 @@ const msg = {
   subject: 'Verify your email for imagineRio Narratives',
 };
 
-module.exports.sendEmail = ({ to, key, host }) => {
+const templates = (template, { host, key }) => {
+  switch (template) {
+    case 'reset-password':
+      return '<p>Click <a href="{{resetUrl}}">here</a> to reset your password.</p>';
+    default:
+      return `<p>
+        Thank you for registering an account on <a href="http://narratives.imaginerio.org">imagineRio Narratives</a>.
+        Please click the link below to verify your account.
+      </p>
+      <p><a href="${host}/user/verify/${key}">Verify your email for imagineRio Narratives</a></p>`;
+  }
+};
+
+module.exports.sendEmail = ({ to, key, host, template }) => {
   sgMail
     .send({
       ...msg,
       to,
-      html: `
-        <p>
-          Thank you for registering an account on <a href="http://narratives.imaginerio.org">imagineRio Narratives</a>.
-          Please click the link below to verify your account.
-        </p>
-        <p><a href="${host}/user/verify/${key}">Verify your email for imagineRio Narratives</a></p>
-      `,
+      html: templates(template, { host, key }),
     })
     .then(response => {
       console.log(response[0].statusCode);

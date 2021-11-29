@@ -35,8 +35,9 @@ module.exports = {
     email: {
       type: Text,
       isUnique: true,
+      isRequired: true,
       access: {
-        read: access.userIsAdminOrOwner,
+        read: true,
         update: access.userIsAdminOrOwner,
         create: true,
         delete: access.userIsAdminOrOwner,
@@ -68,6 +69,15 @@ module.exports = {
         update: access.userIsAdmin,
         create: access.userIsAdmin,
         delete: access.userIsAdmin,
+      },
+    },
+    resetId: {
+      type: Text,
+      access: {
+        read: true,
+        update: access.userIsAdminOrOwner,
+        create: true,
+        delete: true,
       },
     },
     isAdmin: {
