@@ -21,6 +21,14 @@ export const Home = ({ user, data, content }) => (
       </Container>
     </section>
     <Container style={{ marginTop: 30, marginBottom: 30 }}>
+      {!user && (
+        <a href="/signup" style={{ display: 'block', float: 'right', margin: '0 20px' }}>
+          <span>
+            <Icon name="signup" />
+            Sign Up
+          </span>
+        </a>
+      )}
       <a href="/projects" style={{ display: 'block', float: 'right' }}>
         <span>
           <Icon name={user ? 'map outline' : 'user circle'} />
