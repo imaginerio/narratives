@@ -13,3 +13,4 @@ services:
         value: narratives
         previewValue: image-rio-narratives
       - fromGroup: narratives
+      - fromGroup: sendgrid
