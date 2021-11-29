@@ -27,12 +27,14 @@ const ADD_USER = gql`
 const Signup = () => {
   const [data, setData] = useState({});
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-  const [signUp, { loading, client }] = useMutation(ADD_USER, {
+  const [signUp, { loading }] = useMutation(ADD_USER, {
     variables: { ...data },
-    onCompleted: async () => {
-      await client.clearStore();
-      window.location.reload(true);
+    onCompleted: () => {
+      setSuccess(
+        'User created successfully. Please check your email to confirm your account and login.'
+      );
     },
     onError: () => {
       setError('Could not create your account. Please try again.');
@@ -56,7 +58,12 @@ const Signup = () => {
         <Heading as="h1" style={{ margin: '50px 0' }}>
           Create your account for imagineRio Narratives
         </Heading>
-        <Segment loading={loading}>
+        {success && (
+          <Message success onDismiss={() => window.location.replace('/')}>
+            {success}
+          </Message>
+        )}
+        <Segment loading={loading} disabled={success}>
           <Heading as="h3" style={{ margin: '10px 0 30px' }}>
             Enter your details below:
           </Heading>

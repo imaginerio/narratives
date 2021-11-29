@@ -31,8 +31,8 @@ export const Home = ({ user, data, content }) => (
       )}
       <a href="/projects" style={{ display: 'block', float: 'right' }}>
         <span>
-          <Icon name={user ? 'map outline' : 'user circle'} />
-          {user ? 'Manage My Maps' : 'Login'}
+          <Icon name={user && user.verified ? 'map outline' : 'user circle'} />
+          {user && user.verified ? 'Manage My Maps' : 'Login'}
         </span>
       </a>
       <Heading as="h1" style={{ margin: '50px 0' }}>
