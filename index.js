@@ -61,6 +61,7 @@ module.exports = {
       name: PROJECT_NAME,
       enableDefaultRoute: false,
       authStrategy,
+      isAccessAllowed: ({ authentication: { item: user } }) => !!user && !!user.isAdmin,
     }),
     new CheckAuthentication(),
     new S3Upload(),
