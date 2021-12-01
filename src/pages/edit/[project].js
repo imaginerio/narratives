@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+import PropTypes from 'prop-types';
 import { useQuery, useMutation, gql } from '@apollo/client';
-import { getDataFromTree } from '@apollo/react-ssr';
 import axios from 'axios';
+import ErrorPage from 'next/error';
 import { Container, Grid, Dimmer, Loader } from 'semantic-ui-react';
 
 import withApollo from '../../providers/withApollo';
@@ -12,6 +12,7 @@ import Slides from '../../components/Slides';
 import Editor from '../../components/Editor';
 import EditorHeader from '../../components/Editor/EditorHeader';
 import { DrawProvider } from '../../providers/DrawProvider';
+import useProjectAuth from '../../providers/useProjectAuth';
 
 const GET_SLIDES = gql`
   query GetSlides($project: ID!) {
@@ -53,9 +54,8 @@ const EDIT_SLIDE_ORDER = gql`
   }
 `;
 
-const EditPage = () => {
-  const router = useRouter();
-  const { project } = router.query;
+const EditPage = ({ project, statusCode }) => {
+  if (statusCode) return <ErrorPage statusCode={statusCode} />;
 
   const [activeSlide, setActiveSlide] = useState(null);
   const [apiLoading, setApiLoading] = useState(false);
@@ -175,4 +175,18 @@ const EditPage = () => {
   );
 };
 
-export default withApollo(EditPage, { getDataFromTree });
+export default withApollo(EditPage);
+
+EditPage.propTypes = {
+  project: PropTypes.string.isRequired,
+  statusCode: PropTypes.number,
+};
+
+EditPage.defaultProps = {
+  statusCode: null,
+};
+
+export async function getServerSideProps({ req, params: { project } }) {
+  const statusCode = await useProjectAuth({ req, project });
+  return { props: { project, statusCode } };
+}
