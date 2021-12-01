@@ -57,7 +57,7 @@ export async function getServerSideProps({ params, req }) {
   if (data.allUsers.length) {
     await axios.post(`${req.protocol}://${req.get('Host')}/admin/api`, {
       query: `mutation VerifyUser($id: ID!){
-        updateUser(id: $id, data: { verified: true, verifyId: null }){
+        updateUser(id: $id, data: { verified: true }){
           id
         }
       }`,
