@@ -13,6 +13,8 @@ const CheckAuthentication = require('./routes/authentication');
 const S3Upload = require('./routes/upload');
 const Duplicate = require('./routes/duplicate');
 const Download = require('./routes/download');
+const ResetPassword = require('./routes/reset');
+const ChangePassword = require('./routes/password');
 
 const UserSchema = require('./lists/User');
 const ProjectSchema = require('./lists/Project');
@@ -59,15 +61,15 @@ module.exports = {
       name: PROJECT_NAME,
       enableDefaultRoute: false,
       authStrategy,
-      isAccessAllowed: ({ authentication: { item: user } }) => {
-        if (!user) return false;
-        return user.isAdmin;
-      },
+      isAccessAllowed: ({ authentication: { item: user } }) => !!user && !!user.isAdmin,
+
     }),
     new CheckAuthentication(),
     new S3Upload(),
     new Duplicate(),
     new Download(),
+    new ResetPassword(),
+    new ChangePassword(),
     new NextApp({ dir: 'src' }),
   ],
   configureExpress: app => {

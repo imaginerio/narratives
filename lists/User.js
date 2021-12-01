@@ -1,5 +1,8 @@
 /* eslint-disable no-use-before-define */
 const { Text, Relationship, Checkbox, Password } = require('@keystonejs/fields');
+const uuid = require('uuid').v4;
+
+const { sendEmail } = require('../server/email');
 
 // Access control functions
 const userIsAdmin = ({ authentication: { item: user } }) => Boolean(user && user.isAdmin);
@@ -32,8 +35,9 @@ module.exports = {
     email: {
       type: Text,
       isUnique: true,
+      isRequired: true,
       access: {
-        read: access.userIsAdminOrOwner,
+        read: true,
         update: access.userIsAdminOrOwner,
         create: true,
         delete: access.userIsAdminOrOwner,
@@ -46,6 +50,34 @@ module.exports = {
         update: access.userIsAdminOrOwner,
         create: true,
         delete: access.userIsAdminOrOwner,
+      },
+    },
+    verified: {
+      type: Checkbox,
+      access: {
+        read: true,
+        update: true,
+        create: true,
+        delete: true,
+      },
+    },
+    verifyId: {
+      type: Text,
+      defaultValue: uuid(),
+      access: {
+        read: true,
+        update: access.userIsAdmin,
+        create: access.userIsAdmin,
+        delete: access.userIsAdmin,
+      },
+    },
+    resetId: {
+      type: Text,
+      access: {
+        read: true,
+        update: access.userIsAdminOrOwner,
+        create: true,
+        delete: true,
       },
     },
     isAdmin: {
@@ -96,6 +128,20 @@ module.exports = {
         create: access.userIsAdmin,
         delete: access.userIsAdmin,
       },
+    },
+  },
+  hooks: {
+    afterChange: async ({ operation, updatedItem, context }) => {
+      if (operation === 'create') {
+        const {
+          req: { protocol, hostname },
+        } = context;
+        sendEmail({
+          to: updatedItem.email,
+          key: updatedItem.verifyId,
+          host: `${protocol}://${hostname}`,
+        });
+      }
     },
   },
 };

@@ -90,7 +90,7 @@ const Header = ({ user }) => {
                 {name}
               </a>
             ))}
-            {user && (
+            {user && user.verified && (
               <Dropdown
                 icon={null}
                 pointing

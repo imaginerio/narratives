@@ -7,13 +7,13 @@ module.exports = class CheckAuthentication {
     middleware.get(
       ['/projects', '/create', '/edit/*', '/duplicate/*', '/download'],
       (req, res, next) => {
-        if (req.user) return next();
+        if (req.user && req.user.verified) return next();
         return res.redirect(`/login?redirect=${req.originalUrl}`);
       }
     );
 
     middleware.get('/login', (req, res, next) => {
-      if (req.user) {
+      if (req.user && req.user.verified) {
         if (req.query.redirect) {
           const { redirect } = req.query;
           return res.redirect(redirect);

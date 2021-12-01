@@ -20,6 +20,7 @@ const Login = () => {
       authenticate: authenticateUserWithPassword(email: $identity, password: $secret) {
         item {
           id
+          verified
         }
       }
     }
@@ -28,17 +29,24 @@ const Login = () => {
   const [identity, setIdentity] = useState('');
   const [secret, setSecret] = useState('');
   const [reloading, setReloading] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState('');
 
   const [signIn, { loading, client }] = useMutation(AUTH_MUTATION, {
     variables: { identity, secret },
-    onCompleted: async () => {
+    onCompleted: async ({ authenticate }) => {
       setReloading(true);
-      await client.clearStore();
-      window.location.reload(true);
+      if (!authenticate.item.verified) {
+        setError(
+          'Your account has not been verified. Please check your email for a verification link.'
+        );
+        setReloading(false);
+      } else {
+        await client.clearStore();
+        window.location.reload(true);
+      }
     },
     onError: () => {
-      setError(true);
+      setError('You could not be logged in. Please check your username and password.');
     },
   });
 
@@ -71,7 +79,7 @@ const Login = () => {
               label="Email"
               type="email"
               value={identity}
-              error={error}
+              error={Boolean(error)}
               onChange={e => setIdentity(e.target.value)}
             />
             <Form.Input
@@ -79,17 +87,16 @@ const Login = () => {
               label="Password"
               type="password"
               value={secret}
-              error={error}
+              error={Boolean(error)}
               onChange={e => setSecret(e.target.value)}
             />
+            <a href="/reset" style={{ float: 'right', marginBottom: 15 }}>
+              Forgot your password?
+            </a>
             <Button type="submit" fluid primary loading={loading}>
               Login
             </Button>
-            {error && (
-              <Message negative>
-                You could not be logged in. Please check your username and password
-              </Message>
-            )}
+            {error && <Message negative>{error}</Message>}
           </Form>
         </Segment>
         <Image src="img/hrc-logo.png" />
