@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import parse from 'html-react-parser';
+import { useRouter } from 'next/router';
 import { Container, Header as Heading, Image, Icon } from 'semantic-ui-react';
 import withApollo from '../providers/withApollo';
 
@@ -13,7 +14,9 @@ import useLocale from '../hooks/useLocale';
 const ParsedContent = ({ content }) => parse(content);
 
 export const Home = ({ user, data, content }) => {
+  const { locale } = useRouter();
   const { gallery, signUp, manage, login } = useLocale();
+
   return (
     <div style={{ minHeight: '100vh' }}>
       <Header user={user} />
@@ -32,7 +35,7 @@ export const Home = ({ user, data, content }) => {
             </span>
           </a>
         )}
-        <a href="/projects" style={{ display: 'block', float: 'right' }}>
+        <a href={`/${locale}/projects`} style={{ display: 'block', float: 'right' }}>
           <span>
             <Icon name={user && user.verified ? 'map outline' : 'user circle'} />
             {user && user.verified ? manage : login}

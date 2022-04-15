@@ -6,6 +6,7 @@ import withApollo from '../providers/withApollo';
 
 import Header from '../components/Header';
 import Head from '../components/Head';
+import useLocale from '../hooks/useLocale';
 
 const GET_PROJECTS = gql`
   query GetProjects($user: ID!) {
@@ -55,6 +56,17 @@ const Projects = ({ user }) => {
   const [isLoading, setLoading] = useState(false);
   const { loading, error, data } = useQuery(GET_PROJECTS, { variables: { user: user.id } });
   const [createProject] = useMutation(CREATE_PROJECT);
+  const {
+    myNarratives,
+    gallery,
+    addNarrative,
+    modified,
+    created,
+    preview,
+    editor,
+    published,
+    download,
+  } = useLocale();
 
   const newProject = () => {
     setLoading(true);
@@ -82,14 +94,14 @@ const Projects = ({ user }) => {
         <a href="/" style={{ display: 'block', float: 'right', lineHeight: '36px' }}>
           <span>
             <Icon name="grid layout" />
-            Map Gallery
+            {gallery}
           </span>
         </a>
         <Heading as="h1" style={{ marginTop: 30 }}>
-          My Narratives / Minhas narrativas
+          {myNarratives}
         </Heading>
         <Button
-          content="Add Narrative / Nova narrativa"
+          content={addNarrative}
           loading={isLoading}
           icon="plus"
           size="large"
@@ -107,7 +119,7 @@ const Projects = ({ user }) => {
               </a>
               <Button
                 floated="right"
-                content="Editor"
+                content={editor}
                 icon="edit"
                 as="a"
                 href={`/edit/${proj.id}`}
@@ -115,7 +127,7 @@ const Projects = ({ user }) => {
               <Button
                 basic
                 floated="right"
-                content="Preview"
+                content={preview}
                 icon="play"
                 as="a"
                 style={{ marginRight: 10 }}
@@ -124,18 +136,18 @@ const Projects = ({ user }) => {
               <div style={{ clear: 'right' }}>
                 {proj.updatedAt && (
                   <span style={{ marginRight: 10 }}>
-                    {`Modified: ${new Date(proj.updatedAt).toLocaleDateString()}`}
+                    {`${modified}: ${new Date(proj.updatedAt).toLocaleDateString()}`}
                   </span>
                 )}
                 {proj.createdAt && (
                   <span style={{ marginRight: 10 }}>
-                    {`Created: ${new Date(proj.createdAt).toLocaleDateString()}`}
+                    {`${created}: ${new Date(proj.createdAt).toLocaleDateString()}`}
                   </span>
                 )}
                 {proj.published && (
                   <span>
                     <Icon name="check" />
-                    Published
+                    {published}
                   </span>
                 )}
               </div>
@@ -144,7 +156,7 @@ const Projects = ({ user }) => {
         </Segment.Group>
         <Button icon labelPosition="left" floated="right" size="tiny" as="a" href="/download">
           <Icon name="download" />
-          Download my data
+          {download}
         </Button>
         <Image src="img/hrc-logo.png" />
       </Container>
