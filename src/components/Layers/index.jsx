@@ -5,6 +5,7 @@ import { some, pick, isEqual } from 'lodash';
 import { Segment, Form, Button, Icon } from 'semantic-ui-react';
 
 import Basemaps from '../Basemaps';
+import useLocale from '../../hooks/useLocale';
 
 import styles from './Layers.module.css';
 
@@ -76,6 +77,8 @@ const Layers = ({ slide }) => {
   const [disabledLayers, setDisabledLayers] = useState([]);
   const [open, setOpen] = useState(false);
 
+  const { layers } = useLocale();
+
   useEffect(() => {
     if (data) {
       setDisabledLayers(data.Slide.disabledLayers);
@@ -102,7 +105,7 @@ const Layers = ({ slide }) => {
           />
           <Basemaps slide={slide} />
           <Form.Group style={{ borderTop: '1px solid #ccc', marginTop: 15, paddingTop: 15 }}>
-            <h3 style={{ marginTop: 0 }}>Layers</h3>
+            <h3 style={{ marginTop: 0 }}>{layers}</h3>
             {allLayers.data.layers.map(layer => (
               <Form.Field
                 className={styles.layerCheck}

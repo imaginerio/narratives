@@ -5,6 +5,8 @@ import axios from 'axios';
 import { debounce } from 'lodash';
 import { Segment, Search as SeachBar, Button, Header, Label, Icon } from 'semantic-ui-react';
 
+import useLocale from '../../hooks/useLocale';
+
 import styles from './Search.module.css';
 
 const GET_SLIDE = gql`
@@ -55,6 +57,8 @@ const Search = ({ slide }) => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [featureName, setFeatureName] = useState(null);
+
+  const { searchName, currentlySelected } = useLocale();
 
   useEffect(() => {
     if (data) {
@@ -114,7 +118,7 @@ const Search = ({ slide }) => {
             onClick={() => setOpen(false)}
           />
           <Header as="h3" style={{ marginLeft: 5, marginTop: 0 }}>
-            Search by name
+            {searchName}
           </Header>
           <SeachBar
             fluid
@@ -128,7 +132,7 @@ const Search = ({ slide }) => {
           {selectedFeature && featureName && (
             <>
               <Header as="h5" style={{ margin: '20px 0 5px 5px' }}>
-                Currently Selected Feature:
+                {`${currentlySelected}:`}
               </Header>
               <Label style={{ width: '100%' }}>
                 {featureName}

@@ -6,6 +6,7 @@ import { Form, Input } from 'semantic-ui-react';
 import { Slider } from 'react-semantic-ui-range';
 
 import debouncedMutation from '../../providers/debouncedMutation';
+import useLocale from '../../hooks/useLocale';
 
 import styles from './Year.module.css';
 
@@ -33,6 +34,7 @@ const Year = ({ slide }) => {
   });
   const [onUpdateYear] = useMutation(UPDATE_SLIDE_YEAR);
   const yearTimer = useRef();
+  const { year } = useLocale();
 
   const [tempYear, setTempYear] = useState('');
   const [inputYear, setInputYear] = useState(1900);
@@ -70,7 +72,7 @@ const Year = ({ slide }) => {
   return (
     <>
       <Form.Field id="yearInput" inline error={error} disabled={loading}>
-        <label className={styles.yearLabel}>Year: </label>
+        <label className={styles.yearLabel}>{`${year}: `}</label>
         <Input
           className={styles.yearInput}
           type="number"
