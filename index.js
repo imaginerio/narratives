@@ -62,7 +62,6 @@ module.exports = {
       enableDefaultRoute: false,
       authStrategy,
       isAccessAllowed: ({ authentication: { item: user } }) => !!user && !!user.isAdmin,
-
     }),
     new CheckAuthentication(),
     new S3Upload(),
