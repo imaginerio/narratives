@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation, gql } from '@apollo/client';
+import { useRouter } from 'next/router';
 import { Container, Header as Heading, Segment, Button, Image, Icon } from 'semantic-ui-react';
 import withApollo from '../providers/withApollo';
 
@@ -56,6 +57,7 @@ const Projects = ({ user }) => {
   const [isLoading, setLoading] = useState(false);
   const { loading, error, data } = useQuery(GET_PROJECTS, { variables: { user: user.id } });
   const [createProject] = useMutation(CREATE_PROJECT);
+  const { locale } = useRouter();
   const {
     myNarratives,
     gallery,
@@ -66,6 +68,7 @@ const Projects = ({ user }) => {
     editor,
     published,
     download,
+    categories,
   } = useLocale();
 
   const newProject = () => {
@@ -79,7 +82,7 @@ const Projects = ({ user }) => {
         data: {
           createProject: { id },
         },
-      }) => window.location.replace(`/project/${id}`)
+      }) => window.location.replace(`/${locale}/project/${id}`)
     );
   };
 
@@ -114,15 +117,18 @@ const Projects = ({ user }) => {
           {data.allProjects.map(proj => (
             <Segment key={proj.id} style={{ padding: 20 }}>
               {proj.url && <Image src={proj.url} floated="left" style={{ height: 55 }} />}
-              <a href={`/project/${proj.id}`} style={{ fontWeight: 'bold', fontSize: '1.25em' }}>
-                {`${proj.title}${proj.category ? ` - ${proj.category}` : ''}`}
+              <a
+                href={`/${locale}/project/${proj.id}`}
+                style={{ fontWeight: 'bold', fontSize: '1.25em' }}
+              >
+                {`${proj.title}${proj.category ? ` - ${categories(proj.category)}` : ''}`}
               </a>
               <Button
                 floated="right"
                 content={editor}
                 icon="edit"
                 as="a"
-                href={`/edit/${proj.id}`}
+                href={`/${locale}/edit/${proj.id}`}
               />
               <Button
                 basic
@@ -131,7 +137,7 @@ const Projects = ({ user }) => {
                 icon="play"
                 as="a"
                 style={{ marginRight: 10 }}
-                href={`/view/${proj.id}`}
+                href={`/${locale}/view/${proj.id}`}
               />
               <div style={{ clear: 'right' }}>
                 {proj.updatedAt && (
