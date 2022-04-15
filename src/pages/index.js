@@ -8,41 +8,45 @@ import withApollo from '../providers/withApollo';
 import Header from '../components/Header';
 import Head from '../components/Head';
 import Gallery from '../components/Gallery';
+import useLocale from '../hooks/useLocale';
 
 const ParsedContent = ({ content }) => parse(content);
 
-export const Home = ({ user, data, content }) => (
-  <div style={{ minHeight: '100vh' }}>
-    <Header user={user} />
-    <Head title="imagineRio Narratives" />
-    <section style={{ backgroundColor: 'rgb(247, 249, 252)', padding: '50px 0px' }}>
-      <Container>
-        <ParsedContent content={content} />
-      </Container>
-    </section>
-    <Container style={{ marginTop: 30, marginBottom: 30 }}>
-      {!user && (
-        <a href="/signup" style={{ display: 'block', float: 'right', margin: '0 20px' }}>
+export const Home = ({ user, data, content }) => {
+  const { gallery, signUp, manage, login } = useLocale();
+  return (
+    <div style={{ minHeight: '100vh' }}>
+      <Header user={user} />
+      <Head title="imagineRio Narratives" />
+      <section style={{ backgroundColor: 'rgb(247, 249, 252)', padding: '50px 0px' }}>
+        <Container>
+          <ParsedContent content={content} />
+        </Container>
+      </section>
+      <Container style={{ marginTop: 30, marginBottom: 30 }}>
+        {!user && (
+          <a href="/signup" style={{ display: 'block', float: 'right', margin: '0 20px' }}>
+            <span>
+              <Icon name="signup" />
+              {signUp}
+            </span>
+          </a>
+        )}
+        <a href="/projects" style={{ display: 'block', float: 'right' }}>
           <span>
-            <Icon name="signup" />
-            Sign Up
+            <Icon name={user && user.verified ? 'map outline' : 'user circle'} />
+            {user && user.verified ? manage : login}
           </span>
         </a>
-      )}
-      <a href="/projects" style={{ display: 'block', float: 'right' }}>
-        <span>
-          <Icon name={user && user.verified ? 'map outline' : 'user circle'} />
-          {user && user.verified ? 'Manage My Maps' : 'Login'}
-        </span>
-      </a>
-      <Heading as="h1" style={{ margin: '50px 0' }}>
-        Map Gallery
-      </Heading>
-      <Gallery data={data} />
-      <Image src="img/hrc-logo.png" style={{ margin: '50px 0' }} />
-    </Container>
-  </div>
-);
+        <Heading as="h1" style={{ margin: '50px 0' }}>
+          {gallery}
+        </Heading>
+        <Gallery data={data} />
+        <Image src="img/hrc-logo.png" style={{ margin: '50px 0' }} />
+      </Container>
+    </div>
+  );
+};
 
 Home.propTypes = {
   user: PropTypes.string,
@@ -58,7 +62,7 @@ Home.defaultProps = {
 
 export default withApollo(Home);
 
-export async function getServerSideProps({ req }) {
+export async function getServerSideProps({ req, locale }) {
   const {
     data: { data },
   } = await axios.post(`${req.protocol}://${req.get('Host')}/admin/api`, {
@@ -92,7 +96,7 @@ export async function getServerSideProps({ req }) {
     data: {
       post_stream: { posts },
     },
-  } = await axios.get(`${process.env.NEXT_PUBLIC_PAGE_URL}en-narratives-about/96.json`, {
+  } = await axios.get(`${process.env.NEXT_PUBLIC_PAGE_URL}${locale}-narratives-about/96.json`, {
     headers: {
       'Api-Key': process.env.NEXT_PUBLIC_PAGE_API,
       'Api-Username': 'system',

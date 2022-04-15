@@ -4,9 +4,11 @@ import Masonry from 'react-masonry-component';
 import { Image, Card, Label } from 'semantic-ui-react';
 
 import TagButtons from './TagButtons';
+import useLocale from '../../hooks/useLocale';
 
 const Gallery = ({ data }) => {
   const [activeCategories, setActiveCategories] = useState([]);
+  const { categories } = useLocale();
 
   return (
     <Masonry
@@ -34,7 +36,7 @@ const Gallery = ({ data }) => {
             <Card.Content>
               {proj.category && (
                 <Label ribbon style={{ margin: '-10px 0 10px' }}>
-                  {proj.category}
+                  {categories(proj.category)}
                 </Label>
               )}
               <Card.Header>{proj.title}</Card.Header>
