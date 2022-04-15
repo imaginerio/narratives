@@ -144,7 +144,7 @@ const EditPage = ({ project, statusCode }) => {
 
   return (
     <Container fluid>
-      <Head title={`Editing ${data.Project.title}`} />
+      <Head title={data.Project.title} />
       <Grid>
         <Grid.Row style={{ paddingBottom: 0, zIndex: 2 }}>
           <Grid.Column>

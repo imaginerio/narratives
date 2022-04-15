@@ -208,7 +208,7 @@ export const Create = ({ user, project, statusCode }) => {
       <Head title={data.Project.title} />
       <Header user={user} />
       <Container style={{ marginTop: 30 }} text>
-        <Button content={myNarratives} icon="angle left" as="a" href={`${locale}/projects`} />
+        <Button content={myNarratives} icon="angle left" as="a" href={`/${locale}/projects`} />
         <Heading as="h1">{editNarrative}</Heading>
         <Form loading={isLoading}>
           <Form.Input
@@ -296,7 +296,7 @@ export const Create = ({ user, project, statusCode }) => {
           <Button
             size="big"
             floated="right"
-            href={`${locale}/projects`}
+            href={`/${locale}/projects`}
             style={{ marginRight: 20 }}
             disabled={isLoading}
           >

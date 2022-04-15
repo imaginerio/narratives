@@ -14,6 +14,7 @@ import {
 } from './graphql';
 import { useDraw } from '../../providers/DrawProvider';
 import debouncedMutation from '../../providers/debouncedMutation';
+import useLocale from '../../hooks/useLocale';
 
 import AtlasContext from '../Atlas/Context';
 import Image from '../Image';
@@ -39,6 +40,17 @@ const Editor = ({ slide }) => {
   });
 
   const [, dispatch] = useDraw();
+  const {
+    cardTitle,
+    cardDescription,
+    size: sizeText,
+    fullscreen,
+    medium,
+    small,
+    image,
+    externalMedia,
+  } = useLocale();
+
   useEffect(() => dispatch(['SLIDE', slide]), [slide]);
 
   useEffect(() => {
@@ -83,7 +95,7 @@ const Editor = ({ slide }) => {
         <Grid.Column width={6} className={styles.editor}>
           <Form size="large">
             <Form.Field>
-              <label>Card Title</label>
+              <label>{cardTitle}</label>
               <Input
                 value={title}
                 onChange={(e, { value }) => {
@@ -98,7 +110,7 @@ const Editor = ({ slide }) => {
               />
             </Form.Field>
             <Wysiwyg
-              label="Card Description"
+              label={cardDescription}
               value={description}
               onEditorChange={value => {
                 setDescription(value);
@@ -111,16 +123,16 @@ const Editor = ({ slide }) => {
               }}
             />
             <Form.Field>
-              <label>Size</label>
+              <label>{sizeText}</label>
               <Dropdown
                 placeholder="Select Size"
                 fluid
                 selection
                 value={size}
                 options={[
-                  { text: 'Fullscreen', value: 'Fullscreen' },
-                  { text: 'Medium', value: 'Medium' },
-                  { text: 'Small', value: 'Small' },
+                  { text: fullscreen, value: 'Fullscreen' },
+                  { text: medium, value: 'Medium' },
+                  { text: small, value: 'Small' },
                 ]}
                 onChange={(e, { value }) => {
                   setSize(value);
@@ -134,7 +146,7 @@ const Editor = ({ slide }) => {
               />
             </Form.Field>
             <Form.Field>
-              <label>Image</label>
+              <label>{image}</label>
               <Image
                 image={imageMeta}
                 updateHandler={(id, value) => {
@@ -149,7 +161,7 @@ const Editor = ({ slide }) => {
               />
             </Form.Field>
             <Form.Field error={mediaError}>
-              <label>External Media</label>
+              <label>{externalMedia}</label>
               <Input
                 placeholder="YouTube, SoundCloud URL"
                 icon="linkify"
