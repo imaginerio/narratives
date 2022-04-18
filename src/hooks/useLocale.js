@@ -1,19 +1,19 @@
 import { useRouter } from 'next/router';
 
 const categoriesPT = {
-  History: 'Historia',
+  History: 'História',
   Architecture: 'Arquitetura',
   Literature: 'Literatura',
   Urbanism: 'Urbanismo',
   Archaelogy: 'Arqueologia',
-  Environment: 'Ambiente',
+  Environment: 'Meio Ambiente',
 };
 
 const translations = {
   en: {
     gallery: 'Map Gallery',
     signUp: 'Sign Up',
-    manage: 'Manage My Maps',
+    manage: 'Manage My Narratives',
     login: 'Login',
     filterCategory: 'Filter by category',
     categories: en => en,
@@ -64,14 +64,14 @@ const translations = {
     currentlySelected: 'Currently selected feautre',
   },
   pt: {
-    gallery: 'Galeria de Mapas',
+    gallery: 'Galeria de Narrativas',
     signUp: 'Registrar',
-    manage: 'Gerenciar Meus Mapas',
+    manage: 'Gerenciar Minhas Narrativas',
     login: 'Entrar',
     filterCategory: 'Filtrar por categoria',
     categories: en => categoriesPT[en],
-    myNarratives: 'Minhas narrativas',
-    addNarrative: 'Nova narrativa',
+    myNarratives: 'Minhas Narrativas',
+    addNarrative: 'Nova Narrativa',
     modified: 'Modificado',
     created: 'Criado',
     preview: 'Pré-visualização',
