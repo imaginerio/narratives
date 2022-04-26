@@ -62,6 +62,14 @@ const translations = {
     opacity: 'Overlay Opacity',
     searchName: 'Search by name',
     currentlySelected: 'Currently selected feautre',
+    welcome: 'Welcome to imagineRio Narratives',
+    loginFull: 'Log in to your account',
+    email: 'Email',
+    password: 'Password',
+    loginError: 'You could not be logged in. Please check your username and password.',
+    verifyError:
+      'Your account has not been verified. Please check your email for a verification link.',
+    forgot: 'Forgot your password?',
   },
   pt: {
     gallery: 'Galeria de Narrativas',
@@ -90,7 +98,8 @@ const translations = {
     save: 'Salvar',
     deleteProject: 'Excluir narrativa',
     deleteQuestion: 'Excluir esta narrativa?',
-    deleteConfirm: 'Tem certeza de que deseja excluir esta narrativa? Esta ação é permanente e não pode ser revertida.',
+    deleteConfirm:
+      'Tem certeza de que deseja excluir esta narrativa? Esta ação é permanente e não pode ser revertida.',
     categorySelect: 'Selecione uma categoria',
     tagSelect: 'Selecione tags',
     launchPreview: 'Pré-visualizar',
@@ -114,6 +123,13 @@ const translations = {
     opacity: 'Transparência',
     searchName: 'Pesquisar por nome',
     currentlySelected: 'Recurso selecionado atualmente',
+    welcome: 'Bemvindo ao imagineRio Narratives',
+    loginFull: 'Entrar com sua conta',
+    email: 'Email',
+    password: 'Senha',
+    loginError: 'Você não pode ser logado. Verifique seu nome de usuário e senha.',
+    verifyError: 'Sua conta não foi verificada. Verifique seu email para um link de verificação.',
+    forgot: 'Esqueceu sua senha?',
   },
 };
 

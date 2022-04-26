@@ -10,11 +10,14 @@ import {
   Message,
 } from 'semantic-ui-react';
 import withApollo from '../providers/withApollo';
+import useLocale from '../hooks/useLocale';
 
 import Header from '../components/Header';
 import Head from '../components/Head';
 
 const Login = () => {
+  const { welcome, loginFull, email, password, loginError, verifyError, login, forgot } =
+    useLocale();
   const AUTH_MUTATION = gql`
     mutation signin($identity: String, $secret: String) {
       authenticate: authenticateUserWithPassword(email: $identity, password: $secret) {
@@ -36,9 +39,7 @@ const Login = () => {
     onCompleted: async ({ authenticate }) => {
       setReloading(true);
       if (!authenticate.item.verified) {
-        setError(
-          'Your account has not been verified. Please check your email for a verification link.'
-        );
+        setError(loginError);
         setReloading(false);
       } else {
         await client.clearStore();
@@ -46,7 +47,7 @@ const Login = () => {
       }
     },
     onError: () => {
-      setError('You could not be logged in. Please check your username and password.');
+      setError(verifyError);
     },
   });
 
@@ -67,16 +68,16 @@ const Login = () => {
       <Header />
       <Container text>
         <Heading as="h1" style={{ margin: '20% 0 50px' }}>
-          Welcome to imagineRio Narratives
+          {welcome}
         </Heading>
         <Segment loading={reloading}>
           <Heading as="h3" style={{ margin: '10px 0 30px' }}>
-            Log in to your account
+            {loginFull}
           </Heading>
           <Form method="POST" onSubmit={onSubmit}>
             <Form.Input
               name="email"
-              label="Email"
+              label={email}
               type="email"
               value={identity}
               error={Boolean(error)}
@@ -84,17 +85,17 @@ const Login = () => {
             />
             <Form.Input
               name="password"
-              label="Password"
+              label={password}
               type="password"
               value={secret}
               error={Boolean(error)}
               onChange={e => setSecret(e.target.value)}
             />
             <a href="/reset" style={{ float: 'right', marginBottom: 15 }}>
-              Forgot your password?
+              {forgot}
             </a>
             <Button type="submit" fluid primary loading={loading}>
-              Login
+              {login}
             </Button>
             {error && <Message negative>{error}</Message>}
           </Form>
