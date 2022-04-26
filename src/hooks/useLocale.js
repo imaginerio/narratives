@@ -70,6 +70,16 @@ const translations = {
     verifyError:
       'Your account has not been verified. Please check your email for a verification link.',
     forgot: 'Forgot your password?',
+    createAccount: 'Create your account for imagineRio Narratives',
+    enterDetails: 'Enter your details below:',
+    name: 'Full Name',
+    institution: 'Institution',
+    confirm: 'Confirm Password',
+    createButton: 'Create Account',
+    createSuccess:
+      'User created successfully. Please check your email to confirm your account and login.',
+    createError: 'Could not create your account. Please try again.',
+    fieldError: 'Please fill out all required fields',
   },
   pt: {
     gallery: 'Galeria de Narrativas',
@@ -130,6 +140,16 @@ const translations = {
     loginError: 'Você não pode ser logado. Verifique seu nome de usuário e senha.',
     verifyError: 'Sua conta não foi verificada. Verifique seu email para um link de verificação.',
     forgot: 'Esqueceu sua senha?',
+    createAccount: 'Criar sua conta para imagineRio Narratives',
+    enterDetails: 'Insira seus detalhes abaixo:',
+    name: 'Nome completo',
+    institution: 'Instituição',
+    confirm: 'Confirmar senha',
+    createButton: 'Criar conta',
+    createSuccess:
+      'Conta criada com sucesso. Verifique seu email para confirmar sua conta e entrar.',
+    createError: 'Não foi possível criar sua conta. Tente novamente.',
+    fieldError: 'Por favor, preencha todos os campos obrigatórios',
   },
 };
 
