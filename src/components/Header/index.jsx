@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useRouter } from 'next/router';
 import { useMutation, gql } from '@apollo/client';
 import Avatar from 'boring-avatars';
 import { Container, Image, Dropdown } from 'semantic-ui-react';
@@ -66,6 +67,7 @@ const pages = [
 ];
 
 const Header = ({ user }) => {
+  const { locale } = useRouter();
   const [signOut, { client }] = useMutation(UNAUTH_MUTATION, {
     onCompleted: async () => {
       // Ensure there's no old authenticated data hanging around
@@ -85,7 +87,7 @@ const Header = ({ user }) => {
               <a
                 key={name}
                 className={`${styles.link} ${active ? styles.active : ''}`}
-                href={`${relative ? '' : process.env.NEXT_PUBLIC_MAIN_SITE}${url}`}
+                href={`${relative ? `/${locale}` : process.env.NEXT_PUBLIC_MAIN_SITE}${url}`}
               >
                 {name}
               </a>
