@@ -69,13 +69,14 @@ const Projects = ({ user }) => {
     published,
     download,
     categories,
+    untitledProject,
   } = useLocale();
 
   const newProject = () => {
     setLoading(true);
     createProject({
       variables: {
-        title: 'Untitled project',
+        title: untitledProject,
       },
     }).then(
       ({

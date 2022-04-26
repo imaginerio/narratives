@@ -28,7 +28,10 @@ export const Home = ({ user, data, content }) => {
       </section>
       <Container style={{ marginTop: 30, marginBottom: 30 }}>
         {!user && (
-          <a href="/signup" style={{ display: 'block', float: 'right', margin: '0 20px' }}>
+          <a
+            href={`/${locale}/signup`}
+            style={{ display: 'block', float: 'right', margin: '0 20px' }}
+          >
             <span>
               <Icon name="signup" />
               {signUp}

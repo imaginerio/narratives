@@ -80,6 +80,8 @@ const translations = {
       'User created successfully. Please check your email to confirm your account and login.',
     createError: 'Could not create your account. Please try again.',
     fieldError: 'Please fill out all required fields',
+    untitledProject: 'Untitled project',
+    language: 'Language',
   },
   pt: {
     gallery: 'Galeria de Narrativas',
@@ -150,6 +152,8 @@ const translations = {
       'Conta criada com sucesso. Verifique seu email para confirmar sua conta e entrar.',
     createError: 'Não foi possível criar sua conta. Tente novamente.',
     fieldError: 'Por favor, preencha todos os campos obrigatórios',
+    untitledProject: 'Projeto sem título',
+    language: 'Idioma',
   },
 };
 

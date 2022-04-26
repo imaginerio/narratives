@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, gql } from '@apollo/client';
+import { useRouter } from 'next/router';
 import {
   Header as Heading,
   Container,
@@ -16,9 +17,21 @@ import Header from '../components/Header';
 import Head from '../components/Head';
 
 const ADD_USER = gql`
-  mutation AddUser($name: String, $email: String, $password: String, $institution: String) {
+  mutation AddUser(
+    $name: String
+    $email: String
+    $password: String
+    $institution: String
+    $language: UserLanguageType
+  ) {
     createUser(
-      data: { name: $name, email: $email, password: $password, institution: $institution }
+      data: {
+        name: $name
+        email: $email
+        password: $password
+        institution: $institution
+        language: $language
+      }
     ) {
       id
     }
@@ -38,7 +51,9 @@ const Signup = () => {
     createSuccess,
     createError,
     fieldError,
+    language,
   } = useLocale();
+  const { locale } = useRouter();
   const [data, setData] = useState({});
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -55,7 +70,13 @@ const Signup = () => {
 
   const onSubmit = e => {
     e.preventDefault();
-    if (data.name && data.email && data.password && data.password === data.confirm) {
+    if (
+      data.name &&
+      data.email &&
+      data.password &&
+      data.password === data.confirm &&
+      data.language
+    ) {
       signUp();
     } else {
       setError(fieldError);
@@ -71,7 +92,7 @@ const Signup = () => {
           {createAccount}
         </Heading>
         {success && (
-          <Message success onDismiss={() => window.location.replace('/')}>
+          <Message success onDismiss={() => window.location.replace(`/${locale}`)}>
             {success}
           </Message>
         )}
@@ -104,6 +125,17 @@ const Signup = () => {
               type="text"
               value={data.institution}
               onChange={e => setData({ ...data, institution: e.target.value })}
+            />
+            <Form.Select
+              name="language"
+              label={language}
+              required
+              options={[
+                { key: 'en', value: 'en', text: 'English' },
+                { key: 'pt', value: 'pt', text: 'Portuguese' },
+              ]}
+              value={data.language}
+              onChange={(e, { value }) => setData({ ...data, language: value })}
             />
             <Form.Group widths="equal">
               <Form.Input

@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-const { Text, Relationship, Checkbox, Password } = require('@keystonejs/fields');
+const { Text, Select, Relationship, Checkbox, Password } = require('@keystonejs/fields');
 const uuid = require('uuid').v4;
 
 const { sendEmail } = require('../server/email');
@@ -45,6 +45,19 @@ module.exports = {
     },
     institution: {
       type: Text,
+      access: {
+        read: true,
+        update: access.userIsAdminOrOwner,
+        create: true,
+        delete: access.userIsAdminOrOwner,
+      },
+    },
+    language: {
+      type: Select,
+      options: [
+        { value: 'en', label: 'English' },
+        { value: 'pt', label: 'Portuguese' },
+      ],
       access: {
         read: true,
         update: access.userIsAdminOrOwner,
@@ -140,6 +153,7 @@ module.exports = {
           to: updatedItem.email,
           key: updatedItem.verifyId,
           host: `${protocol}://${hostname}`,
+          lang: updatedItem.language,
         });
       }
     },
