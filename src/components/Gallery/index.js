@@ -40,7 +40,7 @@ const Gallery = ({ data }) => {
                 </Label>
               )}
               <Card.Header>{proj.title}</Card.Header>
-              <Card.Meta>{proj.user.name}</Card.Meta>
+              {proj.user && <Card.Meta>{proj.user.name}</Card.Meta>}
               <Card.Description>
                 {proj.tags.map(({ name }) => (
                   <Label key={name} size="small" style={{ margin: 2 }}>
