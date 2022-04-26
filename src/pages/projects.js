@@ -94,7 +94,7 @@ const Projects = ({ user }) => {
       <Head title="Projects" />
       <Header user={user} />
       <Container style={{ marginTop: 30, marginBottom: 30 }}>
-        <a href="/" style={{ display: 'block', float: 'right', lineHeight: '36px' }}>
+        <a href={`/${locale}`} style={{ display: 'block', float: 'right', lineHeight: '36px' }}>
           <span>
             <Icon name="grid layout" />
             {gallery}
