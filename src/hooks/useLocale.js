@@ -82,6 +82,11 @@ const translations = {
     fieldError: 'Please fill out all required fields',
     untitledProject: 'Untitled project',
     language: 'Language',
+    reset: 'Reset your imagineRio Narratives Password',
+    resetInstructions: 'Enter your email below and we will send you a link to reset your password:',
+    resetPassword: 'Reset Password',
+    resetSuccess:
+      'We have received your request. Please check your email for instructions on how to reset your password.',
   },
   pt: {
     gallery: 'Galeria de Narrativas',
@@ -154,6 +159,11 @@ const translations = {
     fieldError: 'Por favor, preencha todos os campos obrigatórios',
     untitledProject: 'Projeto sem título',
     language: 'Idioma',
+    reset: 'Redefinir sua senha do imagineRio Narratives',
+    resetInstructions: 'Insira seu email abaixo e enviaremos um link para redefinir sua senha:',
+    resetPassword: 'Redefinir senha',
+    resetSuccess:
+      'Nós recebemos o seu pedido. Por favor, verifique seu e-mail para obter instruções sobre como redefinir sua senha.',
   },
 };
 

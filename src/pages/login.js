@@ -9,6 +9,7 @@ import {
   Image,
   Message,
 } from 'semantic-ui-react';
+import { useRouter } from 'next/router';
 import withApollo from '../providers/withApollo';
 import useLocale from '../hooks/useLocale';
 
@@ -16,8 +17,10 @@ import Header from '../components/Header';
 import Head from '../components/Head';
 
 const Login = () => {
+  const { locale } = useRouter();
   const { welcome, loginFull, email, password, loginError, verifyError, login, forgot } =
     useLocale();
+
   const AUTH_MUTATION = gql`
     mutation signin($identity: String, $secret: String) {
       authenticate: authenticateUserWithPassword(email: $identity, password: $secret) {
@@ -91,7 +94,7 @@ const Login = () => {
               error={Boolean(error)}
               onChange={e => setSecret(e.target.value)}
             />
-            <a href="/reset" style={{ float: 'right', marginBottom: 15 }}>
+            <a href={`/${locale}/reset`} style={{ float: 'right', marginBottom: 15 }}>
               {forgot}
             </a>
             <Button type="submit" fluid primary loading={loading}>

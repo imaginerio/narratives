@@ -10,11 +10,13 @@ import {
   Message,
 } from 'semantic-ui-react';
 import withApollo from '../providers/withApollo';
+import useLocale from '../hooks/useLocale';
 
 import Header from '../components/Header';
 import Head from '../components/Head';
 
 const Reset = () => {
+  const { reset, resetInstructions, email: emailText, resetPassword, resetSuccess } = useLocale();
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -38,32 +40,27 @@ const Reset = () => {
       <Header />
       <Container text>
         <Heading as="h1" style={{ margin: '50px 0' }}>
-          Reset your imagineRio Narratives Password
+          {reset}
         </Heading>
         <Segment loading={loading}>
           <Heading as="h3" style={{ margin: '10px 0 30px' }}>
-            Enter your email below and we will send you a link to reset your password:
+            {resetInstructions}
           </Heading>
           <Form method="POST" onSubmit={onSubmit}>
             <Form.Input
               required
               name="email"
-              label="Email"
+              label={emailText}
               type="email"
               value={email}
               error={error && !email ? 'Email is required' : null}
               onChange={e => setEmail(e.target.value)}
             />
             <Button type="submit" fluid primary loading={loading}>
-              Reset Password
+              {resetPassword}
             </Button>
             {error && <Message negative>{error}</Message>}
-            {success && (
-              <Message success>
-                We have received your request. Please check your email for instructions on how to
-                reset your password.
-              </Message>
-            )}
+            {success && <Message success>{resetSuccess}</Message>}
           </Form>
         </Segment>
         <Image src="img/hrc-logo.png" />
