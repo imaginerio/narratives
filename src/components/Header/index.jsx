@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { useMutation, gql } from '@apollo/client';
 import Avatar from 'boring-avatars';
 import { Container, Image, Dropdown } from 'semantic-ui-react';
+import useLocale from '../../hooks/useLocale';
 
 import styles from './Header.module.css';
 
@@ -68,6 +69,7 @@ const pages = [
 
 const Header = ({ user }) => {
   const { locale } = useRouter();
+  const { myNarratives } = useLocale();
   const [signOut, { client }] = useMutation(UNAUTH_MUTATION, {
     onCompleted: async () => {
       // Ensure there's no old authenticated data hanging around
@@ -108,7 +110,12 @@ const Header = ({ user }) => {
                 }
               >
                 <Dropdown.Menu style={{ marginLeft: -40 }}>
-                  <Dropdown.Item text="My narratives" as="a" href="/projects" />
+                  <Dropdown.Item text={myNarratives} as="a" href={`/${locale}/projects`} />
+                  <Dropdown.Item
+                    text={locale === 'pt' ? 'English Version' : 'Versão em Português'}
+                    as="a"
+                    href={`/${locale === 'pt' ? 'en' : 'pt'}/projects`}
+                  />
                   <Dropdown.Item text="Logout" onClick={signOut} />
                 </Dropdown.Menu>
               </Dropdown>
