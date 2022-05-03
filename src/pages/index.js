@@ -28,15 +28,26 @@ export const Home = ({ user, data, content }) => {
       </section>
       <Container style={{ marginTop: 30, marginBottom: 30 }}>
         {!user && (
-          <a
-            href={`/${locale}/signup`}
-            style={{ display: 'block', float: 'right', margin: '0 20px' }}
-          >
-            <span>
-              <Icon name="signup" />
-              {signUp}
-            </span>
-          </a>
+          <>
+            <a
+              href={locale === 'pt' ? '/en' : '/pt'}
+              style={{ display: 'block', float: 'right', marginLeft: 20 }}
+            >
+              <span>
+                <Icon name="flag" />
+                {locale === 'pt' ? 'English Version' : 'Versão em Português'}
+              </span>
+            </a>
+            <a
+              href={`/${locale}/signup`}
+              style={{ display: 'block', float: 'right', marginLeft: 20 }}
+            >
+              <span>
+                <Icon name="signup" />
+                {signUp}
+              </span>
+            </a>
+          </>
         )}
         <a href={`/${locale}/projects`} style={{ display: 'block', float: 'right' }}>
           <span>
