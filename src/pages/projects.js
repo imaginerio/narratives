@@ -70,6 +70,7 @@ const Projects = ({ user }) => {
     download,
     categories,
     untitledProject,
+    loadingText,
   } = useLocale();
 
   const newProject = () => {
@@ -87,7 +88,7 @@ const Projects = ({ user }) => {
     );
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p>{loadingText}</p>;
   if (error) return <p>Error :(</p>;
 
   return (

@@ -6,6 +6,7 @@ import withApollo from '../../providers/withApollo';
 
 import View from '../../components/View';
 import Head from '../../components/Head';
+import useLocale from '../../hooks/useLocale';
 
 export const GET_PROJECT = gql`
   query GetFullProject($project: ID!) {
@@ -55,6 +56,7 @@ export const GET_PROJECT = gql`
 
 const Preview = () => {
   const router = useRouter();
+  const { loadingText } = useLocale();
   const { project } = router.query;
 
   const { loading, error, data } = useQuery(GET_PROJECT, {
@@ -62,7 +64,7 @@ const Preview = () => {
     pollInterval: 5000,
   });
 
-  if (loading || !project) return <p>Loading...</p>;
+  if (loading || !project) return <p>{loadingText}</p>;
   if (error) return <p>Error :(</p>;
 
   return (

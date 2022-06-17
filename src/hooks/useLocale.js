@@ -93,6 +93,7 @@ const translations = {
     iconography: 'Iconography',
     viewNarrative: 'View the narrative',
     backNarratives: 'Back to narratives',
+    loadingText: 'Loading',
   },
   pt: {
     gallery: 'Galeria de Narrativas',
@@ -176,6 +177,7 @@ const translations = {
     iconography: 'Íconografia',
     viewNarrative: 'Ver a narrativa',
     backNarratives: 'Voltar para narrativas',
+    loadingText: 'Carregando',
   },
 };
 

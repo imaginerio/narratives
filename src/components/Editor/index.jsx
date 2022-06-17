@@ -49,6 +49,7 @@ const Editor = ({ slide }) => {
     small,
     image,
     externalMedia,
+    loadingText,
   } = useLocale();
 
   useEffect(() => dispatch(['SLIDE', slide]), [slide]);
@@ -84,7 +85,7 @@ const Editor = ({ slide }) => {
   if (loading)
     return (
       <Dimmer active>
-        <Loader size="huge">Loading</Loader>
+        <Loader size="huge">{loadingText}</Loader>
       </Dimmer>
     );
   if (error) return <p>Error :(</p>;

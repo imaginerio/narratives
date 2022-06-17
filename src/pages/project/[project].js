@@ -150,6 +150,7 @@ export const Create = ({ user, project, statusCode }) => {
     categorySelect,
     tagSelect,
     categories,
+    loadingText,
   } = useLocale();
 
   useEffect(() => {
@@ -198,7 +199,7 @@ export const Create = ({ user, project, statusCode }) => {
   if (loading)
     return (
       <Dimmer active>
-        <Loader size="huge">Loading</Loader>
+        <Loader size="huge">{loadingText}</Loader>
       </Dimmer>
     );
   if (error) return <p>ERROR</p>;
