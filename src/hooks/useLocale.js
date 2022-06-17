@@ -87,6 +87,12 @@ const translations = {
     resetPassword: 'Reset Password',
     resetSuccess:
       'We have received your request. Please check your email for instructions on how to reset your password.',
+    author: 'Author',
+    pages: 'Pages',
+    properties: 'Properties',
+    iconography: 'Iconography',
+    viewNarrative: 'View the narrative',
+    backNarratives: 'Back to narratives',
   },
   pt: {
     gallery: 'Galeria de Narrativas',
@@ -164,6 +170,12 @@ const translations = {
     resetPassword: 'Redefinir senha',
     resetSuccess:
       'Nós recebemos o seu pedido. Por favor, verifique seu e-mail para obter instruções sobre como redefinir sua senha.',
+    author: 'Autor',
+    pages: 'Páginas',
+    properties: 'Propriedades',
+    iconography: 'Íconografia',
+    viewNarrative: 'Ver a narrativa',
+    backNarratives: 'Voltar para narrativas',
   },
 };
 

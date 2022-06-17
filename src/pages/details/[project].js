@@ -8,12 +8,23 @@ import withApollo from '../../providers/withApollo';
 
 import Header from '../../components/Header';
 import Head from '../../components/Head';
+import useLocale from '../../hooks/useLocale';
 
 const Details = ({ project, user }) => {
+  const {
+    author,
+    pages,
+    category,
+    description,
+    properties,
+    iconography,
+    viewNarrative,
+    backNarratives,
+  } = useLocale();
   const metadata = [
-    { name: 'Author', value: project.user.name },
-    { name: 'Pages', value: project.slides.length },
-    { name: 'Category', value: project.category },
+    { name: author, value: project.user.name },
+    { name: pages, value: project.slides.length },
+    { name: category, value: project.category },
   ];
   return (
     <>
@@ -31,18 +42,18 @@ const Details = ({ project, user }) => {
         />
       )}
       <Container style={{ padding: '50px 0', maxWidth: 900 }}>
-        <a href="/">Back to narratives</a>
+        <a href="/">{backNarratives}</a>
         <Heading as="h1">{project.title}</Heading>
         <Button primary href={`/view/${project.id}`} style={{ margin: '20px 0' }}>
-          View the narrative
+          {viewNarrative}
         </Button>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: 50 }}>
           <div>
-            <Heading as="h4">Description</Heading>
+            <Heading as="h4">{description}</Heading>
             {parse(project.description)}
           </div>
           <div>
-            <Heading as="h4">Properties</Heading>
+            <Heading as="h4">{properties}</Heading>
             {metadata.map(({ name, value }) => (
               <div
                 key={name}
@@ -59,7 +70,7 @@ const Details = ({ project, user }) => {
             ))}
           </div>
         </div>
-        <Heading as="h3">Iconography</Heading>
+        <Heading as="h3">{iconography}</Heading>
         <Masonry style={{ margin: '0 -30px' }}>
           {project.slides
             .filter(slide => slide.url)
