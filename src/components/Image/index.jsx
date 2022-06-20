@@ -10,7 +10,7 @@ import styles from './Image.module.css';
 
 const Image = ({ image, updateHandler }) => {
   const fileInputRef = useRef(null);
-  const { chooseFile } = useLocale();
+  const { chooseFile, caption, imageCaption } = useLocale();
 
   const [isLoading, setIsLoading] = useState(false);
   const [urlError, setUrlError] = useState(false);
@@ -67,9 +67,9 @@ const Image = ({ image, updateHandler }) => {
         </>
       )}
       <Form.Field inline style={{ marginTop: 15 }} disabled={!image?.url}>
-        <label className={styles.inlineLabel}>Caption</label>
+        <label className={styles.inlineLabel}>{caption}</label>
         <Input
-          placeholder="Image caption"
+          placeholder={imageCaption}
           className={styles.inlineInput}
           value={imageMeta && image.url ? imageMeta.imageTitle || '' : ''}
           onChange={(e, { value }) => {

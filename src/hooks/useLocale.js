@@ -95,6 +95,8 @@ const translations = {
     backNarratives: 'Back to narratives',
     loadingText: 'Loading',
     noResults: 'No results found',
+    caption: 'Caption',
+    imageCaption: 'Image Caption',
   },
   pt: {
     gallery: 'Galeria de Narrativas',
@@ -180,6 +182,8 @@ const translations = {
     backNarratives: 'Voltar para narrativas',
     loadingText: 'Carregando',
     noResults: 'Nenhum resultado encontrado',
+    caption: 'Legenda',
+    imageCaption: 'Legenda da imagem',
   },
 };
 
