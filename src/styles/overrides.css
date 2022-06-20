@@ -9,3 +9,8 @@ a.ui.card:hover{
 .ui.card > .image:first-child{
   border-radius: 0 !important;
 }
+
+.ui.fluid.search .results {
+  max-height: 60vh;
+  overflow: auto;
+}

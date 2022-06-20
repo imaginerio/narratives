@@ -94,6 +94,7 @@ const translations = {
     viewNarrative: 'View the narrative',
     backNarratives: 'Back to narratives',
     loadingText: 'Loading',
+    noResults: 'No results found',
   },
   pt: {
     gallery: 'Galeria de Narrativas',
@@ -178,6 +179,7 @@ const translations = {
     viewNarrative: 'Ver a narrativa',
     backNarratives: 'Voltar para narrativas',
     loadingText: 'Carregando',
+    noResults: 'Nenhum resultado encontrado',
   },
 };
 
