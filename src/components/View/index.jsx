@@ -8,6 +8,7 @@ import { Card, Image } from 'semantic-ui-react';
 import parse from 'html-react-parser';
 
 import Atlas from '../Atlas';
+import useLocale from '../../hooks/useLocale';
 
 import styles from './View.module.css';
 
@@ -18,6 +19,8 @@ const View = ({ data }) => {
   const [opacity, setOpacity] = useState(1);
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [annotations, setAnnotations] = useState(null);
+
+  const { author } = useLocale();
 
   const getCaption = ({ imageTitle, source }) => {
     if (imageTitle || source) {
@@ -104,7 +107,7 @@ const View = ({ data }) => {
                     {data.Project.title}
                   </Card.Header>
                   <h3 style={{ textAlign: 'center', fontWeight: 300 }}>
-                    {`Author: ${data.Project.user.name}`}
+                    {`${author}: ${data.Project.user.name}`}
                   </h3>
                   {data.Project.url && (
                     <>
