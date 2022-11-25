@@ -18,49 +18,73 @@ const UNAUTH_MUTATION = gql`
 
 const pages = [
   {
-    name: 'Home',
+    name: {
+      en: 'Home',
+      pt: 'Início',
+    },
     url: '/',
     active: false,
     relative: false,
   },
   {
-    name: 'About',
+    name: {
+      en: 'About',
+      pt: 'Sobre',
+    },
     url: '/about',
     active: false,
     relative: false,
   },
   {
-    name: 'People',
+    name: {
+      en: 'People',
+      pt: 'Equipe',
+    },
     url: '/people',
     active: false,
     relative: false,
   },
   {
-    name: 'Research',
+    name: {
+      en: 'Research',
+      pt: 'Pesquisa',
+    },
     url: '/research',
     active: false,
     relative: false,
   },
   {
-    name: 'Press',
+    name: {
+      en: 'Press',
+      pt: 'Imprensa',
+    },
     url: '/press',
     active: false,
     relative: false,
   },
   {
-    name: 'Narratives',
+    name: {
+      en: 'Narratives',
+      pt: 'Narrativas',
+    },
     url: '/',
     active: true,
     relative: true,
   },
   {
-    name: 'Iconography',
+    name: {
+      en: 'Iconography',
+      pt: 'Iconografia',
+    },
     url: '/iconography',
     active: false,
     relative: false,
   },
   {
-    name: 'Map',
+    name: {
+      en: 'Map',
+      pt: 'Mapa',
+    },
     url: '/map',
     active: false,
     relative: false,
@@ -91,7 +115,7 @@ const Header = ({ user }) => {
                 className={`${styles.link} ${active ? styles.active : ''}`}
                 href={`${relative ? `/${locale}` : process.env.NEXT_PUBLIC_MAIN_SITE}${url}`}
               >
-                {name}
+                {name[locale]}
               </a>
             ))}
             {user && user.verified && (
