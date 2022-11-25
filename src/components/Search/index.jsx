@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation, gql } from '@apollo/client';
+import { useRouter } from 'next/router';
 import axios from 'axios';
 import { debounce } from 'lodash';
 import { Segment, Search as SeachBar, Button, Header, Label, Icon } from 'semantic-ui-react';
+
+import useLocale from '../../hooks/useLocale';
 
 import styles from './Search.module.css';
 
@@ -56,6 +59,9 @@ const Search = ({ slide }) => {
   const [loading, setLoading] = useState(false);
   const [featureName, setFeatureName] = useState(null);
 
+  const { locale } = useRouter();
+  const { searchName, currentlySelected, noResults } = useLocale();
+
   useEffect(() => {
     if (data) {
       setYear(data.Slide.year);
@@ -73,7 +79,7 @@ const Search = ({ slide }) => {
       const layerResults = {};
       if (string && string.length > 1 && year) {
         const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_SEARCH_API}/search?text=${string}&year=${year}`
+          `${process.env.NEXT_PUBLIC_SEARCH_API}/search?text=${string}&year=${year}&lang=${locale}`
         );
         if (res.data.length) {
           res.data.forEach(d => {
@@ -114,7 +120,7 @@ const Search = ({ slide }) => {
             onClick={() => setOpen(false)}
           />
           <Header as="h3" style={{ marginLeft: 5, marginTop: 0 }}>
-            Search by name
+            {searchName}
           </Header>
           <SeachBar
             fluid
@@ -124,11 +130,12 @@ const Search = ({ slide }) => {
             results={results}
             onSearchChange={debounce((e, { value }) => setString(value), 500, { leading: true })}
             onResultSelect={(e, { result }) => setSelectedFeature(result.id)}
+            noResultsMessage={noResults}
           />
           {selectedFeature && featureName && (
             <>
               <Header as="h5" style={{ margin: '20px 0 5px 5px' }}>
-                Currently Selected Feature:
+                {`${currentlySelected}:`}
               </Header>
               <Label style={{ width: '100%' }}>
                 {featureName}

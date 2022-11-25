@@ -4,6 +4,8 @@ import { useQuery, useMutation, gql } from '@apollo/client';
 import { last } from 'lodash';
 import { DrawPolygonMode, DrawLineStringMode, EditingMode, DrawPointMode } from 'react-map-gl-draw';
 
+import useLocale from '../../hooks/useLocale';
+
 const StateContext = createContext();
 const DispatchContext = createContext();
 
@@ -88,6 +90,7 @@ function DrawProvider({ children }) {
   const { data: annotations } = useQuery(GET_ANNOTATIONS, { variables: { slide: state.slide } });
 
   const updateTimer = useRef();
+  const { newAnnotation } = useLocale();
 
   function onSelect(e) {
     const { selectedFeatureIndex } = e;
@@ -103,7 +106,7 @@ function DrawProvider({ children }) {
       case 'addFeature': {
         dispatch(['SET_MODE', 'editing']);
         const newFeature = last(data);
-        newFeature.properties.title = 'New annotation';
+        newFeature.properties.title = newAnnotation;
         createAnnotation({
           variables: {
             feature: JSON.stringify(newFeature),

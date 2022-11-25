@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation, gql } from '@apollo/client';
+import { useRouter } from 'next/router';
 import { Container, Header as Heading, Segment, Button, Image, Icon } from 'semantic-ui-react';
 import withApollo from '../providers/withApollo';
 
 import Header from '../components/Header';
 import Head from '../components/Head';
+import useLocale from '../hooks/useLocale';
 
 const GET_PROJECTS = gql`
   query GetProjects($user: ID!) {
@@ -55,23 +57,38 @@ const Projects = ({ user }) => {
   const [isLoading, setLoading] = useState(false);
   const { loading, error, data } = useQuery(GET_PROJECTS, { variables: { user: user.id } });
   const [createProject] = useMutation(CREATE_PROJECT);
+  const { locale } = useRouter();
+  const {
+    myNarratives,
+    gallery,
+    addNarrative,
+    modified,
+    created,
+    preview,
+    editor,
+    published,
+    download,
+    categories,
+    untitledProject,
+    loadingText,
+  } = useLocale();
 
   const newProject = () => {
     setLoading(true);
     createProject({
       variables: {
-        title: 'Untitled project',
+        title: untitledProject,
       },
     }).then(
       ({
         data: {
           createProject: { id },
         },
-      }) => window.location.replace(`/project/${id}`)
+      }) => window.location.replace(`/${locale}/project/${id}`)
     );
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p>{loadingText}</p>;
   if (error) return <p>Error :(</p>;
 
   return (
@@ -79,17 +96,17 @@ const Projects = ({ user }) => {
       <Head title="Projects" />
       <Header user={user} />
       <Container style={{ marginTop: 30, marginBottom: 30 }}>
-        <a href="/" style={{ display: 'block', float: 'right', lineHeight: '36px' }}>
+        <a href={`/${locale}`} style={{ display: 'block', float: 'right', lineHeight: '36px' }}>
           <span>
             <Icon name="grid layout" />
-            Map Gallery
+            {gallery}
           </span>
         </a>
         <Heading as="h1" style={{ marginTop: 30 }}>
-          My Narratives / Minhas narrativas
+          {myNarratives}
         </Heading>
         <Button
-          content="Add Narrative / Nova narrativa"
+          content={addNarrative}
           loading={isLoading}
           icon="plus"
           size="large"
@@ -102,40 +119,43 @@ const Projects = ({ user }) => {
           {data.allProjects.map(proj => (
             <Segment key={proj.id} style={{ padding: 20 }}>
               {proj.url && <Image src={proj.url} floated="left" style={{ height: 55 }} />}
-              <a href={`/project/${proj.id}`} style={{ fontWeight: 'bold', fontSize: '1.25em' }}>
-                {`${proj.title}${proj.category ? ` - ${proj.category}` : ''}`}
+              <a
+                href={`/${locale}/project/${proj.id}`}
+                style={{ fontWeight: 'bold', fontSize: '1.25em' }}
+              >
+                {`${proj.title}${proj.category ? ` - ${categories(proj.category)}` : ''}`}
               </a>
               <Button
                 floated="right"
-                content="Editor"
+                content={editor}
                 icon="edit"
                 as="a"
-                href={`/edit/${proj.id}`}
+                href={`/${locale}/edit/${proj.id}`}
               />
               <Button
                 basic
                 floated="right"
-                content="Preview"
+                content={preview}
                 icon="play"
                 as="a"
                 style={{ marginRight: 10 }}
-                href={`/view/${proj.id}`}
+                href={`/${locale}/view/${proj.id}`}
               />
               <div style={{ clear: 'right' }}>
                 {proj.updatedAt && (
                   <span style={{ marginRight: 10 }}>
-                    {`Modified: ${new Date(proj.updatedAt).toLocaleDateString()}`}
+                    {`${modified}: ${new Date(proj.updatedAt).toLocaleDateString()}`}
                   </span>
                 )}
                 {proj.createdAt && (
                   <span style={{ marginRight: 10 }}>
-                    {`Created: ${new Date(proj.createdAt).toLocaleDateString()}`}
+                    {`${created}: ${new Date(proj.createdAt).toLocaleDateString()}`}
                   </span>
                 )}
                 {proj.published && (
                   <span>
                     <Icon name="check" />
-                    Published
+                    {published}
                   </span>
                 )}
               </div>
@@ -144,7 +164,7 @@ const Projects = ({ user }) => {
         </Segment.Group>
         <Button icon labelPosition="left" floated="right" size="tiny" as="a" href="/download">
           <Icon name="download" />
-          Download my data
+          {download}
         </Button>
         <Image src="img/hrc-logo.png" />
       </Container>

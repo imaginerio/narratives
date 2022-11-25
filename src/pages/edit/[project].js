@@ -13,6 +13,7 @@ import Editor from '../../components/Editor';
 import EditorHeader from '../../components/Editor/EditorHeader';
 import { DrawProvider } from '../../providers/DrawProvider';
 import useProjectAuth from '../../providers/useProjectAuth';
+import useLocale from '../../hooks/useLocale';
 
 const GET_SLIDES = gql`
   query GetSlides($project: ID!) {
@@ -63,6 +64,8 @@ const EditPage = ({ project, statusCode }) => {
   const [addSlide] = useMutation(ADD_SLIDE);
   const [deleteSlide] = useMutation(DELETE_SLIDE);
   const [editSlideOrder] = useMutation(EDIT_SLIDE_ORDER);
+
+  const { loadingText } = useLocale();
 
   const { loading, error, data, refetch } = useQuery(GET_SLIDES, {
     variables: { project },
@@ -137,14 +140,14 @@ const EditPage = ({ project, statusCode }) => {
   if (loading || !project)
     return (
       <Dimmer active>
-        <Loader size="huge">Loading</Loader>
+        <Loader size="huge">{loadingText}</Loader>
       </Dimmer>
     );
   if (error) return <p>Error :(</p>;
 
   return (
     <Container fluid>
-      <Head title={`Editing ${data.Project.title}`} />
+      <Head title={data.Project.title} />
       <Grid>
         <Grid.Row style={{ paddingBottom: 0, zIndex: 2 }}>
           <Grid.Column>
@@ -153,7 +156,7 @@ const EditPage = ({ project, statusCode }) => {
         </Grid.Row>
         <Grid.Row style={{ paddingTop: 0, paddingBottom: 0 }}>
           <Dimmer active={apiLoading}>
-            <Loader size="huge">Loading</Loader>
+            <Loader size="huge">{loadingText}</Loader>
           </Dimmer>
           <Grid.Column width={3}>
             <Slides

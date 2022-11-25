@@ -5,8 +5,11 @@ import { Button, Segment } from 'semantic-ui-react';
 import { Slider } from 'react-semantic-ui-range';
 
 import debouncedMutation from '../../providers/debouncedMutation';
+import useLocale from '../../hooks/useLocale';
+
 import { GET_SLIDE, GET_BASEMAPS, UPDATE_BASEMAP, UPDATE_SLIDE_OPACITY } from './graphql';
 import Chooser from './Chooser';
+
 import styles from './Basemaps.module.css';
 
 const Basemaps = ({ slide }) => {
@@ -44,6 +47,7 @@ const Basemaps = ({ slide }) => {
   };
 
   const opacityTimer = useRef();
+  const { visuals, opacity: opacityText } = useLocale();
 
   const [options, setOptions] = useState([]);
   const [opacity, setOpacity] = useState(1);
@@ -72,7 +76,7 @@ const Basemaps = ({ slide }) => {
 
   return (
     <div>
-      <h3 style={{ marginTop: 0 }}>Maps / Plans / Aerials</h3>
+      <h3 style={{ marginTop: 0 }}>{visuals}</h3>
       {data && data.Slide.basemap ? (
         <Segment style={{ padding: '0.5em', display: 'flex', alignItems: 'center' }}>
           <div
@@ -93,7 +97,7 @@ const Basemaps = ({ slide }) => {
       ) : (
         <Chooser options={options} handler={onBasemapChange} />
       )}
-      <h4>Overlay Opacity</h4>
+      <h4>{opacityText}</h4>
       <Slider
         disabled={!data || !data.Slide.basemap}
         discrete

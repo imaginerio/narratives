@@ -4,6 +4,7 @@ import { useDrag, useDrop } from 'react-dnd';
 import { Dropdown, Icon } from 'semantic-ui-react';
 
 import ItemTypes from './ItemTypes';
+import useLocale from '../../hooks/useLocale';
 
 import styles from './Slide.module.css';
 
@@ -19,6 +20,8 @@ const Slide = ({
   removeSlide,
 }) => {
   const ref = useRef(null);
+  const { newText, copy, deleteText } = useLocale();
+
   const [, drop] = useDrop({
     accept: ItemTypes.SLIDE,
     hover(item, monitor) {
@@ -74,15 +77,15 @@ const Slide = ({
         <Dropdown.Menu direction="left">
           <Dropdown.Item onClick={() => newSlide(id)}>
             <Icon name="plus square outline" />
-            New
+            {newText}
           </Dropdown.Item>
           <Dropdown.Item onClick={() => duplicate(id)}>
             <Icon name="copy outline" />
-            Copy
+            {copy}
           </Dropdown.Item>
           <Dropdown.Item onClick={() => removeSlide(id)}>
             <Icon name="trash alternate outline" />
-            Delete
+            {deleteText}
           </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>

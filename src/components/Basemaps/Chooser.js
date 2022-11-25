@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Button, Item } from 'semantic-ui-react';
 
+import useLocale from '../../hooks/useLocale';
+
 const Chooser = ({ options, handler }) => {
   const [open, setOpen] = useState(false);
+  const { noBasemaps, selectBasemap } = useLocale();
 
-  if (options.length === 0) return <i>No basemaps available for the selected year</i>;
+  if (options.length === 0) return <i>{noBasemaps}</i>;
 
   return (
     <Modal
@@ -13,9 +16,9 @@ const Chooser = ({ options, handler }) => {
       onClose={() => setOpen(false)}
       onOpen={() => setOpen(true)}
       open={open}
-      trigger={<Button fluid content="Select Basemap" icon="map outline" labelPosition="left" />}
+      trigger={<Button fluid content={selectBasemap} icon="map outline" labelPosition="left" />}
     >
-      <Modal.Header>Select a Basemap</Modal.Header>
+      <Modal.Header>{selectBasemap}</Modal.Header>
       <Modal.Content scrolling>
         <Item.Group divided link>
           {options.map(basemap => (

@@ -45,7 +45,7 @@ export async function getServerSideProps({ params, req }) {
     data: { data },
   } = await axios.post(`${req.protocol}://${req.get('Host')}/admin/api`, {
     query: `query GetVerification($key: String){
-      allUsers(where: { verifyId: $key, verified_not: true }){
+      allUsers(where: { verifyId: $key }){
         id
       }
     }`,

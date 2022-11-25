@@ -7,6 +7,7 @@ import { Dimmer, Loader } from 'semantic-ui-react';
 import Atlas from './index';
 import { minZoom, maxZoom, minLon, maxLon, minLat, maxLat } from '../../config/map';
 import debouncedMutation from '../../providers/debouncedMutation';
+import useLocale from '../../hooks/useLocale';
 
 const GET_SLIDE_ATLAS = gql`
   query GetSlideYear($slide: ID!) {
@@ -75,6 +76,7 @@ const AtlasContext = ({ slide }) => {
 
   const [onUpdateViewport] = useMutation(UPDATE_VIEWPORT);
   const viewportTimer = useRef();
+  const { loadingText } = useLocale();
 
   const [mapViewport, setMapViewport] = useState(null);
   const [annotations, setAnnotations] = useState(null);
@@ -119,7 +121,7 @@ const AtlasContext = ({ slide }) => {
   if (loading || !mapViewport || !data)
     return (
       <Dimmer active>
-        <Loader size="huge">Loading</Loader>
+        <Loader size="huge">{loadingText}</Loader>
       </Dimmer>
     );
   if (error) return <p>Error :(</p>;

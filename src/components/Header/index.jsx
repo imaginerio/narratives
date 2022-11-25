@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useRouter } from 'next/router';
 import { useMutation, gql } from '@apollo/client';
 import Avatar from 'boring-avatars';
 import { Container, Image, Dropdown } from 'semantic-ui-react';
+import useLocale from '../../hooks/useLocale';
 
 import styles from './Header.module.css';
 
@@ -16,49 +18,73 @@ const UNAUTH_MUTATION = gql`
 
 const pages = [
   {
-    name: 'Home',
+    name: {
+      en: 'Home',
+      pt: 'Início',
+    },
     url: '/',
     active: false,
     relative: false,
   },
   {
-    name: 'About',
+    name: {
+      en: 'About',
+      pt: 'Sobre',
+    },
     url: '/about',
     active: false,
     relative: false,
   },
   {
-    name: 'People',
+    name: {
+      en: 'People',
+      pt: 'Equipe',
+    },
     url: '/people',
     active: false,
     relative: false,
   },
   {
-    name: 'Research',
+    name: {
+      en: 'Research',
+      pt: 'Pesquisa',
+    },
     url: '/research',
     active: false,
     relative: false,
   },
   {
-    name: 'Press',
+    name: {
+      en: 'Press',
+      pt: 'Imprensa',
+    },
     url: '/press',
     active: false,
     relative: false,
   },
   {
-    name: 'Narratives',
+    name: {
+      en: 'Narratives',
+      pt: 'Narrativas',
+    },
     url: '/',
     active: true,
     relative: true,
   },
   {
-    name: 'Iconography',
+    name: {
+      en: 'Iconography',
+      pt: 'Iconografia',
+    },
     url: '/iconography',
     active: false,
     relative: false,
   },
   {
-    name: 'Map',
+    name: {
+      en: 'Map',
+      pt: 'Mapa',
+    },
     url: '/map',
     active: false,
     relative: false,
@@ -66,6 +92,8 @@ const pages = [
 ];
 
 const Header = ({ user }) => {
+  const { locale } = useRouter();
+  const { myNarratives } = useLocale();
   const [signOut, { client }] = useMutation(UNAUTH_MUTATION, {
     onCompleted: async () => {
       // Ensure there's no old authenticated data hanging around
@@ -85,9 +113,9 @@ const Header = ({ user }) => {
               <a
                 key={name}
                 className={`${styles.link} ${active ? styles.active : ''}`}
-                href={`${relative ? '' : process.env.NEXT_PUBLIC_MAIN_SITE}${url}`}
+                href={`${relative ? `/${locale}` : process.env.NEXT_PUBLIC_MAIN_SITE}${url}`}
               >
-                {name}
+                {name[locale]}
               </a>
             ))}
             {user && user.verified && (
@@ -106,7 +134,12 @@ const Header = ({ user }) => {
                 }
               >
                 <Dropdown.Menu style={{ marginLeft: -40 }}>
-                  <Dropdown.Item text="My narratives" as="a" href="/projects" />
+                  <Dropdown.Item text={myNarratives} as="a" href={`/${locale}/projects`} />
+                  <Dropdown.Item
+                    text={locale === 'pt' ? 'English Version' : 'Versão em Português'}
+                    as="a"
+                    href={`/${locale === 'pt' ? 'en' : 'pt'}/projects`}
+                  />
                   <Dropdown.Item text="Logout" onClick={signOut} />
                 </Dropdown.Menu>
               </Dropdown>
