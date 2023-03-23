@@ -207,20 +207,26 @@ const Atlas = ({
           </Source>
         </>
       )}
-      {selectedFeature && (
+      {featureData && (
         <Source key={selectedFeature} type="geojson" data={featureData}>
-          <Layer
-            id="selected-case"
-            type="line"
-            paint={{ 'line-width': 6, 'line-color': '#eeeeee' }}
-            beforeId={activeBasemap ? 'overlay' : 'expressway-label'}
-          />
-          <Layer
-            id="selected-line"
-            type="line"
-            paint={{ 'line-width': 3, 'line-color': '#000000' }}
-            beforeId={activeBasemap ? 'overlay' : 'expressway-label'}
-          />
+          {featureData.geometry.type.match(/point/i) ? (
+            <Layer id="selected-point" type="circle" paint={{ 'circle-radius': 6 }} />
+          ) : (
+            <>
+              <Layer
+                id="selected-case"
+                type="line"
+                paint={{ 'line-width': 6, 'line-color': '#eeeeee' }}
+                beforeId={activeBasemap ? 'overlay' : 'expressway-label'}
+              />
+              <Layer
+                id="selected-line"
+                type="line"
+                paint={{ 'line-width': 3, 'line-color': '#000000' }}
+                beforeId={activeBasemap ? 'overlay' : 'expressway-label'}
+              />
+            </>
+          )}
         </Source>
       )}
       {!drawProps.editing && annotations && (
