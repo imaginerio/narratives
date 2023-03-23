@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { some, pick, isEqual } from 'lodash';
 import { Segment, Form, Button, Icon } from 'semantic-ui-react';
+import { TbShape, TbShape2 } from 'react-icons/tb';
 
 import Basemaps from '../Basemaps';
 import useLocale from '../../hooks/useLocale';
@@ -113,7 +114,14 @@ const Layers = ({ slide }) => {
                 <Form.Field
                   className={styles.layerCheck}
                   key={layer.id}
-                  label={layer.title}
+                  // eslint-disable-next-line prettier/prettier
+                  label={(
+                    <div>
+                      {layer.layerId.match(/poly/gi) ? <TbShape /> : <TbShape2 />}
+                      <span>{layer.title}</span>
+                    </div>
+                    // eslint-disable-next-line prettier/prettier
+                  )}
                   control="input"
                   type="checkbox"
                   value={layer.id}

@@ -10,6 +10,20 @@
   font-size: 1.25em;
 }
 
+.layerCheck label{
+  display: flex;
+  align-items: center;
+}
+
+.layerCheck label > div{
+  display: flex;
+  align-items: center;
+}
+
+.layerCheck label > div > svg {
+  margin-right: 5px;
+}
+
 .layerCheck label input{
   margin-right: 10px;
 }
