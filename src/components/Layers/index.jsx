@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation, gql } from '@apollo/client';
-import { some, pick, isEqual } from 'lodash';
+import { some, pick } from 'lodash';
 import { Segment, Form, Button, Icon } from 'semantic-ui-react';
 import { TbShape, TbShape2 } from 'react-icons/tb';
 
