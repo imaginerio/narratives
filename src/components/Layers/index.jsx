@@ -106,27 +106,30 @@ const Layers = ({ slide }) => {
           <Basemaps slide={slide} />
           <Form.Group style={{ borderTop: '1px solid #ccc', marginTop: 15, paddingTop: 15 }}>
             <h3 style={{ marginTop: 0 }}>{layers}</h3>
-            {allLayers.data.layers.map(layer => (
-              <Form.Field
-                className={styles.layerCheck}
-                key={layer.id}
-                label={layer.title}
-                control="input"
-                type="checkbox"
-                value={layer.id}
-                checked={!some(disabledLayers, nl => nl.id === layer.id)}
-                onChange={e => {
-                  const { value, checked } = e.target;
-                  if (checked) {
-                    return setDisabledLayers(disabledLayers.filter(nl => nl.id !== value));
-                  }
-                  return setDisabledLayers([
-                    ...disabledLayers,
-                    allLayers.data.layers.find(l => l.id === value),
-                  ]);
-                }}
-              />
-            ))}
+            {allLayers.data.layers
+              .filter(l => l.title)
+              .sort((a, b) => a.title.localeCompare(b.title))
+              .map(layer => (
+                <Form.Field
+                  className={styles.layerCheck}
+                  key={layer.id}
+                  label={layer.title}
+                  control="input"
+                  type="checkbox"
+                  value={layer.id}
+                  checked={!some(disabledLayers, nl => nl.id === layer.id)}
+                  onChange={e => {
+                    const { value, checked } = e.target;
+                    if (checked) {
+                      return setDisabledLayers(disabledLayers.filter(nl => nl.id !== value));
+                    }
+                    return setDisabledLayers([
+                      ...disabledLayers,
+                      allLayers.data.layers.find(l => l.id === value),
+                    ]);
+                  }}
+                />
+              ))}
           </Form.Group>
         </Segment>
       )}
