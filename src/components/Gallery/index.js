@@ -28,6 +28,7 @@ const Gallery = ({ data }) => {
       />
       {data.allProjects
         .filter(p => activeCategories.length === 0 || activeCategories.includes(p.category))
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
         .map(proj => (
           <Card
             key={proj.id}

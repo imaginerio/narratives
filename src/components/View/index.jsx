@@ -19,6 +19,7 @@ const View = ({ data }) => {
   const [opacity, setOpacity] = useState(1);
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [annotations, setAnnotations] = useState(null);
+  const [disabledLayers, setDisabledLayers] = useState(null);
 
   const { author } = useLocale();
 
@@ -59,6 +60,7 @@ const View = ({ data }) => {
           opacity={opacity}
           selectedFeature={selectedFeature}
           annotations={annotations}
+          disabledLayers={disabledLayers}
         />
       </div>
       <div>
@@ -97,6 +99,7 @@ const View = ({ data }) => {
                 features: step.data.annotations.map(({ feature }) => JSON.parse(feature)),
               });
             }
+            setDisabledLayers(step.data.disabledLayers);
           }}
         >
           <Step data={{ ...data.Project.slides[0], index: 0 }}>

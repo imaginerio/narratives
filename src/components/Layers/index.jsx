@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation, gql } from '@apollo/client';
-import { some, pick, isEqual } from 'lodash';
+import { some, pick } from 'lodash';
 import { Segment, Form, Button, Icon } from 'semantic-ui-react';
+import { TbShape, TbShape2 } from 'react-icons/tb';
 
 import Basemaps from '../Basemaps';
 import useLocale from '../../hooks/useLocale';
@@ -86,7 +87,7 @@ const Layers = ({ slide }) => {
   }, [data]);
 
   useEffect(() => {
-    if (data && !isEqual(disabledLayers, data.Slide.disabledLayers)) onLayersChange(disabledLayers);
+    onLayersChange(disabledLayers);
   }, [disabledLayers]);
 
   return (
@@ -106,27 +107,37 @@ const Layers = ({ slide }) => {
           <Basemaps slide={slide} />
           <Form.Group style={{ borderTop: '1px solid #ccc', marginTop: 15, paddingTop: 15 }}>
             <h3 style={{ marginTop: 0 }}>{layers}</h3>
-            {allLayers.data.layers.map(layer => (
-              <Form.Field
-                className={styles.layerCheck}
-                key={layer.id}
-                label={layer.title}
-                control="input"
-                type="checkbox"
-                value={layer.id}
-                checked={!some(disabledLayers, nl => nl.id === layer.id)}
-                onChange={e => {
-                  const { value, checked } = e.target;
-                  if (checked) {
-                    return setDisabledLayers(disabledLayers.filter(nl => nl.id !== value));
-                  }
-                  return setDisabledLayers([
-                    ...disabledLayers,
-                    allLayers.data.layers.find(l => l.id === value),
-                  ]);
-                }}
-              />
-            ))}
+            {allLayers.data.layers
+              .filter(l => l.title)
+              .sort((a, b) => a.title.localeCompare(b.title))
+              .map(layer => (
+                <Form.Field
+                  className={styles.layerCheck}
+                  key={layer.id}
+                  // eslint-disable-next-line prettier/prettier
+                  label={(
+                    <div>
+                      {layer.layerId.match(/poly/gi) ? <TbShape /> : <TbShape2 />}
+                      <span>{layer.title}</span>
+                    </div>
+                    // eslint-disable-next-line prettier/prettier
+                  )}
+                  control="input"
+                  type="checkbox"
+                  value={layer.id}
+                  checked={!some(disabledLayers, nl => nl.id === layer.id)}
+                  onChange={e => {
+                    const { value, checked } = e.target;
+                    if (checked) {
+                      return setDisabledLayers(disabledLayers.filter(nl => nl.id !== value));
+                    }
+                    return setDisabledLayers([
+                      ...disabledLayers,
+                      allLayers.data.layers.find(l => l.id === value),
+                    ]);
+                  }}
+                />
+              ))}
           </Form.Group>
         </Segment>
       )}
