@@ -87,7 +87,7 @@ const Layers = ({ slide }) => {
   }, [data]);
 
   useEffect(() => {
-    if (data && !isEqual(disabledLayers, data.Slide.disabledLayers)) onLayersChange(disabledLayers);
+    onLayersChange(disabledLayers);
   }, [disabledLayers]);
 
   return (
