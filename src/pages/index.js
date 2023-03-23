@@ -96,6 +96,7 @@ export async function getServerSideProps({ req, locale }) {
           user {
             name
           }
+          createdAt
         }
         categories: __type(name: "ProjectCategoryType") {
           values: enumValues {
