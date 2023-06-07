@@ -9,9 +9,8 @@ const Head = ({ title }) => (
     <meta httpEquiv="x-ua-compatible" content="ie=edge" />
     <script
       async
-      defer
+      src="https://umami.axismaps.com/script.js"
       data-website-id="1d06d2f3-29d1-40c3-955f-ec63bfa731c9"
-      src="https://umami.axismaps.com/umami.js"
     />
     <title>{title}</title>
   </NextHead>
