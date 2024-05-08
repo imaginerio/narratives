@@ -114,23 +114,28 @@ export async function getServerSideProps({ req, locale }) {
     data: {
       post_stream: { posts },
     },
-  } = await axios.get(
-    `${process.env.NEXT_PUBLIC_PAGE_URL}${
-      locale === 'pt' ? 'pt-narratives-about/46' : 'en-narratives-about/96'
-    }.json`,
-    {
-      headers: {
-        'Api-Key': process.env.NEXT_PUBLIC_PAGE_API,
-        'Api-Username': 'system',
-      },
-    }
-  );
+  } = await axios
+    .get(
+      `${process.env.NEXT_PUBLIC_PAGE_URL}${
+        locale === 'pt' ? 'pt-narratives-about/46' : 'en-narratives-about/96'
+      }.json`,
+      {
+        headers: {
+          'Api-Key': process.env.NEXT_PUBLIC_PAGE_API,
+          'Api-Username': 'system',
+        },
+      }
+    )
+    .catch(error => {
+      console.error(error);
+      return { data: { post_stream: { posts: [] } } };
+    });
 
   return {
     props: {
       data,
       user,
-      content: posts[0].cooked,
+      content: posts[0]?.cooked ?? '',
     },
   };
 }
