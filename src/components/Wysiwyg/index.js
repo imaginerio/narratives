@@ -1,28 +1,49 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React from 'react';
+import React, { useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 import { Form } from 'semantic-ui-react';
-import { Editor } from '@tinymce/tinymce-react';
+import 'react-quill/dist/quill.snow.css';
 
-const Wysiwyg = ({ label, value, onEditorChange }) => (
-  <Form.Field>
-    <label>{label}</label>
-    <Editor
-      apiKey={process.env.NEXT_PUBLIC_MCE_KEY}
-      value={value}
-      init={{
-        height: 400,
-        menubar: false,
-        plugins: ['link lists paste'],
-        toolbar: 'bold italic superscript bullist numlist | link unlink | undo redo',
-        branding: false,
-        statusbar: false,
-        paste_as_text: true,
-      }}
-      onEditorChange={onEditorChange}
-    />
-  </Form.Field>
-);
+const modules = {
+  toolbar: [
+    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    ['link'],
+  ],
+};
+
+const formats = [
+  'bold',
+  'italic',
+  'underline',
+  'strike',
+  'blockquote',
+  'list',
+  'bullet',
+  'indent',
+  'link',
+];
+
+const Wysiwyg = ({ label, value, onEditorChange }) => {
+  const ReactQuill = useMemo(() => dynamic(async () => import('react-quill'), { ssr: false }), []);
+  return (
+    <Form.Field>
+      <label>{label}</label>
+      <ReactQuill
+        style={{
+          backgroundColor: 'white',
+          width: '100%',
+          height: '400px',
+        }}
+        formats={formats}
+        modules={modules}
+        value={value}
+        onChange={onEditorChange}
+      />
+    </Form.Field>
+  );
+};
 
 Wysiwyg.propTypes = {
   label: PropTypes.string,

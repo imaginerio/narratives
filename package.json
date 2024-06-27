@@ -61,6 +61,7 @@
     "react-map-gl-draw": "0.21.0",
     "react-masonry-component": "^6.2.1",
     "react-player": "^2.9.0",
+    "react-quill": "^2.0.0",
     "react-scrollama": "^2.2.12",
     "react-semantic-ui-range": "^0.7.0",
     "semantic-ui-css": "^2.4.1",
