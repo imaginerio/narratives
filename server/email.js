@@ -30,7 +30,7 @@ const templates = (template, { host, key }, lang) => {
 
 module.exports.sendEmail = ({ to, key, host, template, lang }) => {
   const body = JSON.stringify({
-    from: 'admin@narratives.imaginerio.org',
+    from: 'no-reply@email.imaginerio.org',
     subject:
       lang === 'pt'
         ? 'Verifique seu e-mail para imagineRio Narratives'
