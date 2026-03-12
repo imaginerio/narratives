@@ -1,7 +1,5 @@
 /* eslint-disable no-console */
-const sgMail = require('@sendgrid/mail');
-
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const https = require('https');
 
 const templates = (template, { host, key }, lang) => {
   switch (template) {
@@ -31,21 +29,38 @@ const templates = (template, { host, key }, lang) => {
 };
 
 module.exports.sendEmail = ({ to, key, host, template, lang }) => {
-  sgMail
-    .send({
-      from: 'admin@narratives.imaginerio.org',
-      subject:
-        lang === 'pt'
-          ? 'Verifique seu e-mail para imagineRio Narratives'
-          : 'Verify your email for imagineRio Narratives',
-      to,
-      html: templates(template, { host, key }, lang),
-    })
-    .then(response => {
-      console.log(response[0].statusCode);
-      console.log(response[0].headers);
-    })
-    .catch(error => {
-      console.error(error);
-    });
+  const body = JSON.stringify({
+    from: 'admin@narratives.imaginerio.org',
+    subject:
+      lang === 'pt'
+        ? 'Verifique seu e-mail para imagineRio Narratives'
+        : 'Verify your email for imagineRio Narratives',
+    to,
+    html: templates(template, { host, key }, lang),
+  });
+
+  const options = {
+    hostname: 'api.resend.com',
+    path: '/emails',
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(body),
+    },
+  };
+
+  const req = https.request(options, res => {
+    console.log(res.statusCode);
+    console.log(res.headers);
+    res.on('data', () => {});
+    res.on('end', () => {});
+  });
+
+  req.on('error', error => {
+    console.error(error);
+  });
+
+  req.write(body);
+  req.end();
 };
